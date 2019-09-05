@@ -129,7 +129,12 @@ public class CommandRunnable implements Runnable, Listener {
             cmd.onPlayerSwimToggle(e);
         }
     }
-
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public final void onPlayerAdvancementGet(PlayerAdvancementDoneEvent e) {
+        for (Command cmd : Start.Instance.cm.commandList) {
+            cmd.onPlayerAdvancementGet(e);
+        }
+    }
     @Override
     public final void run() {
         for (Command cmd : Start.Instance.cm.commandList) {

@@ -20,11 +20,11 @@ public class minimalisticMinecraft extends Command {
                 for (UUID playerName : players) {
                     Player p = Bukkit.getPlayer(playerName);
                     if ((p == null || !p.isOnline())) break;
-                    p.closeInventory();
+                    //p.closeInventory();
                     p.setLevel(0);
                     p.getInventory().clear();
                     p.setPortalCooldown(999);
-                    p.setWalkSpeed(0.4f);
+                    p.setWalkSpeed(0.05f);
                     p.setFlying(false);
                 }
             }
