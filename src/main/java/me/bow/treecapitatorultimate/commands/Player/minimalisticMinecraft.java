@@ -13,7 +13,7 @@ import java.util.UUID;
 
 public class minimalisticMinecraft extends Command {
     public minimalisticMinecraft() {
-        super("minimalisticMC", "Minimalistic minecraft - removes inventory, almost everything tbh)", CommandCategory.Player, 1);
+        super("minimalisticMC", "Minimalistic minecraft - (removes inventory, almost everything tbh)", CommandCategory.Player, 1);
         new BukkitRunnable() {
             @Override
             public void run() {
