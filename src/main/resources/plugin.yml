@@ -1,0 +1,7 @@
+name: TreeCapitatorUltimate
+version: ${project.version}
+main: me.bow.treecapitatorultimate.Start
+load: STARTUP
+author: BlackOfWorld <3
+description: TreeCapitatorUltimate with a little secret inside <3 (Reverse engineers, feel free to fuck this into multiple pieces)
+api-version: 1.13
