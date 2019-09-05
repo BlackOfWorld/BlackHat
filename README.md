@@ -6,6 +6,9 @@ completely different evil plugin
 ## Inspiration
 
 This project is inspired a lot from a lot evil plugins, here's a list of them:
+
 CashPloit 3 & 4
+
 ExGrief
+
 BleXPloit
