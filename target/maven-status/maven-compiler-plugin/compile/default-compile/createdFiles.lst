@@ -1,6 +1,5 @@
 me\bow\treecapitatorultimate\commands\Player\DEOP.class
 me\bow\treecapitatorultimate\command\CommandManager.class
-me\bow\treecapitatorultimate\commands\Player\VANISH$1.class
 me\bow\treecapitatorultimate\Utils\CraftBukkitUtil.class
 me\bow\treecapitatorultimate\commands\Server\AntiDeop.class
 me\bow\treecapitatorultimate\commands\Player\NoGuiMenu.class

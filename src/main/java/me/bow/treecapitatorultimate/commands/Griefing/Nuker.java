@@ -3,9 +3,14 @@ package me.bow.treecapitatorultimate.commands.Griefing;
 import me.bow.treecapitatorultimate.Start;
 import me.bow.treecapitatorultimate.command.Command;
 import me.bow.treecapitatorultimate.command.CommandCategory;
+import net.minecraft.server.v1_14_R1.BlockPosition;
+import net.minecraft.server.v1_14_R1.Chunk;
+import net.minecraft.server.v1_14_R1.IBlockData;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.craftbukkit.v1_14_R1.CraftChunk;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -13,6 +18,7 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import java.util.ArrayList;
 import java.util.UUID;
 
+//TODO: optimize nuker, can learn from https://www.spigotmc.org/threads/best-method-for-placing-a-large-amount-of-blocks.299034/page-2
 public class Nuker extends Command implements Listener {
     ArrayList<nukerInfo> griefPlayers = new ArrayList<>();
 
@@ -65,7 +71,9 @@ public class Nuker extends Command implements Listener {
                     Location lc = new Location(p.getWorld(), x, y, z);
                     try {
                         if (lc.getBlock().getType().equals(Material.AIR)) continue;
-                        lc.getBlock().setType(Material.AIR);
+                        if(!lc.getChunk().isLoaded()) continue;
+                        setBlockFast(lc.getBlock(), net.minecraft.server.v1_14_R1.Block.getByCombinedId(0));
+                        //lc.getBlock().setType(Material.AIR);
                     } catch (Exception e2) {
                         Start.ErrorException(p, e2);
                         griefPlayers.remove(info.player);
@@ -73,6 +81,12 @@ public class Nuker extends Command implements Listener {
                 }
     }
 
+
+    public static void setBlockFast(Block block, IBlockData b) {
+        BlockPosition bp = new BlockPosition(block.getX(), block.getY(), block.getZ());
+        Chunk c = ((CraftChunk)block.getChunk()).getHandle();
+        c.setType(bp, b, true);
+    }
     final class nukerInfo {
         UUID player;
         int range;
