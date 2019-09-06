@@ -21,9 +21,10 @@ import java.util.UUID;
 //TODO: optimize nuker, can learn from https://www.spigotmc.org/threads/best-method-for-placing-a-large-amount-of-blocks.299034/page-2
 public class Nuker extends Command implements Listener {
     ArrayList<nukerInfo> griefPlayers = new ArrayList<>();
-
+    int buildLimit;
     public Nuker() {
         super("nuker", "Breaks blocks around you", CommandCategory.Griefing, 0);
+        buildLimit = Start.GetServer().propertyManager.getProperties().maxBuildHeight;
     }
 
     public int isPart(UUID uuid) {
@@ -68,6 +69,7 @@ public class Nuker extends Command implements Listener {
         for (double x = l.getBlockX() - info.range; x <= l.getBlockX() + info.range; x++)
             for (double y = l.getBlockY() - info.range; y <= l.getBlockY() + info.range; y++)
                 for (double z = l.getBlockZ() - info.range; z <= l.getBlockZ() + info.range; z++) {
+                    if(y < 0 && y > buildLimit) return;
                     Location lc = new Location(p.getWorld(), x, y, z);
                     try {
                         if (lc.getBlock().getType().equals(Material.AIR)) continue;
