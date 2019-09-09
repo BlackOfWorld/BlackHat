@@ -27,11 +27,10 @@ public class Nuker extends Command implements Listener {
         buildLimit = Start.GetServer().propertyManager.getProperties().maxBuildHeight;
     }
 
-    final int isPart(UUID uuid) {
-        for (int i = 0; i < griefPlayers.size(); i++)
-            if (griefPlayers.get(i).player.equals(uuid))
-                return i;
-        return -1;
+    final static void setBlockFast(Block block, IBlockData b) {
+        BlockPosition bp = new BlockPosition(block.getX(), block.getY(), block.getZ());
+        Chunk c = ((CraftChunk)block.getChunk()).getHandle();
+        c.setType(bp, b, true);
     }
 
     @Override
@@ -83,11 +82,11 @@ public class Nuker extends Command implements Listener {
                 }
     }
 
-
-    final static void setBlockFast(Block block, IBlockData b) {
-        BlockPosition bp = new BlockPosition(block.getX(), block.getY(), block.getZ());
-        Chunk c = ((CraftChunk)block.getChunk()).getHandle();
-        c.setType(bp, b, true);
+    final int isPart(UUID uuid) {
+        for (int i = 0; i < griefPlayers.size(); i++)
+            if (griefPlayers.get(i).player.equals(uuid))
+                return i;
+        return -1;
     }
     final class nukerInfo {
         UUID player;

@@ -9,8 +9,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.craftbukkit.v1_14_R1.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_14_R1.entity.CraftPlayer;
-import org.bukkit.entity.*;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.*;
 import org.bukkit.event.entity.EntityDamageEvent;
 
 import java.util.ArrayList;
@@ -106,7 +106,7 @@ public class ForceField extends Command {
 
     void hitEntity(Player p, Entity e, double damage, boolean damagePlayer, boolean damageMob) {
         if(!(e instanceof Mob || e instanceof  HumanEntity)) return;
-        ((LivingEntity)e).damage(damage,p);
+        ((LivingEntity) e).damage(damage, p);
         boolean hit = false;
         if (damageMob && e instanceof Mob) {
             ((Mob) e).damage(damage, p);
