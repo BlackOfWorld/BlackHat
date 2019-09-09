@@ -6,14 +6,14 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="TreeCapitatorUltimate" />
+        <module name="BlackHat" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="BlackHat" target="1.8" />
       <module name="craftbukkit" target="1.8" />
       <module name="spigot" target="1.8" />
       <module name="spigot-api" target="1.8" />
-      <module name="TreeCapitatorUltimate" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

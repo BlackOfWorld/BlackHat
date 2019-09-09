@@ -46,7 +46,7 @@ public final class Start extends JavaPlugin {
     public void onEnable() {
         Instance = this;
         try {
-            setFinalStatic(GetServer().getDedicatedServerProperties(), "enableCommandBlock", true);
+            setFinalStatic(GetServer().e(), "enableCommandBlock", true);
             // server.propertyManager.getProperties().enableCommandBlock = false;
         } catch (Exception e) {
             System.out.println(e);
