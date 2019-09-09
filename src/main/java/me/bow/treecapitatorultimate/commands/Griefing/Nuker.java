@@ -68,7 +68,12 @@ public class Nuker extends Command implements Listener {
         for (double x = l.getBlockX() - info.range; x <= l.getBlockX() + info.range; x++)
             for (double y = l.getBlockY() - info.range; y <= l.getBlockY() + info.range; y++)
                 for (double z = l.getBlockZ() - info.range; z <= l.getBlockZ() + info.range; z++) {
-                    if(y < 0 && y > buildLimit) return;
+                    if(y < 0) {
+                        y = 0;
+                    }
+                    if(y > buildLimit) {
+                        y = buildLimit;
+                    }
                     Location lc = new Location(p.getWorld(), x, y, z);
                     try {
                         if (lc.getBlock().getType().equals(Material.AIR)) continue;
