@@ -24,7 +24,7 @@ public class minimalisticMinecraft extends Command {
                     p.setLevel(0);
                     p.getInventory().clear();
                     p.setPortalCooldown(999);
-                    p.setWalkSpeed(0.05f);
+                    p.setWalkSpeed(0.025f);
                     p.setFlying(false);
                 }
             }
@@ -47,6 +47,7 @@ public class minimalisticMinecraft extends Command {
             }
             p.sendMessage(Start.Prefix + ChatColor.BLUE + anotherPlayer.getName() + ChatColor.RED + " now longer has minimalitic minecraft!");
             players.remove(anotherPlayer.getUniqueId());
+            anotherPlayer.setWalkSpeed(0.2f);
         } catch (Exception e) {
             Start.ErrorException(p, e);
         }
