@@ -48,7 +48,8 @@ public interface CommandEvents {
     default void onServerTick() {
     }
 
-    default void onPlayerDeath(PlayerDeathEvent e) {}
+    default void onPlayerDeath(PlayerDeathEvent e) {
+    }
 
     default void onPlayerBlockPlace(BlockPlaceEvent e) {
     }
@@ -58,6 +59,7 @@ public interface CommandEvents {
 
     default void onPlayerSwimToggle(EntityToggleSwimEvent e) {
     }
+
     default void onPlayerAdvancementGet(PlayerAdvancementDoneEvent e) {
     }
 }

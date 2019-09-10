@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 public class minimalisticMinecraft extends Command {
+    ArrayList<UUID> players = new ArrayList<>();
+
     public minimalisticMinecraft() {
         super("minimalisticMC", "Minimalistic minecraft - (removes inventory, almost everything tbh)", CommandCategory.Player, 1);
         new BukkitRunnable() {
@@ -30,7 +32,6 @@ public class minimalisticMinecraft extends Command {
             }
         }.runTaskTimer(Start.Instance, 0, 1);
     }
-    ArrayList<UUID> players = new ArrayList<>();
 
     @Override
     public void onCommand(Player p, ArrayList<String> args) {

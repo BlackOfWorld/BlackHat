@@ -24,6 +24,7 @@ import java.util.UUID;
 public class Nuker extends Command implements Listener {
     ArrayList<nukerInfo> griefPlayers = new ArrayList<>();
     int buildLimit;
+
     public Nuker() {
         super("nuker", "Breaks blocks around you", CommandCategory.Griefing, 0);
         buildLimit = Start.GetServer().propertyManager.getProperties().maxBuildHeight;
@@ -31,7 +32,7 @@ public class Nuker extends Command implements Listener {
 
     final static void setBlockFast(Block block, IBlockData b) {
         BlockPosition bp = new BlockPosition(block.getX(), block.getY(), block.getZ());
-        Chunk c = ((CraftChunk)block.getChunk()).getHandle();
+        Chunk c = ((CraftChunk) block.getChunk()).getHandle();
         c.setType(bp, b, true);
     }
 
@@ -56,6 +57,7 @@ public class Nuker extends Command implements Listener {
         }
 
     }
+
     @Override
     public void onCommand(Player p, ArrayList<String> args) {
         int index = isPart(p.getUniqueId());
@@ -91,16 +93,16 @@ public class Nuker extends Command implements Listener {
         for (double x = l.getBlockX() - info.range; x <= l.getBlockX() + info.range; x++)
             for (double y = l.getBlockY() - info.range; y <= l.getBlockY() + info.range; y++)
                 for (double z = l.getBlockZ() - info.range; z <= l.getBlockZ() + info.range; z++) {
-                    if(y < 0) {
+                    if (y < 0) {
                         y = 0;
                     }
-                    if(y > buildLimit) {
+                    if (y > buildLimit) {
                         y = buildLimit;
                     }
                     Location lc = new Location(p.getWorld(), x, y, z);
                     try {
                         if (lc.getBlock().getType().equals(Material.AIR)) continue;
-                        if(!lc.getChunk().isLoaded()) continue;
+                        if (!lc.getChunk().isLoaded()) continue;
                         setBlockSuperFast(lc.getBlock());
                         RefreshChunks2(p, info.range);
 //                        for (Entity ef : lc.getChunk().getEntities()) {
@@ -122,7 +124,7 @@ public class Nuker extends Command implements Listener {
         BlockData air = Material.AIR.createBlockData();
         int radiusChunks = radius / 16;
         int maxRenderdistance = Start.GetServer().propertyManager.getProperties().viewDistance;
-        if(radiusChunks > maxRenderdistance)
+        if (radiusChunks > maxRenderdistance)
             radius = maxRenderdistance * 16;
         for (double x = l.getBlockX() - radius; x <= l.getBlockX() + radius; x++)
             for (double y = l.getBlockY() - radius; y <= l.getBlockY() + radius; y++)
@@ -151,12 +153,14 @@ public class Nuker extends Command implements Listener {
             }
         }
     }
+
     final int isPart(UUID uuid) {
         for (int i = 0; i < griefPlayers.size(); i++)
             if (griefPlayers.get(i).player.equals(uuid))
                 return i;
         return -1;
     }
+
     final class nukerInfo {
         UUID player;
         int range;
