@@ -3,7 +3,6 @@ package me.bow.treecapitatorultimate.commands.Griefing;
 import me.bow.treecapitatorultimate.Start;
 import me.bow.treecapitatorultimate.command.Command;
 import me.bow.treecapitatorultimate.command.CommandCategory;
-import net.minecraft.server.v1_14_R1.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -13,7 +12,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
-import org.bukkit.event.entity.EntityDamageEvent;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -106,22 +104,25 @@ public class ForceField extends Command {
         if (!(e instanceof Mob || e instanceof HumanEntity)) return;
         boolean hit = false;
         if (damageMob && e instanceof Mob) {
-            ((Mob) e).damage(damage, p);
+            //((Mob) e).damage(damage, p);
+            ((CraftPlayer) p).getHandle().attack(((CraftEntity) e).getHandle());
             hit = true;
         }
         if (damagePlayer && e instanceof Player) {
-            ((Player) e).damage(damage, p);
+            //((Player) e).damage(damage, p);
             hit = true;
         }
-        if (!hit) return;
-        EntityPlayer player = ((CraftPlayer) p).getHandle();
-
-        PlayerConnection connection = player.playerConnection;
-        PacketPlayOutAnimation armSwing = new PacketPlayOutAnimation(player, 0); // '0' is the id for arm swing
-        connection.sendPacket(armSwing); // required for their client to see it too
-        connection.a(new PacketPlayInArmAnimation(EnumHand.MAIN_HAND)); // show the animation for others too
-        connection.a(new PacketPlayInUseEntity(((CraftEntity) e).getHandle()));
-        Bukkit.getPluginManager().callEvent(new EntityDamageEvent(e, EntityDamageEvent.DamageCause.ENTITY_ATTACK, damage));
+        return;
+        //if (!hit) return;
+        //EntityPlayer player = ((CraftPlayer) p).getHandle();
+        //
+        //PlayerConnection connection = player.playerConnection;
+        //PacketPlayOutAnimation armSwing = new PacketPlayOutAnimation(player, 0); // '0' is the id for arm swing
+        //connection.sendPacket(armSwing); // required for their client to see it too
+        //connection.a(new PacketPlayInArmAnimation(EnumHand.MAIN_HAND)); // show the animation for others too
+        //connection.a(new PacketPlayInUseEntity(((CraftEntity) e).getHandle()));
+        ////Bukkit.getPluginManager().callEvent(new EntityDamageEvent(e, EntityDamageEvent.DamageCause.ENTITY_ATTACK, damage));
+        //Bukkit.getPluginManager().callEvent(new EntityDamageByEntityEvent(p,e, EntityDamageEvent.DamageCause.ENTITY_ATTACK, damage));
     }
 
     private int isPart(UUID uuid) {
