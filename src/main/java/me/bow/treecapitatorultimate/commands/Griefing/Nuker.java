@@ -3,15 +3,16 @@ package me.bow.treecapitatorultimate.commands.Griefing;
 import me.bow.treecapitatorultimate.Start;
 import me.bow.treecapitatorultimate.command.Command;
 import me.bow.treecapitatorultimate.command.CommandCategory;
-import net.minecraft.server.v1_14_R1.*;
+import net.minecraft.server.v1_14_R1.Blocks;
+import net.minecraft.server.v1_14_R1.Chunk;
+import net.minecraft.server.v1_14_R1.ChunkSection;
+import net.minecraft.server.v1_14_R1.PacketPlayOutMapChunk;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.data.BlockData;
 import org.bukkit.craftbukkit.v1_14_R1.CraftChunk;
 import org.bukkit.craftbukkit.v1_14_R1.entity.CraftPlayer;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -28,12 +29,6 @@ public class Nuker extends Command implements Listener {
     public Nuker() {
         super("nuker", "Breaks blocks around you", CommandCategory.Griefing, 0);
         buildLimit = Start.GetServer().propertyManager.getProperties().maxBuildHeight - 1;
-    }
-
-    private void setBlockFast(Block block, IBlockData b) {
-        BlockPosition bp = new BlockPosition(block.getX(), block.getY(), block.getZ());
-        Chunk c = ((CraftChunk) block.getChunk()).getHandle();
-        c.setType(bp, b, true);
     }
 
     private void setBlockSuperFast(Block b) {
@@ -55,7 +50,6 @@ public class Nuker extends Command implements Listener {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     @Override
@@ -103,15 +97,10 @@ public class Nuker extends Command implements Listener {
                     try {
                         if (lc.getBlock().getType().equals(Material.AIR)) continue;
                         if (!lc.getChunk().isLoaded()) continue;
-                        setBlockSuperFast(lc.getBlock());
-
-//                        for (Entity ef : lc.getChunk().getEntities()) {
-//                            if (ef instanceof Player) {
-//                                Player ppe = (Player) ef;
-//
-//                            }
-//                        }
-                        //lc.getBlock().setType(Material.AIR);
+                        if (info.range <= 5)
+                            lc.getBlock().setType(Material.AIR);
+                        else
+                            setBlockSuperFast(lc.getBlock());
                     } catch (Exception e2) {
                         Start.ErrorException(p, e2);
 
@@ -122,29 +111,6 @@ public class Nuker extends Command implements Listener {
         RefreshChunks(p, info.range);
     }
 
-    private void RefreshChunks2(Player p, int radius) {
-        Location l = p.getLocation();
-        BlockData air = Material.AIR.createBlockData();
-        int radiusChunks = radius / 16;
-        int maxRenderdistance = Start.GetServer().propertyManager.getProperties().viewDistance;
-        if (radiusChunks > maxRenderdistance)
-            radius = maxRenderdistance * 16;
-        for (double x = l.getBlockX() - radius; x <= l.getBlockX() + radius; x++)
-            for (double y = l.getBlockY() - radius; y <= l.getBlockY() + radius; y++)
-                for (double z = l.getBlockZ() - radius; z <= l.getBlockZ() + radius; z++)
-                    p.sendBlockChange(new Location(p.getWorld(), x, y, z), air);
-
-        for (Entity ps : p.getNearbyEntities(radius, radius, radius)) {
-            if (!(ps instanceof Player)) {
-                continue;
-            }
-            Player ppe = (Player) ps;
-            for (double x = l.getBlockX() - radius; x <= l.getBlockX() + radius; x++)
-                for (double y = l.getBlockY() - radius; y <= l.getBlockY() + radius; y++)
-                    for (double z = l.getBlockZ() - radius; z <= l.getBlockZ() + radius; z++)
-                        ((Player) ps).sendBlockChange(new Location(ppe.getWorld(), x, y, z), air);
-        }
-    }
 
     private void RefreshChunks(Player p, int radius) {
         Location l = p.getLocation();
