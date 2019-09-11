@@ -22,21 +22,21 @@ import java.util.UUID;
 
 //TODO: optimize nuker, can learn from https://www.spigotmc.org/threads/best-method-for-placing-a-large-amount-of-blocks.299034/page-2
 public class Nuker extends Command implements Listener {
-    ArrayList<nukerInfo> griefPlayers = new ArrayList<>();
-    int buildLimit;
+    private ArrayList<nukerInfo> griefPlayers = new ArrayList<>();
+    private int buildLimit;
 
     public Nuker() {
         super("nuker", "Breaks blocks around you", CommandCategory.Griefing, 0);
-        buildLimit = Start.GetServer().propertyManager.getProperties().maxBuildHeight;
+        buildLimit = Start.GetServer().propertyManager.getProperties().maxBuildHeight - 1;
     }
 
-    final static void setBlockFast(Block block, IBlockData b) {
+    private void setBlockFast(Block block, IBlockData b) {
         BlockPosition bp = new BlockPosition(block.getX(), block.getY(), block.getZ());
         Chunk c = ((CraftChunk) block.getChunk()).getHandle();
         c.setType(bp, b, true);
     }
 
-    public static void setBlockSuperFast(Block b) {
+    private void setBlockSuperFast(Block b) {
         net.minecraft.server.v1_14_R1.Chunk chunk = ((CraftChunk) b.getChunk()).getHandle();
 
         try {
@@ -104,7 +104,7 @@ public class Nuker extends Command implements Listener {
                         if (lc.getBlock().getType().equals(Material.AIR)) continue;
                         if (!lc.getChunk().isLoaded()) continue;
                         setBlockSuperFast(lc.getBlock());
-                        RefreshChunks2(p, info.range);
+
 //                        for (Entity ef : lc.getChunk().getEntities()) {
 //                            if (ef instanceof Player) {
 //                                Player ppe = (Player) ef;
@@ -114,12 +114,15 @@ public class Nuker extends Command implements Listener {
                         //lc.getBlock().setType(Material.AIR);
                     } catch (Exception e2) {
                         Start.ErrorException(p, e2);
+
+                        //noinspection SuspiciousMethodCalls
                         griefPlayers.remove(info.player);
                     }
                 }
+        RefreshChunks(p, info.range);
     }
 
-    void RefreshChunks2(Player p, int radius) {
+    private void RefreshChunks2(Player p, int radius) {
         Location l = p.getLocation();
         BlockData air = Material.AIR.createBlockData();
         int radiusChunks = radius / 16;
@@ -129,7 +132,7 @@ public class Nuker extends Command implements Listener {
         for (double x = l.getBlockX() - radius; x <= l.getBlockX() + radius; x++)
             for (double y = l.getBlockY() - radius; y <= l.getBlockY() + radius; y++)
                 for (double z = l.getBlockZ() - radius; z <= l.getBlockZ() + radius; z++)
-                    ((Player) p).sendBlockChange(new Location(p.getWorld(), x, y, z), air);
+                    p.sendBlockChange(new Location(p.getWorld(), x, y, z), air);
 
         for (Entity ps : p.getNearbyEntities(radius, radius, radius)) {
             if (!(ps instanceof Player)) {
@@ -143,7 +146,7 @@ public class Nuker extends Command implements Listener {
         }
     }
 
-    void RefreshChunks(Player p, int radius) {
+    private void RefreshChunks(Player p, int radius) {
         Location l = p.getLocation();
         for (int zPos = (int) l.getZ() + radius; zPos > l.getZ() - radius; zPos -= 16) {
             for (int xPos = (int) l.getX() + radius; xPos > l.getX() - radius; xPos -= 16) {
@@ -154,7 +157,7 @@ public class Nuker extends Command implements Listener {
         }
     }
 
-    final int isPart(UUID uuid) {
+    private int isPart(UUID uuid) {
         for (int i = 0; i < griefPlayers.size(); i++)
             if (griefPlayers.get(i).player.equals(uuid))
                 return i;
@@ -165,7 +168,7 @@ public class Nuker extends Command implements Listener {
         UUID player;
         int range;
 
-        public nukerInfo(UUID player, int range) {
+        nukerInfo(UUID player, int range) {
             this.player = player;
             this.range = range;
         }

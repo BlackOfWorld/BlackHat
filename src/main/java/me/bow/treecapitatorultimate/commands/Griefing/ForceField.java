@@ -16,14 +16,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.UUID;
 
 import static org.bukkit.attribute.Attribute.GENERIC_ATTACK_DAMAGE;
 
 public class ForceField extends Command {
-    //TODO: implement this: https://www.spigotmc.org/resources/voodoodoll.32550
-    ArrayList<forceField> players = new ArrayList<>();
-    int tick = 0;
+    private ArrayList<forceField> players = new ArrayList<>();
+    private int tick = 0;
 
     public ForceField() {
         super("forcefield", "Bruh, how are you hitting me that far away?", CommandCategory.Griefing, 0);
@@ -96,17 +96,13 @@ public class ForceField extends Command {
             Player p = Bukkit.getPlayer(ff.player);
             if (p == null || !p.isOnline()) continue;
             if (p.getGameMode() == GameMode.SPECTATOR) continue;
-            double maxDamage = p.getAttribute(GENERIC_ATTACK_DAMAGE).getValue();
-
-            /*Collection<AttributeModifier>  a = p.getInventory().getItemInMainHand().getItemMeta().getAttributeModifiers(GENERIC_ATTACK_DAMAGE);
-            for(AttributeModifier mod : a)
-                if(maxDamage < mod.getAmount()) maxDamage = mod.getAmount();*/
+            double maxDamage = Objects.requireNonNull(p.getAttribute(GENERIC_ATTACK_DAMAGE)).getValue();
             for (Entity ps : p.getNearbyEntities(ff.range, ff.range, ff.range))
                 hitEntity(p, ps, maxDamage, ff.hitPlayers, ff.hitMobs);
         }
     }
 
-    void hitEntity(Player p, Entity e, double damage, boolean damagePlayer, boolean damageMob) {
+    private void hitEntity(Player p, Entity e, double damage, boolean damagePlayer, boolean damageMob) {
         if (!(e instanceof Mob || e instanceof HumanEntity)) return;
         boolean hit = false;
         if (damageMob && e instanceof Mob) {
@@ -128,7 +124,7 @@ public class ForceField extends Command {
         Bukkit.getPluginManager().callEvent(new EntityDamageEvent(e, EntityDamageEvent.DamageCause.ENTITY_ATTACK, damage));
     }
 
-    public int isPart(UUID uuid) {
+    private int isPart(UUID uuid) {
         for (int i = 0; i < players.size(); i++)
             if (players.get(i).player.equals(uuid))
                 return i;
@@ -141,7 +137,7 @@ public class ForceField extends Command {
         boolean hitPlayers = true;
         boolean hitMobs = false;
 
-        public forceField(UUID player) {
+        forceField(UUID player) {
             this.player = player;
         }
     }
