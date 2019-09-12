@@ -1,0 +1,39 @@
+@import url('https://fonts.googleapis.com/css?family=Noto+Sans|Open+Sans|Roboto&display=swap');
+
+body {
+    margin: 0;
+    width: 100%;
+    height: 100vh;
+    font-family: "Roboto", sans-serif;
+    color: #fff;
+    background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+    background-size: 600% 600%;
+    animation: rainbowBackground 60s ease infinite;
+}
+
+.completeCenter {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin: 0 -50% 0 0;
+    transform: translate(-50%, -50%)
+}
+
+.centerH {
+    font-size: 2.2em;
+    color: white;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+@keyframes rainbowBackground {
+    0% {
+        background-position: 0 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0 50%;
+    }
+}

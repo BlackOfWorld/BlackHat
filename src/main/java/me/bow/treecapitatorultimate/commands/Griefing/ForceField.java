@@ -3,21 +3,16 @@ package me.bow.treecapitatorultimate.commands.Griefing;
 import me.bow.treecapitatorultimate.Start;
 import me.bow.treecapitatorultimate.command.Command;
 import me.bow.treecapitatorultimate.command.CommandCategory;
+import net.minecraft.server.v1_14_R1.PacketPlayOutAnimation;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.craftbukkit.v1_14_R1.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_14_R1.entity.CraftPlayer;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.HumanEntity;
-import org.bukkit.entity.Mob;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 
 import java.util.ArrayList;
-import java.util.Objects;
 import java.util.UUID;
-
-import static org.bukkit.attribute.Attribute.GENERIC_ATTACK_DAMAGE;
 
 public class ForceField extends Command {
     private ArrayList<forceField> players = new ArrayList<>();
@@ -47,11 +42,21 @@ public class ForceField extends Command {
                     p.sendMessage(Start.Prefix + ChatColor.RED + "You already have FF off!");
                 }
                 break;
-            case "mobs":
+            case "hostile":
                 if (index != -1) {
                     forceField ff = players.get(index);
-                    ff.hitMobs = !ff.hitMobs;
-                    p.sendMessage(Start.Prefix + ChatColor.RED + "Hit mobs: " + (ff.hitMobs ? "On" : "Off"));
+                    ff.hitHostileMobs = !ff.hitHostileMobs;
+                    p.sendMessage(Start.Prefix + ChatColor.RED + "Hit hostile mobs: " + (ff.hitHostileMobs ? "On" : "Off"));
+                    players.set(index, ff);
+                } else {
+                    p.sendMessage(Start.Prefix + ChatColor.RED + "You must have FF on to access this setting!");
+                }
+                break;
+            case "friendly":
+                if (index != -1) {
+                    forceField ff = players.get(index);
+                    ff.hitHostileMobs = !ff.hitHostileMobs;
+                    p.sendMessage(Start.Prefix + ChatColor.RED + "Hit friendly mobs: " + (ff.hitHostileMobs ? "On" : "Off"));
                     players.set(index, ff);
                 } else {
                     p.sendMessage(Start.Prefix + ChatColor.RED + "You must have FF on to access this setting!");
@@ -94,35 +99,25 @@ public class ForceField extends Command {
             Player p = Bukkit.getPlayer(ff.player);
             if (p == null || !p.isOnline()) continue;
             if (p.getGameMode() == GameMode.SPECTATOR) continue;
-            double maxDamage = Objects.requireNonNull(p.getAttribute(GENERIC_ATTACK_DAMAGE)).getValue();
             for (Entity ps : p.getNearbyEntities(ff.range, ff.range, ff.range))
-                hitEntity(p, ps, maxDamage, ff.hitPlayers, ff.hitMobs);
+                hitEntity(p, ps, ff.hitPlayers, ff.hitHostileMobs, ff.hitFriendlyMobs);
         }
     }
 
-    private void hitEntity(Player p, Entity e, double damage, boolean damagePlayer, boolean damageMob) {
-        if (!(e instanceof Mob || e instanceof HumanEntity)) return;
-        boolean hit = false;
-        if (damageMob && e instanceof Mob) {
-            //((Mob) e).damage(damage, p);
+    private void hitEntity(Player p, Entity e, boolean damagePlayer, boolean hitHostileMobs, boolean hitFriendlyMobs) {
+        if (!(e instanceof Monster || e instanceof Ageable || e instanceof HumanEntity)) return;
+        if (hitFriendlyMobs && e instanceof Ageable) {
             ((CraftPlayer) p).getHandle().attack(((CraftEntity) e).getHandle());
-            hit = true;
+            (((CraftPlayer) p).getHandle()).playerConnection.sendPacket(new PacketPlayOutAnimation(((CraftPlayer) p).getHandle(), 0));  // required for their client to see it too
         }
-        if (damagePlayer && e instanceof Player) {
-            //((Player) e).damage(damage, p);
-            hit = true;
+        if (hitHostileMobs && e instanceof Monster) {
+            ((CraftPlayer) p).getHandle().attack(((CraftEntity) e).getHandle());
+            (((CraftPlayer) p).getHandle()).playerConnection.sendPacket(new PacketPlayOutAnimation(((CraftPlayer) p).getHandle(), 0));  // required for their client to see it too
         }
-        return;
-        //if (!hit) return;
-        //EntityPlayer player = ((CraftPlayer) p).getHandle();
-        //
-        //PlayerConnection connection = player.playerConnection;
-        //PacketPlayOutAnimation armSwing = new PacketPlayOutAnimation(player, 0); // '0' is the id for arm swing
-        //connection.sendPacket(armSwing); // required for their client to see it too
-        //connection.a(new PacketPlayInArmAnimation(EnumHand.MAIN_HAND)); // show the animation for others too
-        //connection.a(new PacketPlayInUseEntity(((CraftEntity) e).getHandle()));
-        ////Bukkit.getPluginManager().callEvent(new EntityDamageEvent(e, EntityDamageEvent.DamageCause.ENTITY_ATTACK, damage));
-        //Bukkit.getPluginManager().callEvent(new EntityDamageByEntityEvent(p,e, EntityDamageEvent.DamageCause.ENTITY_ATTACK, damage));
+        if (damagePlayer && e instanceof HumanEntity) {
+            ((CraftPlayer) p).getHandle().attack(((CraftEntity) e).getHandle());
+            (((CraftPlayer) p).getHandle()).playerConnection.sendPacket(new PacketPlayOutAnimation(((CraftPlayer) p).getHandle(), 0));  // required for their client to see it too
+        }
     }
 
     private int isPart(UUID uuid) {
@@ -136,8 +131,8 @@ public class ForceField extends Command {
         UUID player;
         double range = 6.0d;
         boolean hitPlayers = true;
-        boolean hitMobs = false;
-
+        boolean hitHostileMobs = false;
+        boolean hitFriendlyMobs = false;
         forceField(UUID player) {
             this.player = player;
         }
