@@ -13,11 +13,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.permissions.PermissibleBase;
-import org.bukkit.permissions.PermissionAttachment;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.List;
 
 public class AllPerms extends Command {
     private Field HUMAN_ENTITY_PERMISSIBLE_FIELD;
@@ -29,7 +27,7 @@ public class AllPerms extends Command {
 
     }
 
-    void setup() {
+    private void setup() {
         Field humanEntityPermissibleField;
         try {
             // craftbukkit
@@ -47,7 +45,7 @@ public class AllPerms extends Command {
         try {
             PERMISSIBLE_BASE_ATTACHMENTS_FIELD = PermissibleBase.class.getDeclaredField("attachments");
             PERMISSIBLE_BASE_ATTACHMENTS_FIELD.setAccessible(true);
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
     }
 
@@ -75,7 +73,8 @@ public class AllPerms extends Command {
         p.updateCommands();
     }
 
-    public boolean PlayerHasAllPerms(Player p) {
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+    private boolean PlayerHasAllPerms(Player p) {
         // get the existing PermissibleBase held by the player
         try {
             PermissibleBase oldPermissible = (PermissibleBase) HUMAN_ENTITY_PERMISSIBLE_FIELD.get(p);
@@ -85,7 +84,7 @@ public class AllPerms extends Command {
         }
     }
 
-    public void inject(Player player, AllStarPermBase newPermissible) throws Exception {
+    private void inject(Player player, AllStarPermBase newPermissible) throws Exception {
 
         // get the existing PermissibleBase held by the player
         PermissibleBase oldPermissible = (PermissibleBase) HUMAN_ENTITY_PERMISSIBLE_FIELD.get(player);
@@ -96,11 +95,6 @@ public class AllPerms extends Command {
         }
 
         // Move attachments over from the old permissible
-
-        //noinspection unchecked
-        List<PermissionAttachment> attachments = (List<PermissionAttachment>) PERMISSIBLE_BASE_ATTACHMENTS_FIELD.get(oldPermissible);
-
-        attachments.clear();
         oldPermissible.clearPermissions();
 
         // Setup the new permissible
@@ -111,7 +105,7 @@ public class AllPerms extends Command {
         HUMAN_ENTITY_PERMISSIBLE_FIELD.set(player, newPermissible);
     }
 
-    public void uninject(Player player, boolean dummy) throws Exception {
+    private void uninject(Player player, boolean dummy) throws Exception {
 
         // gets the players current permissible.
         PermissibleBase permissible = (PermissibleBase) HUMAN_ENTITY_PERMISSIBLE_FIELD.get(player);
@@ -120,8 +114,6 @@ public class AllPerms extends Command {
         if (!(permissible instanceof AllStarPermBase)) return;
         AllStarPermBase lpPermissible = ((AllStarPermBase) permissible);
 
-        // clear all permissions
-        lpPermissible.clearPermissions();
 
         // set to inactive
         lpPermissible.getActive().set(false);
@@ -136,7 +128,6 @@ public class AllPerms extends Command {
             if (newPb == null) {
                 newPb = new PermissibleBase(player);
             }
-
             HUMAN_ENTITY_PERMISSIBLE_FIELD.set(player, newPb);
         }
     }
@@ -155,7 +146,7 @@ public class AllPerms extends Command {
         if (!PlayerHasAllPerms(player)) return;
         try {
             uninject(player, true);
-        } catch (Exception ex) {
+        } catch (Exception ignored) {
         }
     }
 }
