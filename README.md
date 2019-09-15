@@ -19,6 +19,7 @@ BleXPloit
 - [ ] Finish implementing FuckServer
 - [ ] Better InventorySee
 - [ ] Better (Smarter) Nuker
+- [ ] Multi version support (Reflection?)
 - [ ] Make help prettier
 - [x] All perms
 - [x] Crash player
