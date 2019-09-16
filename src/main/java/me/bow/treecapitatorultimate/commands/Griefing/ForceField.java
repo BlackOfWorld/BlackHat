@@ -55,8 +55,8 @@ public class ForceField extends Command {
             case "friendly":
                 if (index != -1) {
                     forceField ff = players.get(index);
-                    ff.hitHostileMobs = !ff.hitHostileMobs;
-                    p.sendMessage(Start.Prefix + ChatColor.RED + "Hit friendly mobs: " + (ff.hitHostileMobs ? "On" : "Off"));
+                    ff.hitFriendlyMobs = !ff.hitFriendlyMobs;
+                    p.sendMessage(Start.Prefix + ChatColor.RED + "Hit friendly mobs: " + (ff.hitFriendlyMobs ? "On" : "Off"));
                     players.set(index, ff);
                 } else {
                     p.sendMessage(Start.Prefix + ChatColor.RED + "You must have FF on to access this setting!");
@@ -105,12 +105,12 @@ public class ForceField extends Command {
     }
 
     private void hitEntity(Player p, Entity e, boolean damagePlayer, boolean hitHostileMobs, boolean hitFriendlyMobs) {
-        if (!(e instanceof Monster || e instanceof Ageable || e instanceof HumanEntity)) return;
+        if (!(e instanceof Monster || e instanceof Flying || e instanceof Ageable || e instanceof HumanEntity)) return;
         if (hitFriendlyMobs && e instanceof Ageable) {
             ((CraftPlayer) p).getHandle().attack(((CraftEntity) e).getHandle());
             (((CraftPlayer) p).getHandle()).playerConnection.sendPacket(new PacketPlayOutAnimation(((CraftPlayer) p).getHandle(), 0));  // required for their client to see it too
         }
-        if (hitHostileMobs && e instanceof Monster) {
+        if (hitHostileMobs && (e instanceof Monster || e instanceof Flying)) {
             ((CraftPlayer) p).getHandle().attack(((CraftEntity) e).getHandle());
             (((CraftPlayer) p).getHandle()).playerConnection.sendPacket(new PacketPlayOutAnimation(((CraftPlayer) p).getHandle(), 0));  // required for their client to see it too
         }

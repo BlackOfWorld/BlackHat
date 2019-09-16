@@ -24,14 +24,16 @@ public class AntiConsole extends Command {
             p.sendMessage(Start.Prefix + "§cConsole is now enabled!");
             return;
         }
-        if (args.size() == 0 && args.get(0).toLowerCase() != "mistype" && args.get(0).toLowerCase() != "cancel") {
+        if (args.size() == 0 || (!args.get(0).equalsIgnoreCase("mistype") && !args.get(0).equalsIgnoreCase("cancel"))) {
             p.sendMessage(Start.Prefix + ChatColor.RED + "You must select mode! Either mistype or cancel");
             return;
         }
-        if (args.get(0).toLowerCase() == "mistype")
+        if (args.get(0).equalsIgnoreCase("mistype")) {
             method = cancelMethod.Mistype;
-        if (args.get(0).toLowerCase() == "cancel")
+        }
+        if (args.get(0).equalsIgnoreCase("cancel")) {
             method = cancelMethod.Cancel;
+        }
         isActive = true;
         p.sendMessage(Start.Prefix + "§aConsole is now disabled!");
     }
@@ -44,7 +46,7 @@ public class AntiConsole extends Command {
                 e.setCancelled(true);
             if (method == cancelMethod.Mistype)
                 e.setCommand("");
-        } catch (Exception e2) {
+        } catch (Exception ignored) {
         }
     }
 

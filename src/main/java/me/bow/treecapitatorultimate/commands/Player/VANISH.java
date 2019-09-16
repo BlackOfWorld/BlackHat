@@ -67,12 +67,9 @@ public class VANISH extends Command {
             e.getPlayer().hidePlayer(Start.Instance, Objects.requireNonNull(Bukkit.getPlayer(p)));
     }
 
-    // we listen for this because some entities (XP orbs) can reveal us!
-
-
+    // we listen for this because some entities (XP orbs) can reveal us
     @Override
     public void onEntityTargetLivingEntity(EntityTargetLivingEntityEvent e) {
-        System.out.println("Event!");
         if (e.getTarget() instanceof Player) {
             Player p = (Player) e.getTarget();
             if (!invisPlayers.contains(p.getUniqueId())) return;

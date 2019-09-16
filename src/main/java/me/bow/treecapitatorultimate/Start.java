@@ -46,10 +46,9 @@ public final class Start extends JavaPlugin {
     public void onEnable() {
         Instance = this;
         try {
-            setFinalStatic(GetServer().e(), "enableCommandBlock", true);
+            setFinalStatic(GetServer().getDedicatedServerProperties(), "enableCommandBlock", true);
             // server.propertyManager.getProperties().enableCommandBlock = false;
-        } catch (Exception e) {
-            System.out.println(e);
+        } catch (Exception ignored) {
         }
         SpigotConfig.unknownCommandMessage = "Fuck";
         Bukkit.getConsoleSender().sendMessage("§2------------------------------------");
