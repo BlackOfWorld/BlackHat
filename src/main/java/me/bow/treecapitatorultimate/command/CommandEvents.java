@@ -2,6 +2,7 @@ package me.bow.treecapitatorultimate.command;
 
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.event.entity.EntityToggleSwimEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
@@ -61,5 +62,8 @@ public interface CommandEvents {
     }
 
     default void onPlayerAdvancementGet(PlayerAdvancementDoneEvent e) {
+    }
+
+    default void onEntityTargetLivingEntity(EntityTargetLivingEntityEvent e) {
     }
 }

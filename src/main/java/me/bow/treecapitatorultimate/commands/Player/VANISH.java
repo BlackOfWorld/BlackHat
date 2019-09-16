@@ -8,15 +8,20 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameRule;
 import org.bukkit.World;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.event.player.PlayerAdvancementDoneEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.UUID;
 
+@SuppressWarnings("ConstantConditions")
 public class VANISH extends Command {
-    ArrayList<UUID> invisPlayers = new ArrayList<UUID>();
+    private ArrayList<UUID> invisPlayers = new ArrayList<>();
 
     public VANISH() {
         super("vanish", "Y-you saw nothing!", CommandCategory.Player);
@@ -46,6 +51,12 @@ public class VANISH extends Command {
     }
 
     @Override
+    public void onPlayerLeave(PlayerQuitEvent e) {
+        if (!invisPlayers.contains(e.getPlayer().getUniqueId())) return;
+        e.setQuitMessage(null);
+    }
+
+    @Override
     public void onPlayerJoin(PlayerJoinEvent e) {
         if (invisPlayers.contains(e.getPlayer().getUniqueId())) {
             e.getPlayer().sendMessage(Start.Prefix + ChatColor.BLUE + "You have joined with invis!");
@@ -53,7 +64,22 @@ public class VANISH extends Command {
             return;
         }
         for (UUID p : invisPlayers)
-            e.getPlayer().hidePlayer(Start.Instance, Bukkit.getPlayer(p));
+            e.getPlayer().hidePlayer(Start.Instance, Objects.requireNonNull(Bukkit.getPlayer(p)));
+    }
+
+    // we listen for this because some entities (XP orbs) can reveal us!
+
+
+    @Override
+    public void onEntityTargetLivingEntity(EntityTargetLivingEntityEvent e) {
+        System.out.println("Event!");
+        if (e.getTarget() instanceof Player) {
+            Player p = (Player) e.getTarget();
+            if (!invisPlayers.contains(p.getUniqueId())) return;
+            if (!(e.getEntity() instanceof LivingEntity)) return;
+            e.setTarget(null);
+            e.setCancelled(true);
+        }
     }
 
     @Override
@@ -61,12 +87,10 @@ public class VANISH extends Command {
         if (!invisPlayers.contains(e.getPlayer().getUniqueId())) return;
         DedicatedServer s = Start.GetServer();
         World w = e.getPlayer().getWorld();
+        @SuppressWarnings("ConstantConditions")
         boolean bak = e.getPlayer().getWorld().getGameRuleValue(GameRule.ANNOUNCE_ADVANCEMENTS);
-        if (bak)
-            w.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
-        if (bak)
-            Bukkit.getScheduler().runTask(Start.Instance, () -> {
-                w.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, true);
-            });
+        if (!bak) return;
+        w.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
+        Bukkit.getScheduler().runTask(Start.Instance, () -> w.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, true));
     }
 }

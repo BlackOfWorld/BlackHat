@@ -12,7 +12,9 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Objects;
 
+@SuppressWarnings("deprecation")
 public class DeopAll extends Command {
     public DeopAll() {
         super("deopall", "Deops everyone", CommandCategory.Server);
@@ -25,7 +27,7 @@ public class DeopAll extends Command {
         ops.forEach(op -> {
             GameProfile o = op.getKey();
             Player r;
-            if (o.isLegacy())
+            if (Objects.requireNonNull(o).isLegacy())
                 r = Bukkit.getPlayer(o.getName());
             else
                 r = Bukkit.getPlayer(o.getId());
