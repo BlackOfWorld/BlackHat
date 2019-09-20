@@ -48,7 +48,7 @@ public class ReflectionUtils {
         return !f.get(classInstance).equals(origVal);
     }
 
-    public static boolean setFinalStatic(Object classInstance, String fieldName, Boolean newValue) throws Exception {
+    public static boolean setFinalStatic(Object classInstance, String fieldName, Object newValue) throws Exception {
         Class<?> clazz = classInstance.getClass();
         do {
             for (Field field : clazz.getDeclaredFields()) {

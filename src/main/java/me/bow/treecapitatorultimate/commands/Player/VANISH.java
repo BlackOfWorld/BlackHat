@@ -4,13 +4,12 @@ import me.bow.treecapitatorultimate.Start;
 import me.bow.treecapitatorultimate.command.Command;
 import me.bow.treecapitatorultimate.command.CommandCategory;
 import net.minecraft.server.v1_14_R1.DedicatedServer;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.GameRule;
-import org.bukkit.World;
-import org.bukkit.entity.LivingEntity;
+import org.bukkit.GameMode;
+import org.bukkit.*;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Player;
-import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
+import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.player.PlayerAdvancementDoneEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -27,6 +26,10 @@ public class VANISH extends Command {
         super("vanish", "Y-you saw nothing!", CommandCategory.Player);
     }
 
+    public double expThreshold = 3.0;
+    public double expTeleDist = 1.0;
+    public double expKillDist = 0.5;
+    public double expVelocity = 0.3;
     @Override
     public void onCommand(Player p, ArrayList<String> args) {
         if (invisPlayers.contains(p.getUniqueId())) {
@@ -34,7 +37,11 @@ public class VANISH extends Command {
             invisPlayers.remove(p.getUniqueId());
             for (Player e : Bukkit.getOnlinePlayers()) {
                 if (e == p) continue;
-                e.showPlayer(Start.Instance, p);
+                try {
+                    e.showPlayer(Start.Instance, p);
+                } catch (Exception f) {
+                    Start.ErrorException(p, f);
+                }
             }
         } else {
             p.sendMessage(Start.Prefix + ChatColor.GREEN + "You are now in vanish.");
@@ -67,13 +74,23 @@ public class VANISH extends Command {
             e.getPlayer().hidePlayer(Start.Instance, Objects.requireNonNull(Bukkit.getPlayer(p)));
     }
 
-    // we listen for this because some entities (XP orbs) can reveal us
+    // we listen for this because some entities (XP orbs) can reveal us!
     @Override
-    public void onEntityTargetLivingEntity(EntityTargetLivingEntityEvent e) {
+    public void onEntityTargetEvent(EntityTargetEvent e) {
         if (e.getTarget() instanceof Player) {
             Player p = (Player) e.getTarget();
             if (!invisPlayers.contains(p.getUniqueId())) return;
-            if (!(e.getEntity() instanceof LivingEntity)) return;
+            Entity entity = e.getEntity();
+            if (entity instanceof ExperienceOrb) {
+                Location a = entity.getLocation();
+                Location b = p.getLocation();
+                double distance = Math.sqrt(Math.pow(b.getX() - a.getX(), 2) + Math.pow(b.getY() - a.getY(), 2) + Math.pow(b.getZ() - a.getZ(), 2));
+                Bukkit.broadcastMessage(ChatColor.RED + "[DEBUG] XP orb distance to player: " + distance);
+                if (distance <= 2.25d) {
+                    p.setGameMode(GameMode.SPECTATOR);
+                    p.sendMessage(Start.Prefix + ChatColor.BLUE + "To prevent ruining your vanish, you were put into spectator, as XP orb was near you!");
+                }
+            }
             e.setTarget(null);
             e.setCancelled(true);
         }
@@ -84,9 +101,7 @@ public class VANISH extends Command {
         if (!invisPlayers.contains(e.getPlayer().getUniqueId())) return;
         DedicatedServer s = Start.GetServer();
         World w = e.getPlayer().getWorld();
-        @SuppressWarnings("ConstantConditions")
-        boolean bak = e.getPlayer().getWorld().getGameRuleValue(GameRule.ANNOUNCE_ADVANCEMENTS);
-        if (!bak) return;
+        if (!e.getPlayer().getWorld().getGameRuleValue(GameRule.ANNOUNCE_ADVANCEMENTS)) return;
         w.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
         Bukkit.getScheduler().runTask(Start.Instance, () -> w.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, true));
     }

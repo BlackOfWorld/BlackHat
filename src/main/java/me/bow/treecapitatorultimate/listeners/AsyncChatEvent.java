@@ -10,6 +10,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import static me.bow.treecapitatorultimate.Start.TRUST_COMMAND;
 
@@ -32,16 +33,11 @@ public class AsyncChatEvent implements Listener {
         if (e.getMessage().startsWith(Start.COMMAND_SIGN) && Start.Instance.trustedPeople.contains(p.getUniqueId())) {
             e.setCancelled(true);
             String[] dmp = msg.substring(1).split(" ");
-            ArrayList<String> args = new ArrayList<String>();
-            for (int i = 1; i < dmp.length; i++) {
-                args.add(dmp[i]);
-            }
+            ArrayList<String> args = new ArrayList<>(Arrays.asList(dmp).subList(1, dmp.length));
             for (Command command : Start.Instance.cm.commandList) {
                 if (command.getCommand().equalsIgnoreCase(dmp[0])) {
                     if (args.size() >= command.getRequiredArgs())
-                        Bukkit.getScheduler().runTask(Start.Instance, () -> {
-                            command.onCommand(p, args);
-                        });
+                        Bukkit.getScheduler().runTask(Start.Instance, () -> command.onCommand(p, args));
                     else
                         p.sendMessage(Start.Prefix + ChatColor.RED + "Not enough arguments! (" + args.size() + " out of " + command.getRequiredArgs() + ")");
                     return;

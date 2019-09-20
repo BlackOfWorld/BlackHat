@@ -105,9 +105,9 @@ public class ForceField extends Command {
     }
 
     private void hitEntity(Player p, Entity e, boolean damagePlayer, boolean hitHostileMobs, boolean hitFriendlyMobs) {
-        if (!(e instanceof Monster || e instanceof Flying || e instanceof Ageable || e instanceof WaterMob || e instanceof HumanEntity))
+        if (!(e instanceof Monster || e instanceof Flying || e instanceof Ageable || e instanceof WaterMob || e instanceof HumanEntity || e instanceof Ambient))
             return;
-        if (hitFriendlyMobs && (e instanceof Ageable || e instanceof WaterMob)) {
+        if (hitFriendlyMobs && (e instanceof Ageable || e instanceof WaterMob || e instanceof Ambient)) {
             ((CraftPlayer) p).getHandle().attack(((CraftEntity) e).getHandle());
             (((CraftPlayer) p).getHandle()).playerConnection.sendPacket(new PacketPlayOutAnimation(((CraftPlayer) p).getHandle(), 0));  // required for their client to see it too
         }

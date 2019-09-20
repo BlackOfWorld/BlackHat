@@ -7,6 +7,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
 import org.bukkit.event.entity.EntityToggleSwimEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -142,6 +143,13 @@ public class CommandRunnable implements Runnable, Listener {
     public void onEntityTargetLivingEntity(EntityTargetLivingEntityEvent e) {
         for (Command cmd : Start.Instance.cm.commandList) {
             cmd.onEntityTargetLivingEntity(e);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onEntityTargetEvent(EntityTargetEvent e) {
+        for (Command cmd : Start.Instance.cm.commandList) {
+            cmd.onEntityTargetEvent(e);
         }
     }
     @Override

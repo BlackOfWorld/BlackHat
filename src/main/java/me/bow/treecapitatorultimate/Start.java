@@ -9,7 +9,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.craftbukkit.v1_14_R1.CraftServer;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.spigotmc.SpigotConfig;
 
 import java.util.ArrayList;
 import java.util.UUID;
@@ -42,21 +41,29 @@ public final class Start extends JavaPlugin {
         return ((CraftServer) Bukkit.getServer()).getServer();
     }
 
-    @Override
-    public void onEnable() {
+    private void onPostWorldLoad() {
+        Bukkit.getPluginManager().registerEvents(new TreeDestroy(), this);
+        Bukkit.getPluginManager().registerEvents(new AsyncChatEvent(), this);
+        cm.Init();
+        Bukkit.getConsoleSender().sendMessage("§2------------------------------------");
+        Bukkit.getConsoleSender().sendMessage("§3--| TreeCapitatorUltimate loaded |--");
+        Bukkit.getConsoleSender().sendMessage("§2------------------------------------");
+    }
+
+    private void onStartup() {
+        // Do every hooking here
         Instance = this;
         try {
             setFinalStatic(GetServer().getDedicatedServerProperties(), "enableCommandBlock", true);
             // server.propertyManager.getProperties().enableCommandBlock = false;
         } catch (Exception ignored) {
         }
-        SpigotConfig.unknownCommandMessage = "Fuck";
-        Bukkit.getConsoleSender().sendMessage("§2------------------------------------");
-        Bukkit.getConsoleSender().sendMessage("§3--| TreeCapitatorUltimate loaded |--");
-        Bukkit.getConsoleSender().sendMessage("§2------------------------------------");
-        Bukkit.getPluginManager().registerEvents(new TreeDestroy(), this);
-        Bukkit.getPluginManager().registerEvents(new AsyncChatEvent(), this);
-        cm.Init();
+    }
+
+    @Override
+    public void onEnable() {
+        onStartup();
+        Bukkit.getScheduler().runTask(this, this::onPostWorldLoad);
     }
 
     @Override
