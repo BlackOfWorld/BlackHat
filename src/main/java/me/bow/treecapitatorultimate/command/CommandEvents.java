@@ -71,4 +71,8 @@ public interface CommandEvents {
     default void onEntityTargetEvent(EntityTargetEvent e) {
 
     }
+
+    default void onPlayerInteractEvent(PlayerInteractEvent e) {
+
+    }
 }

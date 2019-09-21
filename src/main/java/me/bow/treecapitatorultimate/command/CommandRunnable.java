@@ -152,6 +152,13 @@ public class CommandRunnable implements Runnable, Listener {
             cmd.onEntityTargetEvent(e);
         }
     }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onPlayerInteractEvent(PlayerInteractEvent e) {
+        for (Command cmd : Start.Instance.cm.commandList) {
+            cmd.onPlayerInteractEvent(e);
+        }
+    }
     @Override
     public final void run() {
         for (Command cmd : Start.Instance.cm.commandList) {

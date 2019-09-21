@@ -5,10 +5,11 @@ import org.bukkit.Bukkit;
 import org.reflections.Reflections;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Set;
 
 public class CommandManager {
-    public ArrayList<Command> commandList = new ArrayList<Command>();
+    public ArrayList<Command> commandList = new ArrayList<>();
 
     public void Init() {
         Reflections reflections = new Reflections("me.bow.treecapitatorultimate.command");
@@ -17,7 +18,7 @@ public class CommandManager {
             try {
                 this.commandList.add(object.getDeclaredConstructor().newInstance());
             } catch (Exception e) {
-                System.out.print(e);
+                System.out.print(Arrays.toString(e.getStackTrace()));
             }
         }
         Bukkit.getScheduler().runTaskTimer(Start.Instance, new CommandRunnable(), 1L, 1L);
