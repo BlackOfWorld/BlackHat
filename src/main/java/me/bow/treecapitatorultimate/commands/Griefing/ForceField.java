@@ -134,6 +134,7 @@ public class ForceField extends Command {
         boolean hitPlayers = true;
         boolean hitHostileMobs = false;
         boolean hitFriendlyMobs = false;
+
         forceField(UUID player) {
             this.player = player;
         }

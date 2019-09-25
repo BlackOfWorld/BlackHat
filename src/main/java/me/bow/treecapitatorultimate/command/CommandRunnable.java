@@ -159,6 +159,7 @@ public class CommandRunnable implements Runnable, Listener {
             cmd.onPlayerInteractEvent(e);
         }
     }
+
     @Override
     public final void run() {
         for (Command cmd : Start.Instance.cm.commandList) {

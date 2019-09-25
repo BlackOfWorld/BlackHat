@@ -34,15 +34,16 @@ public class CrashPlayer extends Command {
                 }
                 p.sendMessage(Start.Prefix + ChatColor.GREEN + anotherPlayer.getName() + ChatColor.YELLOW + " is being crashed using combined method (packet, health and particles)!");
                 new BukkitRunnable() {
-                    int times = 0;
                     final Class<?> packetGameStateClass = ReflectionUtils.getMinecraftClass("PacketPlayOutExplosion");
-                    final Object nmsPlayer = p.getClass().getMethod("getHandle", new Class[0]).invoke(p);
+                    final Object nmsPlayer = p.getClass().getMethod("getHandle").invoke(p);
                     final Field playerConnectionField = nmsPlayer.getClass().getField("playerConnection");
                     final Object pConnection = playerConnectionField.get(nmsPlayer);
+                    int times = 0;
                     Class packetClass = ReflectionUtils.getMinecraftClass("Packet");
                     final Method sendPacket = pConnection.getClass().getMethod("sendPacket", packetClass);
                     Object packetPlayOutGameStateChange;
                     Object packetPlayOutExplosion;
+
                     @Override
                     public void run() {
                         if (times == 0) {

@@ -47,6 +47,7 @@ public class ReflectionUtils {
     public static Class<?> getClass(String lookupName) {
         return getCanonicalClass(expandVariables(lookupName));
     }
+
     @SuppressWarnings("unchecked")
     private static <T extends AccessibleObject> T setAccessible(T object, boolean access) {
         AccessController.doPrivileged((PrivilegedAction) () -> {

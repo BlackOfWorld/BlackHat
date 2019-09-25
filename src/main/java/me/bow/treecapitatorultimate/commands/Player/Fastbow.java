@@ -62,7 +62,7 @@ public class Fastbow extends Command {
         shootArrowNMS(player);
         int slot = player.getInventory().getHeldItemSlot();
         int nextSlot = slot == 0 ? slot + 1 : slot - 1;
-        Bukkit.broadcastMessage(Start.Prefix + ChatColor.AQUA + "[DEBUG] Current slot: " + slot + " | next slot: " + (slot == 0 ? slot + 1 : slot - 1));
+        //Bukkit.broadcastMessage(Start.Prefix + ChatColor.AQUA + "[DEBUG] Current slot: " + slot + " | next slot: " + (slot == 0 ? slot + 1 : slot - 1));
         Bukkit.getScheduler().runTask(Start.Instance, () -> player.getInventory().setHeldItemSlot(nextSlot));
         Bukkit.getScheduler().runTaskLater(Start.Instance, () -> player.getInventory().setHeldItemSlot(slot), 2);
     }

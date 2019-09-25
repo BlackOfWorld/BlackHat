@@ -20,16 +20,16 @@ import java.util.UUID;
 
 @SuppressWarnings("ConstantConditions")
 public class VANISH extends Command {
+    public double expThreshold = 3.0;
+    public double expTeleDist = 1.0;
+    public double expKillDist = 0.5;
+    public double expVelocity = 0.3;
     private ArrayList<UUID> invisPlayers = new ArrayList<>();
 
     public VANISH() {
         super("vanish", "Y-you saw nothing!", CommandCategory.Player);
     }
 
-    public double expThreshold = 3.0;
-    public double expTeleDist = 1.0;
-    public double expKillDist = 0.5;
-    public double expVelocity = 0.3;
     @Override
     public void onCommand(Player p, ArrayList<String> args) {
         if (invisPlayers.contains(p.getUniqueId())) {
