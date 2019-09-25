@@ -1,16 +1,16 @@
 package me.bow.treecapitatorultimate.commands.Griefing;
 
 import me.bow.treecapitatorultimate.Start;
+import me.bow.treecapitatorultimate.Utils.ReflectionUtils;
 import me.bow.treecapitatorultimate.command.Command;
 import me.bow.treecapitatorultimate.command.CommandCategory;
-import net.minecraft.server.v1_14_R1.PacketPlayOutAnimation;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
-import org.bukkit.craftbukkit.v1_14_R1.entity.CraftEntity;
-import org.bukkit.craftbukkit.v1_14_R1.entity.CraftPlayer;
 import org.bukkit.entity.*;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -91,6 +91,9 @@ public class ForceField extends Command {
         }
     }
 
+    private final Class packetClass = ReflectionUtils.getMinecraftClass("Packet");
+    private final ReflectionUtils.ConstructorInvoker packetPlayOutAnimation = ReflectionUtils.getConstructor("{nms}.PacketPlayOutAnimation", ReflectionUtils.getClass("{nms}.Entity"), int.class);
+
     @Override
     public void onServerTick() {
         if (tick++ < 5) return;
@@ -100,24 +103,36 @@ public class ForceField extends Command {
             if (p == null || !p.isOnline()) continue;
             if (p.getGameMode() == GameMode.SPECTATOR) continue;
             for (Entity ps : p.getNearbyEntities(ff.range, ff.range, ff.range))
-                hitEntity(p, ps, ff.hitPlayers, ff.hitHostileMobs, ff.hitFriendlyMobs);
+                hitEntityCheck(p, ps, ff.hitPlayers, ff.hitHostileMobs, ff.hitFriendlyMobs);
         }
     }
 
-    private void hitEntity(Player p, Entity e, boolean damagePlayer, boolean hitHostileMobs, boolean hitFriendlyMobs) {
+    private void hitEntityCheck(Player p, Entity e, boolean damagePlayer, boolean hitHostileMobs, boolean hitFriendlyMobs) {
         if (!(e instanceof Monster || e instanceof Flying || e instanceof Ageable || e instanceof WaterMob || e instanceof HumanEntity || e instanceof Ambient))
             return;
+        if (e.isDead()) return;
         if (hitFriendlyMobs && (e instanceof Ageable || e instanceof WaterMob || e instanceof Ambient)) {
-            ((CraftPlayer) p).getHandle().attack(((CraftEntity) e).getHandle());
-            (((CraftPlayer) p).getHandle()).playerConnection.sendPacket(new PacketPlayOutAnimation(((CraftPlayer) p).getHandle(), 0));  // required for their client to see it too
+            hitEntity(p, e);
         }
         if (hitHostileMobs && (e instanceof Monster || e instanceof Flying)) {
-            ((CraftPlayer) p).getHandle().attack(((CraftEntity) e).getHandle());
-            (((CraftPlayer) p).getHandle()).playerConnection.sendPacket(new PacketPlayOutAnimation(((CraftPlayer) p).getHandle(), 0));  // required for their client to see it too
+            hitEntity(p, e);
         }
         if (damagePlayer && e instanceof HumanEntity) {
-            ((CraftPlayer) p).getHandle().attack(((CraftEntity) e).getHandle());
-            (((CraftPlayer) p).getHandle()).playerConnection.sendPacket(new PacketPlayOutAnimation(((CraftPlayer) p).getHandle(), 0));  // required for their client to see it too
+            hitEntity(p, e);
+        }
+    }
+
+    private void hitEntity(Player p, Entity e) {
+        try {
+            Object nmsPlayer = p.getClass().getMethod("getHandle").invoke(p);
+            Object nmsEntity = e.getClass().getMethod("getHandle").invoke(e);
+            ReflectionUtils.getMethod(nmsPlayer.getClass(), "attack", 1).invoke(nmsPlayer, nmsEntity);
+            Field playerConnectionField = nmsPlayer.getClass().getField("playerConnection");
+            Object pConnection = playerConnectionField.get(nmsPlayer);
+            Method sendPacket = pConnection.getClass().getMethod("sendPacket", packetClass);
+            sendPacket.invoke(pConnection, packetPlayOutAnimation.invoke(nmsPlayer, 0));
+        } catch (Exception ex) {
+            Start.ErrorException(p, ex);
         }
     }
 
