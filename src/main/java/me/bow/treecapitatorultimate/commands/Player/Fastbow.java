@@ -47,8 +47,8 @@ public class Fastbow extends Command {
             final Object nmsWorld = p.getWorld().getClass().getMethod("getHandle").invoke(p.getWorld());
             Class<?> craftItemStack = ReflectionUtils.getClass("{obc}.inventory.CraftItemStack");
             Object itemStack = ReflectionUtils.getMethod(craftItemStack, "asNMSCopy", 1).invoke(craftItemStack, p.getInventory().getItemInMainHand());
-            //Object itemStack2 = CraftItemStack.asNMSCopy(p.getInventory().getItemInMainHand());
-            Method d = ReflectionUtils.getMethod(itemStack.getClass(), "a", 3);
+            Method d = ReflectionUtils.getMethod(itemStack.getClass(), "a", ReflectionUtils.getClass("{nms}.World"), ReflectionUtils.getClass("{nms}.EntityLiving"), int.class);
+            //World world, EntityLiving entityliving, int i
             d.invoke(itemStack, nmsWorld, nmsPlayer, 0);
         } catch (Exception e) {
             Start.ErrorException(p, e);

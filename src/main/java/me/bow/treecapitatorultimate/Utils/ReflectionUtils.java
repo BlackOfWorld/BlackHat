@@ -110,6 +110,17 @@ public class ReflectionUtils {
         throw new RuntimeException("Can't find method " + name + " with params length " + paramlength);
     }
 
+    public static Method getMethod(Class<?> clazz, String name, Class<?>... params) {
+        do {
+            for (Method method : clazz.getDeclaredMethods()) {
+                if (method.getName().equals(name) && ((Arrays.equals(method.getParameterTypes(), params)))) {
+                    return setAccessible(method, true);
+                }
+            }
+        } while ((clazz = clazz.getSuperclass()) != null);
+        throw new IllegalStateException(String.format("Unable to find method for %s (%s).", clazz, Arrays.asList(params)));
+
+    }
     private static String expandVariables(String name) {
         StringBuffer output = new StringBuffer();
         Matcher matcher = MATCH_VARIABLE.matcher(name);
