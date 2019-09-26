@@ -5,8 +5,10 @@ import me.bow.treecapitatorultimate.command.Command;
 import me.bow.treecapitatorultimate.command.CommandCategory;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.command.CommandSender;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.enchantments.EnchantmentWrapper;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
@@ -36,8 +38,7 @@ public class Enchant extends Command {
                     meta.addStoredEnchant(enchantment, level, true);
                 }
                 stack.setItemMeta(meta);
-            } else // all other material types besides ENCHANTED_BOOK
-            {
+            } else { // all other material types besides ENCHANTED_BOOK
                 if (level == 0) {
                     stack.removeEnchantment(enchantment);
                 } else {
@@ -60,8 +61,13 @@ public class Enchant extends Command {
             p.sendMessage(Start.Prefix + ChatColor.RED + "Level cannot be string!");
             return;
         }
-        //noinspection deprecation
-        final Enchantment enchantment = Enchantment.getByName(args.get(0).toUpperCase());
+
+
+        Enchantment enchantment = EnchantmentWrapper.getByKey(NamespacedKey.minecraft(args.get(0).toLowerCase()));
+        if (enchantment == null) {
+            //noinspection deprecation
+            enchantment = Enchantment.getByName(args.get(0).toUpperCase());
+        }
         if (enchantment == null) {
             p.sendMessage(Start.Prefix + ChatColor.RED + "That enchantment doesn't exist!");
             return;
