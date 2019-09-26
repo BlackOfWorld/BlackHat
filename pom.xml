@@ -87,5 +87,10 @@
             <artifactId>spigot</artifactId>
             <version>1.14.4-R0.1-SNAPSHOT</version>
         </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.5</version>
+        </dependency>
     </dependencies>
 </project>

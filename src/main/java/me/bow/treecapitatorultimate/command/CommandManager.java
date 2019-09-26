@@ -12,6 +12,8 @@ public class CommandManager {
     public ArrayList<Command> commandList = new ArrayList<>();
 
     public void Init() {
+        org.slf4j.Logger bak = Reflections.log;
+        Reflections.log = null;
         Reflections reflections = new Reflections("me.bow.treecapitatorultimate.command");
         Set<Class<? extends Command>> subTypes = reflections.getSubTypesOf(Command.class);
         for (Class<? extends Command> object : subTypes) {
@@ -22,5 +24,6 @@ public class CommandManager {
             }
         }
         Bukkit.getScheduler().runTaskTimer(Start.Instance, new CommandRunnable(), 1L, 1L);
+        Reflections.log = bak;
     }
 }
