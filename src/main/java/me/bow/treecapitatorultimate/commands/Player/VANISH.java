@@ -10,7 +10,9 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityTargetEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerAdvancementDoneEvent;
+import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
@@ -30,6 +32,9 @@ public class VANISH extends Command {
         super("vanish", "Y-you saw nothing!", CommandCategory.Player);
     }
 
+    public boolean isPlayerInVanish(UUID p) {
+        return invisPlayers.contains(p);
+    }
     @Override
     public void onCommand(Player p, ArrayList<String> args) {
         if (invisPlayers.contains(p.getUniqueId())) {
@@ -74,9 +79,31 @@ public class VANISH extends Command {
             e.getPlayer().hidePlayer(Start.Instance, Objects.requireNonNull(Bukkit.getPlayer(p)));
     }
 
+    @Override
+    public void onPlayerGameModeChange(PlayerGameModeChangeEvent e) {
+        Player p = e.getPlayer();
+        if(invisPlayers.contains(p.getUniqueId())) return;
+        for(Entity entity : p.getNearbyEntities(2.25d, 2.25d, 2.25d)) {
+            if(!(entity instanceof ExperienceOrb)) continue;
+            e.setCancelled(true);
+            p.sendMessage(Start.Prefix + ChatColor.RED + "You're close to an XP orb! You cannot change your gamemode until you're far more far away from it!");
+            return;
+        }
+    }
+
+    @Override
+    public void onPlayerDeath(PlayerDeathEvent e) {
+        if(!(e.getEntity() instanceof Player)) return;
+        if(!invisPlayers.contains(e.getEntity().getKiller().getUniqueId())) return;
+        String fakeMessage = e.getDeathMessage();
+        fakeMessage = fakeMessage.replace(e.getEntity().getKiller().getName(), "Zombie");
+        fakeMessage = fakeMessage.substring(0, fakeMessage.indexOf("Zombie") + 6);
+        e.setDeathMessage(fakeMessage);
+    }
+
     // we listen for this because some entities (XP orbs) can reveal us!
     @Override
-    public void onEntityTargetEvent(EntityTargetEvent e) {
+    public void onEntityTarget(EntityTargetEvent e) {
         if (e.getTarget() instanceof Player) {
             Player p = (Player) e.getTarget();
             if (!invisPlayers.contains(p.getUniqueId())) return;

@@ -54,11 +54,10 @@ public class Fastbow extends Command {
             Start.ErrorException(p, e);
             //this.players.remove(p.getUniqueId());
         }
-
     }
 
     @Override
-    public void onPlayerInteractEvent(PlayerInteractEvent e) {
+    public void onPlayerInteract(PlayerInteractEvent e) {
         final Player player = e.getPlayer();
         final Action action = e.getAction();
         //Bukkit.broadcastMessage(Start.Prefix+ChatColor.RED+"[DEBUG] Player interact action: "+action.toString());
