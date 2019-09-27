@@ -28,8 +28,8 @@ public class GameMode extends Command {
                     Start.ErrorString(p, "Player \"" + args.get(0) + "\" is not online!");
                     return;
                 }
-                if (setGamemode(anotherPlayer, args.get(0)))
-                    p.sendMessage(Start.Prefix + ChatColor.GOLD + "Gamemode set for player \"" + args.get(0) + "\"!");
+                if (setGamemode(anotherPlayer, args.get(1)))
+                    p.sendMessage(Start.Prefix + ChatColor.GOLD + "Gamemode set for player \""+ChatColor.GREEN + anotherPlayer.getName()+ ChatColor.GOLD+"\"!");
                 else
                     p.sendMessage(Start.Prefix + ChatColor.RED + "This gamemode doesn't exist!");
             } catch (Exception e) {

@@ -2,10 +2,7 @@ package me.bow.treecapitatorultimate.command;
 
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.entity.EntityTargetEvent;
-import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
-import org.bukkit.event.entity.EntityToggleSwimEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.player.*;
 import org.bukkit.event.server.ServerCommandEvent;
 import org.bukkit.event.server.TabCompleteEvent;
@@ -68,11 +65,18 @@ public interface CommandEvents {
     default void onEntityTargetLivingEntity(EntityTargetLivingEntityEvent e) {
     }
 
-    default void onEntityTargetEvent(EntityTargetEvent e) {
-
+    default void onEntityTarget(EntityTargetEvent e) {
     }
 
-    default void onPlayerInteractEvent(PlayerInteractEvent e) {
+    default void onPlayerInteract(PlayerInteractEvent e) {
+    }
 
+    default void onEntityDamageByEntity(EntityDamageByEntityEvent e) {
+    }
+
+    default void onEntityDeath(EntityDeathEvent e) {
+    }
+
+    default void onPlayerGameModeChange(PlayerGameModeChangeEvent e) {
     }
 }

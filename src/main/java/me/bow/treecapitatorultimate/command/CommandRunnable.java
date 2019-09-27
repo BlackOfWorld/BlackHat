@@ -7,10 +7,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.entity.EntityTargetEvent;
-import org.bukkit.event.entity.EntityTargetLivingEntityEvent;
-import org.bukkit.event.entity.EntityToggleSwimEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.player.*;
 import org.bukkit.event.server.ServerCommandEvent;
 import org.bukkit.event.server.TabCompleteEvent;
@@ -147,19 +144,36 @@ public class CommandRunnable implements Runnable, Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onEntityTargetEvent(EntityTargetEvent e) {
+    public void onEntityTarget(EntityTargetEvent e) {
         for (Command cmd : Start.Instance.cm.commandList) {
-            cmd.onEntityTargetEvent(e);
+            cmd.onEntityTarget(e);
         }
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onPlayerInteractEvent(PlayerInteractEvent e) {
+    public void onPlayerInteract(PlayerInteractEvent e) {
         for (Command cmd : Start.Instance.cm.commandList) {
-            cmd.onPlayerInteractEvent(e);
+            cmd.onPlayerInteract(e);
         }
     }
-
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onEntityDamageByEntity(EntityDamageByEntityEvent e)  {
+        for (Command cmd : Start.Instance.cm.commandList) {
+            cmd.onEntityDamageByEntity(e);
+        }
+    }
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onEntityDeath(EntityDeathEvent e)  {
+        for (Command cmd : Start.Instance.cm.commandList) {
+            cmd.onEntityDeath(e);
+        }
+    }
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onPlayerGameModeChange(PlayerGameModeChangeEvent e)  {
+        for (Command cmd : Start.Instance.cm.commandList) {
+            cmd.onPlayerGameModeChange(e);
+        }
+    }
     @Override
     public final void run() {
         for (Command cmd : Start.Instance.cm.commandList) {
