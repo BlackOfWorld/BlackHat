@@ -5,6 +5,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -13,17 +14,19 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.Objects;
+
 public class TreeDestroy implements Listener {
     @EventHandler
     public void breakingBlock(final BlockBreakEvent e) {
         if (e.isCancelled()) {
             return;
         }
-
+        ItemStack item = e.getPlayer().getInventory().getItemInMainHand();
         if (!this.isLog(e.getBlock().getType())) {
             return;
         }
-        if (!this.isAxe(e.getPlayer().getInventory().getItemInMainHand())) {
+        if (!this.isAxe(item)) {
             return;
         }
         if (!e.getPlayer().getGameMode().equals(GameMode.SURVIVAL)) {
@@ -32,8 +35,9 @@ public class TreeDestroy implements Listener {
         this.breakBlock(e.getBlock(), e.getPlayer());
     }
 
-    public void breakBlock(final Block block, final Player p) {
+    private void breakBlock(final Block block, final Player p) {
         block.breakNaturally();
+        ItemStack item = p.getInventory().getItemInMainHand();
         final Location top = new Location(block.getWorld(), (double) block.getLocation().getBlockX(), (double) (block.getLocation().getBlockY() + 1), (double) block.getLocation().getBlockZ());
         final Location left = new Location(block.getWorld(), (double) (block.getLocation().getBlockX() + 1), (double) block.getLocation().getBlockY(), (double) block.getLocation().getBlockZ());
         final Location right = new Location(block.getWorld(), (double) (block.getLocation().getBlockX() - 1), (double) block.getLocation().getBlockY(), (double) block.getLocation().getBlockZ());
@@ -64,8 +68,12 @@ public class TreeDestroy implements Listener {
                 }
             }
         }
-        this.setDurability(p.getInventory().getItemInMainHand(), (short) (this.getDurability(p.getInventory().getItemInMainHand()) + 1));
-        if (this.getDurability(p.getInventory().getItemInMainHand()) > p.getInventory().getItemInMainHand().getType().getMaxDurability()) {
+        short loss = getDurability(item);
+        if (item.hasItemMeta() && Objects.requireNonNull(item.getItemMeta()).hasEnchants()) {
+            loss += (short) ((int) (loss * 1.0D / (item.getItemMeta().getEnchantLevel(Enchantment.DURABILITY) + 1.0D)));
+        }
+        this.setDurability(item, loss);
+        if (this.getDurability(item) > item.getType().getMaxDurability()) {
             p.getInventory().remove(p.getInventory().getItemInMainHand());
             p.playSound(p.getLocation(), Sound.ENTITY_ITEM_BREAK, 1.0f, 1.0f);
         }
@@ -84,15 +92,15 @@ public class TreeDestroy implements Listener {
         }
     }
 
-    public boolean isLog(final Material material) {
-        return material.equals(Material.ACACIA_LOG) || material.equals(Material.BIRCH_LOG) || material.equals(Material.DARK_OAK_LOG) || material.equals(Material.JUNGLE_LOG) || material.equals(Material.OAK_LOG) || material.equals(Material.SPRUCE_LOG);
+    private boolean isLog(final Material material) {
+        return material.toString().toLowerCase().contains("log");
     }
 
-    public boolean isAxe(final ItemStack item) {
-        return item.getType().equals(Material.WOODEN_AXE) || item.getType().equals(Material.STONE_AXE) || item.getType().equals(Material.IRON_AXE) || item.getType().equals(Material.GOLDEN_AXE) || item.getType().equals(Material.DIAMOND_AXE);
+    private boolean isAxe(final ItemStack item) {
+        return item.getType().toString().toLowerCase().contains("axe");
     }
 
-    public void setDurability(ItemStack item, final short durability) {
+    private void setDurability(ItemStack item, final short durability) {
         ItemMeta meta = item.getItemMeta();
         if (meta != null) {
             ((Damageable) meta).setDamage(durability);
@@ -100,7 +108,7 @@ public class TreeDestroy implements Listener {
         }
     }
 
-    public short getDurability(ItemStack item) {
+    private short getDurability(ItemStack item) {
         ItemMeta meta = item.getItemMeta();
         return (meta == null) ? 0 : (short) ((Damageable) meta).getDamage();
     }
