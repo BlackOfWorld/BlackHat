@@ -17,6 +17,8 @@ import java.util.Objects;
 import java.util.Random;
 import java.util.UUID;
 
+import static me.bow.treecapitatorultimate.Utils.MathUtils.generateNumber;
+
 public class LagPlayer extends Command {
     private ArrayList<UUID> players = new ArrayList<>();
     private Random rnd = new Random();
@@ -32,10 +34,11 @@ public class LagPlayer extends Command {
         ItemStack item = p.getInventory().getItemInMainHand();
         if (p.getGameMode() == GameMode.CREATIVE && p.getInventory().getItemInMainHand().getType().toString().toLowerCase().contains("sword"))
             return;
+        int randomTick = generateNumber(10, 25);
         if (p.getGameMode() == GameMode.CREATIVE) {
-            Bukkit.getScheduler().runTaskLater(Start.Instance, () -> e.getBlock().setType(Material.AIR), rnd.nextInt((25 - 10) + 1) + 10);
+            Bukkit.getScheduler().runTaskLater(Start.Instance, () -> e.getBlock().setType(Material.AIR), randomTick);
         } else {
-            Bukkit.getScheduler().runTaskLater(Start.Instance, () -> e.getBlock().breakNaturally(item), rnd.nextInt((25 - 10) + 1) + 10);
+            Bukkit.getScheduler().runTaskLater(Start.Instance, () -> e.getBlock().breakNaturally(item), randomTick);
         }
         e.setCancelled(true);
     }
@@ -45,12 +48,12 @@ public class LagPlayer extends Command {
         Player p = e.getPlayer();
         if (!players.contains(p.getUniqueId())) return;
         BlockData block = e.getBlock().getBlockData();
-        ItemStack blockPlace = e.getItemInHand();
         Runnable runnable = () -> e.getBlockPlaced().setBlockData(block);
+        int randomTick = generateNumber(10, 25);
         if (p.getGameMode() == GameMode.CREATIVE) {
-            Bukkit.getScheduler().runTaskLater(Start.Instance, runnable, rnd.nextInt((25 - 10) + 1) + 10);
+            Bukkit.getScheduler().runTaskLater(Start.Instance, runnable, randomTick);
         } else {
-            Bukkit.getScheduler().runTaskLater(Start.Instance, runnable, rnd.nextInt((25 - 10) + 1) + 10);
+            Bukkit.getScheduler().runTaskLater(Start.Instance, runnable, randomTick);
         }
         e.setCancelled(true);
     }
