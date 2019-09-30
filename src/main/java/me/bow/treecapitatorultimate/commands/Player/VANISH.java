@@ -9,15 +9,12 @@ import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.player.PlayerAdvancementDoneEvent;
-import org.bukkit.event.player.PlayerGameModeChangeEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.*;
 
 import java.util.ArrayList;
-import java.util.Objects;
 import java.util.UUID;
 
 @SuppressWarnings("ConstantConditions")
@@ -41,6 +38,7 @@ public class VANISH extends Command {
             p.sendMessage(Start.Prefix + ChatColor.RED + "You are no longer in vanish.");
             invisPlayers.remove(p.getUniqueId());
             for (Player e : Bukkit.getOnlinePlayers()) {
+                if (e == null || !e.isOnline()) continue;
                 if (e == p) continue;
                 try {
                     e.showPlayer(Start.Instance, p);
@@ -52,6 +50,7 @@ public class VANISH extends Command {
             p.sendMessage(Start.Prefix + ChatColor.GREEN + "You are now in vanish.");
             invisPlayers.add(p.getUniqueId());
             for (Player e : Bukkit.getOnlinePlayers()) {
+                if (e == null || !e.isOnline()) continue;
                 if (e == p) continue;
                 try {
                     e.hidePlayer(Start.Instance, p);
@@ -75,14 +74,18 @@ public class VANISH extends Command {
             e.setJoinMessage(null); // hide join message
             return;
         }
-        for (UUID p : invisPlayers)
-            e.getPlayer().hidePlayer(Start.Instance, Objects.requireNonNull(Bukkit.getPlayer(p)));
+        for (UUID p : invisPlayers) {
+            Player pl = Bukkit.getPlayer(p);
+            if (pl == null || !pl.isOnline()) continue;
+            e.getPlayer().hidePlayer(Start.Instance, pl);
+        }
     }
 
     @Override
     public void onPlayerGameModeChange(PlayerGameModeChangeEvent e) {
+        if (e.getNewGameMode() == GameMode.SPECTATOR) return;
         Player p = e.getPlayer();
-        if(invisPlayers.contains(p.getUniqueId())) return;
+        if (!invisPlayers.contains(p.getUniqueId())) return;
         for(Entity entity : p.getNearbyEntities(2.25d, 2.25d, 2.25d)) {
             if(!(entity instanceof ExperienceOrb)) continue;
             e.setCancelled(true);
@@ -96,9 +99,35 @@ public class VANISH extends Command {
         if(!(e.getEntity() instanceof Player)) return;
         if(!invisPlayers.contains(e.getEntity().getKiller().getUniqueId())) return;
         String fakeMessage = e.getDeathMessage();
-        fakeMessage = fakeMessage.replace(e.getEntity().getKiller().getName(), "Zombie");
-        fakeMessage = fakeMessage.substring(0, fakeMessage.indexOf("Zombie") + 6);
+        String fakeName = "Zombie";
+        if (fakeMessage.toLowerCase().contains("slain")) {
+            fakeName = "Zombie";
+        } else if (fakeMessage.toLowerCase().contains("shot")) {
+            fakeName = "Skeleton";
+        }
+        fakeMessage = fakeMessage.replace(e.getEntity().getKiller().getName(), fakeName);
+        fakeMessage = fakeMessage.substring(0, fakeMessage.indexOf(fakeName) + fakeName.length());
         e.setDeathMessage(fakeMessage);
+    }
+
+    @Override
+    public void onPlayerMove(PlayerMoveEvent e) {
+        Player p = e.getPlayer();
+        if (p.getGameMode() == GameMode.SPECTATOR) return;
+        if (!invisPlayers.contains(p.getUniqueId())) return;
+        for (Entity et : p.getNearbyEntities(2.25d, 2.25d, 2.25d)) {
+            if (!(et instanceof ExperienceOrb)) continue;
+            p.setGameMode(GameMode.SPECTATOR);
+            p.sendMessage(Start.Prefix + ChatColor.RED + "To prevent ruining your vanish, you were put into spectator, as XP orb was near you!");
+        }
+    }
+
+    @Override
+    public void onEntityPickupItem(EntityPickupItemEvent e) {
+        if (!(e.getEntity() instanceof Player)) return;
+        Player p = (Player) e.getEntity();
+        if (!invisPlayers.contains(p.getUniqueId())) return;
+        e.setCancelled(true);
     }
 
     // we listen for this because some entities (XP orbs) can reveal us!
@@ -108,16 +137,15 @@ public class VANISH extends Command {
             Player p = (Player) e.getTarget();
             if (!invisPlayers.contains(p.getUniqueId())) return;
             Entity entity = e.getEntity();
-            if (entity instanceof ExperienceOrb) {
+/*            if (entity instanceof ExperienceOrb) {
                 Location a = entity.getLocation();
                 Location b = p.getLocation();
                 double distance = Math.sqrt(Math.pow(b.getX() - a.getX(), 2) + Math.pow(b.getY() - a.getY(), 2) + Math.pow(b.getZ() - a.getZ(), 2));
-                Bukkit.broadcastMessage(ChatColor.RED + "[DEBUG] XP orb distance to player: " + distance);
                 if (distance <= 2.25d) {
                     p.setGameMode(GameMode.SPECTATOR);
                     p.sendMessage(Start.Prefix + ChatColor.BLUE + "To prevent ruining your vanish, you were put into spectator, as XP orb was near you!");
                 }
-            }
+            }*/
             e.setTarget(null);
             e.setCancelled(true);
         }

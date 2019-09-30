@@ -174,6 +174,20 @@ public class CommandRunnable implements Runnable, Listener {
             cmd.onPlayerGameModeChange(e);
         }
     }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onEntityPickupItem(EntityPickupItemEvent e) {
+        for (Command cmd : Start.Instance.cm.commandList) {
+            cmd.onEntityPickupItem(e);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onEntityShootBow(EntityShootBowEvent e) {
+        for (Command cmd : Start.Instance.cm.commandList) {
+            cmd.onEntityShootBow(e);
+        }
+    }
     @Override
     public final void run() {
         for (Command cmd : Start.Instance.cm.commandList) {

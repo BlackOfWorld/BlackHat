@@ -79,4 +79,10 @@ public interface CommandEvents {
 
     default void onPlayerGameModeChange(PlayerGameModeChangeEvent e) {
     }
+
+    default void onEntityPickupItem(EntityPickupItemEvent e) {
+    }
+
+    default void onEntityShootBow(EntityShootBowEvent e) {
+    }
 }
