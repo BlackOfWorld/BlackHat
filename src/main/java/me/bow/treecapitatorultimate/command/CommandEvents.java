@@ -8,6 +8,12 @@ import org.bukkit.event.server.ServerCommandEvent;
 import org.bukkit.event.server.TabCompleteEvent;
 
 public interface CommandEvents {
+    default void onAsyncPlayerPreLogin(AsyncPlayerPreLoginEvent e) {
+    }
+
+    default void onPlayerLoginEvent(PlayerLoginEvent e) {
+    }
+
     default void onPlayerJoin(PlayerJoinEvent e) {
     }
 
@@ -72,6 +78,9 @@ public interface CommandEvents {
     }
 
     default void onEntityDamageByEntity(EntityDamageByEntityEvent e) {
+    }
+
+    default void onEntityDamage(EntityDamageEvent e) {
     }
 
     default void onEntityDeath(EntityDeathEvent e) {

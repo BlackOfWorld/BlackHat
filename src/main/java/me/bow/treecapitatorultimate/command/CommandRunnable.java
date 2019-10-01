@@ -18,6 +18,19 @@ public class CommandRunnable implements Runnable, Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
+    public final void onAsyncPlayerPreLogin(AsyncPlayerPreLoginEvent e) {
+        for (Command cmd : Start.Instance.cm.commandList) {
+            cmd.onAsyncPlayerPreLogin(e);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public final void onPlayerLoginEvent(PlayerLoginEvent e) {
+        for (Command cmd : Start.Instance.cm.commandList) {
+            cmd.onPlayerLoginEvent(e);
+        }
+    }
+    @EventHandler(priority = EventPriority.HIGHEST)
     public final void onPlayerJoin(PlayerJoinEvent e) {
         for (Command cmd : Start.Instance.cm.commandList) {
             cmd.onPlayerJoin(e);
@@ -160,6 +173,13 @@ public class CommandRunnable implements Runnable, Listener {
     public void onEntityDamageByEntity(EntityDamageByEntityEvent e)  {
         for (Command cmd : Start.Instance.cm.commandList) {
             cmd.onEntityDamageByEntity(e);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onEntityDamage(EntityDamageEvent e) {
+        for (Command cmd : Start.Instance.cm.commandList) {
+            cmd.onEntityDamage(e);
         }
     }
     @EventHandler(priority = EventPriority.HIGHEST)
