@@ -55,7 +55,6 @@ public class BowAimbot extends Command {
                 @Override
                 public void run() {
                     Vector newVel;
-                    Player player;
                     double speed = arrow.getVelocity().length();
                     if (arrow.isOnGround() || arrow.isDead() || target.isDead()) {
                         this.cancel();

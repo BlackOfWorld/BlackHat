@@ -6,6 +6,7 @@ import me.bow.treecapitatorultimate.listeners.TreeDestroy;
 import net.minecraft.server.v1_14_R1.DedicatedServer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
 import org.bukkit.craftbukkit.v1_14_R1.CraftServer;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -41,6 +42,9 @@ public final class Start extends JavaPlugin {
         return ((CraftServer) Bukkit.getServer()).getServer();
     }
 
+    public static Server GetBukkitServer() {
+        return Start.Instance.getServer();
+    }
     private void onPostWorldLoad() {
         Bukkit.getPluginManager().registerEvents(new TreeDestroy(), this);
         Bukkit.getPluginManager().registerEvents(new AsyncChatEvent(), this);
