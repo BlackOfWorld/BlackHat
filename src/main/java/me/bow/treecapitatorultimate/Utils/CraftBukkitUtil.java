@@ -27,7 +27,7 @@ public final class CraftBukkitUtil {
         return CHAT_COMPATIBLE;
     }
 
-    public static String nms(String className) {
+    private static String nms(String className) {
         return "net.minecraft.server" + SERVER_PACKAGE_VERSION + className;
     }
 
@@ -35,11 +35,30 @@ public final class CraftBukkitUtil {
         return Class.forName(nms(className));
     }
 
-    public static String obc(String className) {
+    private static String obc(String className) {
         return "org.bukkit.craftbukkit" + SERVER_PACKAGE_VERSION + className;
     }
 
     public static Class<?> obcClass(String className) throws ClassNotFoundException {
         return Class.forName(obc(className));
+    }
+
+    public static byte getEntityMetadata(boolean onFire, boolean crouched, boolean sprinting, boolean swimming, boolean invisible, boolean glowing, boolean usingElytra) {
+        byte index0 = 0;
+        if (onFire)
+            index0 += 1;
+        if (crouched)
+            index0 += 2;
+        if (sprinting)
+            index0 += 8;
+        if (swimming)
+            index0 += 16;
+        if (invisible)
+            index0 += 32;
+        if (glowing)
+            index0 += 64;
+        if (usingElytra)
+            index0 += 128;
+        return index0;
     }
 }
