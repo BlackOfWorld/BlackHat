@@ -143,6 +143,12 @@ public class CommandRunnable implements Runnable, Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
+    public final void onEntityToggleGlide(EntityToggleGlideEvent e) {
+        for (Command cmd : Start.Instance.cm.commandList) {
+            cmd.onEntityToggleGlide(e);
+        }
+    }
+    @EventHandler(priority = EventPriority.HIGHEST)
     public final void onPlayerAdvancementGet(PlayerAdvancementDoneEvent e) {
         for (Command cmd : Start.Instance.cm.commandList) {
             cmd.onPlayerAdvancementGet(e);

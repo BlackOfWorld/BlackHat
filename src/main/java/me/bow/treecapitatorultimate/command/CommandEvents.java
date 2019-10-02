@@ -65,6 +65,8 @@ public interface CommandEvents {
     default void onPlayerSwimToggle(EntityToggleSwimEvent e) {
     }
 
+    default void onEntityToggleGlide(EntityToggleGlideEvent e) {
+    }
     default void onPlayerAdvancementGet(PlayerAdvancementDoneEvent e) {
     }
 

@@ -1,27 +1,18 @@
 package me.bow.treecapitatorultimate.commands.Player;
 
 import me.bow.treecapitatorultimate.Start;
-import me.bow.treecapitatorultimate.Utils.ReflectionUtils;
 import me.bow.treecapitatorultimate.command.Command;
 import me.bow.treecapitatorultimate.command.CommandCategory;
-import net.minecraft.server.v1_14_R1.DataWatcher;
-import net.minecraft.server.v1_14_R1.DataWatcherRegistry;
-import net.minecraft.server.v1_14_R1.PacketPlayOutEntityMetadata;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_14_R1.entity.CraftLivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityToggleSwimEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.UUID;
-
-import static me.bow.treecapitatorultimate.Utils.CraftBukkitUtil.getEntityMetadata;
 
 public class Swim extends Command {
     private ArrayList<UUID> players = new ArrayList<>();
@@ -39,7 +30,7 @@ public class Swim extends Command {
                     Material m = p.getLocation().getBlock().getType();
                     if (m == Material.WATER || m == Material.LAVA) return; //let's not reveal ourselves
                     p.setSwimming(true);
-                    for (Player d : Bukkit.getOnlinePlayers()) {
+                    /*for (Player d : Bukkit.getOnlinePlayers()) {
                         DataWatcher data = ((CraftLivingEntity) d).getHandle().getDataWatcher();
                         data.set(DataWatcherRegistry.a.a(0), getEntityMetadata(false, false, true, true, false, false, false)); // 0x2 for sneak, 0x8 for hide arm, 0x10 for swimming
                         PacketPlayOutEntityMetadata packet = new PacketPlayOutEntityMetadata(p.getEntityId(), data, false);
@@ -66,7 +57,7 @@ public class Swim extends Command {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                    }
+                    }*/
                 }
             }
         }.runTaskTimer(Start.Instance, 0, 5);
@@ -93,6 +84,7 @@ public class Swim extends Command {
             Start.ErrorException(p, e);
         }
     }
+
 
     @Override
     public void onPlayerSwimToggle(EntityToggleSwimEvent e) {
