@@ -6,8 +6,6 @@ import me.bow.treecapitatorultimate.command.CommandCategory;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
 
 import java.util.ArrayList;
 
@@ -26,9 +24,7 @@ public class InventorySee extends Command {
                 return;
             }
             if (args.size() == 1) {
-                InventoryHolder inventoryHolder = anotherPlayer.getInventory().getHolder();
-                Inventory inventory = Start.GetBukkitServer().createInventory(inventoryHolder, 45, anotherPlayer.getName() + "'s inventory");
-                p.openInventory(inventory);
+                p.openInventory(anotherPlayer.getInventory());
                 p.sendMessage(Start.Prefix + ChatColor.BLUE + anotherPlayer.getName() + "'s inventory was opened!");
             }
         } catch (Exception e) {
