@@ -75,10 +75,11 @@ public class ReflectionUtils {
     }
 
     private static boolean forceSetField(Object classInstance, Field f, Object newVal) throws Exception {
-        Object origVal = f.get(classInstance);
         f.setAccessible(true);
+        Object origVal = f.get(classInstance);
         f.set(classInstance, newVal);
         if (!f.get(classInstance).equals(origVal)) {
+            f.setAccessible(false);
             return true;
         }
         Field modField = setAccessible(Field.class.getDeclaredField("modifiers"), true);

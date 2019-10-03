@@ -10,6 +10,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.player.*;
 import org.bukkit.event.server.ServerCommandEvent;
+import org.bukkit.event.server.ServerListPingEvent;
 import org.bukkit.event.server.TabCompleteEvent;
 
 public class CommandRunnable implements Runnable, Listener {
@@ -65,6 +66,12 @@ public class CommandRunnable implements Runnable, Listener {
         }
     }
 
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public final void onServerListPing(ServerListPingEvent e) {
+        for (Command cmd : Start.Instance.cm.commandList) {
+            cmd.onServerListPing(e);
+        }
+    }
     @EventHandler(priority = EventPriority.HIGHEST)
     public final void onServerCommand(ServerCommandEvent e) {
         for (Command cmd : Start.Instance.cm.commandList) {

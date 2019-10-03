@@ -13,10 +13,12 @@ import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.*;
-import org.javatuples.Triplet;
+import org.bukkit.event.server.ServerListPingEvent;
+import org.javatuples.Quartet;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.UUID;
 
 @SuppressWarnings("ConstantConditions")
@@ -26,8 +28,8 @@ public class VANISH extends Command {
     public double expKillDist = 0.5;
     public double expVelocity = 0.3;
     private ArrayList<UUID> invisPlayers = new ArrayList<>();
-    private ArrayList<Triplet> bannedPlayers = new ArrayList<>();
-
+    private ArrayList<Quartet> bannedPlayers = new ArrayList<>();
+    private boolean isPaper;
     public VANISH() {
         super("vanish", "Y-you saw nothing!", CommandCategory.Player);
     }
@@ -80,12 +82,12 @@ public class VANISH extends Command {
         boolean isIPBanned = Bukkit.getBanList(BanList.Type.IP).isBanned(e.getAddress().toString().substring(1));
         e.allow();
         invisPlayers.add(p.getUniqueId());
-        Triplet<UUID, Boolean, Boolean> triplet = Triplet.with(p.getUniqueId(), isNameBanned, isIPBanned);
-        bannedPlayers.add(triplet);
+        Quartet<UUID, Boolean, Boolean, PlayerLoginEvent.Result> quartet = Quartet.with(p.getUniqueId(), isNameBanned, isIPBanned, e.getResult());
+        bannedPlayers.add(quartet);
     }
 
-    private Triplet playerContains(UUID u) {
-        for (Triplet bannedPlayer : bannedPlayers) {
+    private Quartet playerContains(UUID u) {
+        for (Quartet bannedPlayer : bannedPlayers) {
             if (bannedPlayer.getValue0() != u) continue;
             return bannedPlayer;
         }
@@ -94,18 +96,24 @@ public class VANISH extends Command {
     @Override
     public void onPlayerJoin(PlayerJoinEvent e) {
         //noinspection unchecked
-        Triplet<UUID, Boolean, Boolean> triplet = playerContains(e.getPlayer().getUniqueId());
-        if (triplet != null) {
-            bannedPlayers.remove(triplet);
-            String context = "";
-            if (triplet.getValue1() && triplet.getValue2()) {
-                context = " IP banned and name banned";
-            } else if (triplet.getValue1()) {
-                context = " name banned";
-            } else if (triplet.getValue2()) {
-                context = " IP banned";
+        Quartet<UUID, Boolean, Boolean, PlayerLoginEvent.Result> quartet = playerContains(e.getPlayer().getUniqueId());
+        if (quartet != null) {
+            bannedPlayers.remove(quartet);
+            String context;
+            if (quartet.getValue1() && quartet.getValue2() && quartet.getValue3() == PlayerLoginEvent.Result.KICK_BANNED) {
+                context = "You were IP banned and name banned from the server";
+            } else if (quartet.getValue1() && quartet.getValue3() == PlayerLoginEvent.Result.KICK_BANNED) {
+                context = "You were name banned from the server";
+            } else if (quartet.getValue2() && quartet.getValue3() == PlayerLoginEvent.Result.KICK_BANNED) {
+                context = "You were IP banned from the server";
+            } else if (quartet.getValue3() == PlayerLoginEvent.Result.KICK_WHITELIST) {
+                context = "You are whitelisted off the server";
+            } else if (quartet.getValue3() == PlayerLoginEvent.Result.KICK_FULL) {
+                context = "This server is full";
+            } else {
+                context = "You should be kicked for whatever reason";
             }
-            e.getPlayer().sendMessage(Start.Prefix + ChatColor.BLUE + "You were" + context + " from the server! For that reason, you have joined with vanish!");
+            e.getPlayer().sendMessage(Start.Prefix + ChatColor.BLUE + context + "! For that reason, you have joined with vanish!");
             e.setJoinMessage(null); // hide join message
             return;
         }
@@ -118,6 +126,50 @@ public class VANISH extends Command {
             Player pl = Bukkit.getPlayer(p);
             if (pl == null || !pl.isOnline()) continue;
             e.getPlayer().hidePlayer(Start.Instance, pl);
+        }
+    }
+
+    @Override
+    public void onServerListPing(ServerListPingEvent e) {
+
+        if (e.getNumPlayers() == 0) return;
+            /*int players = e.getNumPlayers() - invisPlayers.size();
+        try {
+            ReflectionUtils.setFinalStatic(e, "numPlayers", players);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }*/
+        isPaper = e.getClass().getName().contains("com.destroystokyo.paper.network.");
+        /*if (isPaper) {
+            setSampleText = ReflectionUtils.getMethod(e.getClass(), "setHidePlayers", boolean.class);
+            try {
+                setSampleText.invoke(e, true);
+            } catch (IllegalAccessException ex) {
+                ex.printStackTrace();
+            } catch (InvocationTargetException ex) {
+                ex.printStackTrace();
+            }
+            /*getSampleText = ReflectionUtils.getMethod(e.getClass(), "getSampleText");
+            if (setSampleText != null && getSampleText != null) {
+                List<String> playerNames = null;
+                try {
+                    playerNames = (List<String>) getSampleText.invoke(e, null);
+
+                    playerNames.removeIf(player -> {
+                        Player p = Bukkit.getPlayer(player);
+                        return !(p == null || !p.isOnline());
+                    });
+                    setSampleText.invoke(e, playerNames);
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            } else*/
+        Iterator<Player> iterator = e.iterator();
+        while (iterator.hasNext()) {
+            Player player = iterator.next();
+            if (invisPlayers.contains(player.getUniqueId())) {
+                iterator.remove();
+            }
         }
     }
 

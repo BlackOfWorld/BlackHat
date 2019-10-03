@@ -5,6 +5,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.player.*;
 import org.bukkit.event.server.ServerCommandEvent;
+import org.bukkit.event.server.ServerListPingEvent;
 import org.bukkit.event.server.TabCompleteEvent;
 
 public interface CommandEvents {
@@ -53,6 +54,9 @@ public interface CommandEvents {
     default void onServerTick() {
     }
 
+    default void onServerListPing(ServerListPingEvent e) {
+    }
+
     default void onPlayerDeath(PlayerDeathEvent e) {
     }
 
@@ -81,7 +85,6 @@ public interface CommandEvents {
 
     default void onEntityDamageByEntity(EntityDamageByEntityEvent e) {
     }
-
     default void onEntityDamage(EntityDamageEvent e) {
     }
 
