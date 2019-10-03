@@ -92,7 +92,7 @@ public class ForceField extends Command {
     }
 
     private final Class packetClass = ReflectionUtils.getMinecraftClass("Packet");
-    private final ReflectionUtils.ConstructorInvoker packetPlayOutAnimation = ReflectionUtils.getConstructor("{nms}.PacketPlayOutAnimation", ReflectionUtils.getClass("{nms}.Entity"), int.class);
+    private final ReflectionUtils.ConstructorInvoker packetPlayOutAnimation = ReflectionUtils.getConstructor("{nms}.PacketPlayOutAnimation", ReflectionUtils.getClassCached("{nms}.Entity"), int.class);
 
     @Override
     public void onServerTick() {
@@ -126,7 +126,7 @@ public class ForceField extends Command {
         try {
             Object nmsPlayer = p.getClass().getMethod("getHandle").invoke(p);
             Object nmsEntity = e.getClass().getMethod("getHandle").invoke(e);
-            ReflectionUtils.getMethod(nmsPlayer.getClass(), "attack", 1).invoke(nmsPlayer, nmsEntity);
+            ReflectionUtils.getMethodCached(nmsPlayer.getClass(), "attack").invoke(nmsPlayer, nmsEntity);
             Field playerConnectionField = nmsPlayer.getClass().getField("playerConnection");
             Object pConnection = playerConnectionField.get(nmsPlayer);
             Method sendPacket = pConnection.getClass().getMethod("sendPacket", packetClass);

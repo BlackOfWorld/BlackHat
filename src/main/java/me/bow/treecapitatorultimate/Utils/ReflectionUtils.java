@@ -1,11 +1,15 @@
 package me.bow.treecapitatorultimate.Utils;
 
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
 import org.bukkit.Bukkit;
 
 import java.lang.reflect.*;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -48,6 +52,8 @@ public class ReflectionUtils {
         return getCanonicalClass(expandVariables(lookupName));
     }
 
+    private static Map<String, Class<?>> classCache = new HashMap<>();
+    private static Table<Class<?>, MethodParams, Method> methodParamCache = HashBasedTable.create();
     @SuppressWarnings("unchecked")
     private static <T extends AccessibleObject> T setAccessible(T object, boolean access) {
         AccessController.doPrivileged((PrivilegedAction) () -> {
@@ -99,6 +105,7 @@ public class ReflectionUtils {
         throw new RuntimeException("Can't find field " + fieldName);
     }
 
+    private static Table<Class<?>, String, Method> methodCache = HashBasedTable.create();
     public static Method getMethod(Class<?> clazz, String name, int paramlength) {
         do {
             for (Method method : clazz.getDeclaredMethods()) {
@@ -110,11 +117,24 @@ public class ReflectionUtils {
         throw new RuntimeException("Can't find method " + name + " with params length " + paramlength);
     }
 
-    public static Method getMethod(Class<?> clazz, String name, Class<?>... params) {
+    private static Table<Class<?>, ConstructorParams, ConstructorInvoker> constructorParamCache = HashBasedTable.create();
+
+    public static Class<?> getClassCached(String lookupName) {
+        if (classCache.containsKey(lookupName)) {
+            return classCache.get(lookupName);
+        }
+        Class<?> classForName = getClass(lookupName);
+        classCache.put(lookupName, classForName);
+        return classForName;
+    }
+
+    private static Method getMethod(Class<?> clazz, String name, Class<?>... params) {
         do {
             for (Method method : clazz.getDeclaredMethods()) {
-                if (method.getName().equals(name) && ((Arrays.equals(method.getParameterTypes(), params)))) {
-                    return setAccessible(method, true);
+                if (method.getName().equals(name)) {
+                    if (params.length == 0 || Arrays.equals(method.getParameterTypes(), params)) {
+                        return setAccessible(method, true);
+                    }
                 }
             }
         } while ((clazz = clazz.getSuperclass()) != null);
@@ -203,7 +223,7 @@ public class ReflectionUtils {
      * @return An object that invokes this constructor.
      * @throws IllegalStateException If we cannot find this method.
      */
-    public static ConstructorInvoker getConstructor(Class<?> clazz, Class<?>... params) {
+    private static ConstructorInvoker getConstructor(Class<?> clazz, Class<?>... params) {
         for (final Constructor<?> constructor : clazz.getDeclaredConstructors()) {
             if (Arrays.equals(constructor.getParameterTypes(), params)) {
                 constructor.setAccessible(true);
@@ -221,6 +241,25 @@ public class ReflectionUtils {
         throw new IllegalStateException(String.format("Unable to find constructor for %s (%s).", clazz, Arrays.asList(params)));
     }
 
+    public static Method getMethodCached(Class<?> clazz, String methodName, Class<?>... params) {
+        MethodParams methodParams = new MethodParams(methodName, params);
+        if (methodParamCache.contains(clazz, methodParams)) {
+            return methodParamCache.get(clazz, methodParams);
+        }
+        Method method = getMethod(clazz, methodName, params);
+        methodParamCache.put(clazz, methodParams, method);
+        return method;
+    }
+
+    public static ConstructorInvoker getConstructorCached(Class<?> clazz, Class<?>... params) {
+        ConstructorParams constructorParams = new ConstructorParams(params);
+        if (constructorParamCache.contains(clazz, constructorParams)) {
+            return constructorParamCache.get(clazz, constructorParams);
+        }
+        ConstructorInvoker invoker = getConstructor(clazz, params);
+        constructorParamCache.put(clazz, constructorParams, invoker);
+        return invoker;
+    }
     public interface ConstructorInvoker {
         /**
          * Invoke a constructor for a specific class.
@@ -231,4 +270,75 @@ public class ReflectionUtils {
         Object invoke(Object... arguments);
     }
 
+    private static class MethodParams {
+        private final String name;
+        private final Class<?>[] params;
+
+        MethodParams(final String name, final Class<?>[] params) {
+            this.name = name;
+            this.params = params;
+        }
+
+        // Ugly autogenned Lombok code
+        @Override
+        public boolean equals(final Object o) {
+            if (o == this) {
+                return true;
+            }
+            if (!(o instanceof MethodParams)) {
+                return false;
+            }
+            final MethodParams that = (MethodParams) o;
+            if (!that.canEqual(this)) {
+                return false;
+            }
+            final Object thisName = this.name;
+            final Object thatName = that.name;
+            if (thisName == null) {
+                if (thatName == null) {
+                    return Arrays.deepEquals(this.params, that.params);
+                }
+            } else if (thisName.equals(thatName)) {
+                return Arrays.deepEquals(this.params, that.params);
+            }
+            return false;
+        }
+
+        boolean canEqual(final Object that) {
+            return that instanceof MethodParams;
+        }
+
+        @Override
+        public int hashCode() {
+            int result = 1;
+            final Object thisName = this.name;
+            result = result * 31 + ((thisName == null) ? 0 : thisName.hashCode());
+            result = result * 31 + Arrays.deepHashCode(this.params);
+            return result;
+        }
+    }
+
+    // Necessary for deepequals
+    private static class ConstructorParams {
+        private final Class<?>[] params;
+
+        ConstructorParams(Class<?>[] params) {
+            this.params = params;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            ConstructorParams that = (ConstructorParams) o;
+
+            return Arrays.deepEquals(params, that.params);
+        }
+
+        @Override
+        public int hashCode() {
+            return Arrays.deepHashCode(params);
+        }
+    }
 }

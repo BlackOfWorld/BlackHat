@@ -54,9 +54,11 @@ public final class Start extends JavaPlugin {
         Bukkit.getConsoleSender().sendMessage("§2------------------------------------");
     }
 
+    private boolean isReload;
     private void onStartup() {
+        if (isReload) return;
         // Do every hooking here
-        Instance = this;
+
         try {
             setFinalStatic(GetServer().getDedicatedServerProperties(), "enableCommandBlock", true);
             // server.propertyManager.getProperties().enableCommandBlock = false;
@@ -66,6 +68,8 @@ public final class Start extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        Instance = this;
+        isReload = Bukkit.getWorlds().size() != 0;
         onStartup();
         Bukkit.getScheduler().runTask(this, this::onPostWorldLoad);
     }

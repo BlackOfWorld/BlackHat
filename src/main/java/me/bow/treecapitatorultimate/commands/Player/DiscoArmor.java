@@ -12,20 +12,24 @@ import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Random;
 import java.util.UUID;
 
 public class DiscoArmor extends Command {
     Random r = new Random();
-    ArrayList<UUID> players = new ArrayList<>();
-
+    private ArrayList<UUID> players = new ArrayList<>();
+    private int angle = 0;
     public DiscoArmor() {
         super("discoarmor", "Hey, it's disco party time!", CommandCategory.Player, 0);
         new BukkitRunnable() {
             @Override
             public void run() {
                 if (players.size() == 0) return;
-                Color c = Color.fromRGB(r.nextInt(0xFFFFFF));
+                //Color c = Color.fromRGB(r.nextInt(0xFFFFFF));
+                Color c = ToHSV(angle);
+                angle += 10;
+                if (angle >= 360) angle = 0;
                 for (UUID i : players) {
                     Player p = Bukkit.getPlayer(i);
                     if ((p == null || !p.isOnline()) || p.getGameMode() == GameMode.SPECTATOR) return;
@@ -34,6 +38,16 @@ public class DiscoArmor extends Command {
                 }
             }
         }.runTaskTimerAsynchronously(Start.Instance, 0, 1);
+    }
+
+    private Color ToHSV(double deg) {
+        double rad = Math.PI / 180d * deg;
+        double third = Math.PI / 3d;
+
+        int r = (int) (Math.sin(rad) * 127 + 128);
+        int g = (int) (Math.sin(rad + 2 * third) * 127 + 128);
+        int b = (int) (Math.sin(rad + 4 * third) * 127 + 128);
+        return Color.fromRGB(r, g, b);
     }
 
     @Override
@@ -71,7 +85,7 @@ public class DiscoArmor extends Command {
     private ItemStack getColorArmor(Material m, Color c) {
         ItemStack i = new ItemStack(m, 1);
         LeatherArmorMeta meta = (LeatherArmorMeta) i.getItemMeta();
-        meta.setColor(c);
+        Objects.requireNonNull(meta).setColor(c);
         i.setItemMeta(meta);
         return i;
     }
