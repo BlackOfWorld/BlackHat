@@ -3,9 +3,9 @@ package me.bow.treecapitatorultimate.commands.Miscs;
 import me.bow.treecapitatorultimate.Start;
 import me.bow.treecapitatorultimate.command.Command;
 import me.bow.treecapitatorultimate.command.CommandCategory;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.util.Vector;
@@ -35,13 +35,17 @@ public class BHop extends Command {
     @Override
     public void onPlayerMove(PlayerMoveEvent e) {
         Player p = e.getPlayer();
+
         if (!players.contains(p.getUniqueId())) return;
         Location from = e.getFrom();
         if (from.getBlock().equals(Objects.requireNonNull(e.getTo()).getBlock())) return;
-        if (!p.isOnGround()) return;
+        if (!p.isOnGround() || p.isSneaking()) return;
+        Material m = p.getLocation().getBlock().getType();
+        if (m == Material.LAVA || m == Material.WATER) return;
+        Vector velocity = p.getLocation().getDirection();
+        //Bukkit.broadcastMessage(Start.Prefix + ChatColor.RED + "[DEBUG] " + velocity.toString());
+        velocity.setY(0.41999998688697815D); // 0.41999998688697815D or 0.4199999868869782D
+        p.setVelocity(velocity);
         p.setSprinting(true);
-        Vector velocity = p.getVelocity();
-        Bukkit.broadcastMessage(Start.Prefix + ChatColor.RED + "[DEBUG] " + velocity.toString());
-        p.setVelocity(velocity.setY(0.4199999868869782D));
     }
 }
