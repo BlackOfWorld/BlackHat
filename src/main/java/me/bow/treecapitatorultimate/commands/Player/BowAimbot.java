@@ -38,6 +38,7 @@ public class BowAimbot extends Command {
     public void onEntityShootBow(EntityShootBowEvent e) {
         if (!(e.getEntity() instanceof Player) || !(e.getProjectile() instanceof Arrow)) return;
         Player p = (Player) e.getEntity();
+        if (!players.contains(p.getUniqueId())) return;
         double minAng = 6.28;
         Entity minEntity = null;
         for (Entity entity : p.getNearbyEntities(64.0, 64.0, 64.0)) {
