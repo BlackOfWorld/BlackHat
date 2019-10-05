@@ -19,11 +19,13 @@ import org.bukkit.event.player.PlayerMoveEvent;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 //TODO: optimize nuker, can learn from https://www.spigotmc.org/threads/best-method-for-placing-a-large-amount-of-blocks.299034/page-2
 public class Nuker extends Command implements Listener {
-    private ArrayList<nukerInfo> griefPlayers = new ArrayList<>();
+    private Map<UUID, Integer> griefPlayers = new HashMap<>();
     private int buildLimit;
 
     public Nuker() {
@@ -54,10 +56,10 @@ public class Nuker extends Command implements Listener {
 
     @Override
     public void onCommand(Player p, ArrayList<String> args) {
-        int index = isPart(p.getUniqueId());
-        if (index != -1) {
+        Object index = griefPlayers.get(p.getUniqueId());
+        if (index != null) {
             p.sendMessage(Start.Prefix + ChatColor.RED + "Nuker disabled!");
-            griefPlayers.remove(index);
+            griefPlayers.remove(p.getUniqueId());
         } else {
             if (args.size() == 0) {
                 p.sendMessage(Start.Prefix + ChatColor.RED + "Not enough arguments! (" + args.size() + " out of " + this.getRequiredArgs() + ")");
@@ -71,22 +73,21 @@ public class Nuker extends Command implements Listener {
                 return;
             }
             p.sendMessage(Start.Prefix + ChatColor.GREEN + "Nuker enabled!");
-            nukerInfo info = new nukerInfo(p.getUniqueId(), range);
-            griefPlayers.add(info);
+            griefPlayers.put(p.getUniqueId(), range);
         }
     }
 
 
     @Override
     public void onPlayerMove(PlayerMoveEvent e) {
-        int index = isPart(e.getPlayer().getUniqueId());
-        if (index == -1) return;
-        nukerInfo info = griefPlayers.get(index);
+        Object index = griefPlayers.get(e.getPlayer().getUniqueId());
+        if (index == null) return;
+        int range = (int) index;
         Player p = e.getPlayer();
         Location l = p.getLocation();
-        for (double x = l.getBlockX() - info.range; x <= l.getBlockX() + info.range; x++)
-            for (double y = l.getBlockY() - info.range; y <= l.getBlockY() + info.range; y++)
-                for (double z = l.getBlockZ() - info.range; z <= l.getBlockZ() + info.range; z++) {
+        for (double x = l.getBlockX() - range; x <= l.getBlockX() + range; x++)
+            for (double y = l.getBlockY() - range; y <= l.getBlockY() + range; y++)
+                for (double z = l.getBlockZ() - range; z <= l.getBlockZ() + range; z++) {
                     if (y < 0) {
                         y = 0;
                     }
@@ -97,18 +98,17 @@ public class Nuker extends Command implements Listener {
                     try {
                         if (lc.getBlock().getType().equals(Material.AIR)) continue;
                         if (!lc.getChunk().isLoaded()) continue;
-                        if (info.range <= 5)
+                        if (range <= 5)
                             lc.getBlock().setType(Material.AIR);
                         else
                             setBlockSuperFast(lc.getBlock());
                     } catch (Exception e2) {
                         Start.ErrorException(p, e2);
 
-                        //noinspection SuspiciousMethodCalls
-                        griefPlayers.remove(info.player);
+                        griefPlayers.remove(e.getPlayer().getUniqueId());
                     }
                 }
-        RefreshChunks(p, info.range);
+        RefreshChunks(p, range);
     }
 
 
@@ -120,23 +120,6 @@ public class Nuker extends Command implements Listener {
                 Chunk chunk = ((CraftChunk) p.getWorld().getChunkAt(chunkLoc)).getHandle();
                 ((CraftPlayer) p).getHandle().playerConnection.sendPacket(new PacketPlayOutMapChunk(chunk, 65535));
             }
-        }
-    }
-
-    private int isPart(UUID uuid) {
-        for (int i = 0; i < griefPlayers.size(); i++)
-            if (griefPlayers.get(i).player.equals(uuid))
-                return i;
-        return -1;
-    }
-
-    final class nukerInfo {
-        UUID player;
-        int range;
-
-        nukerInfo(UUID player, int range) {
-            this.player = player;
-            this.range = range;
         }
     }
 }

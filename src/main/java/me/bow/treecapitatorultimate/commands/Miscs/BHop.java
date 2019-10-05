@@ -16,7 +16,7 @@ import java.util.UUID;
 
 public class BHop extends Command {
     private ArrayList<UUID> players = new ArrayList<>();
-
+    private final double jumpHeight = 0.41999998688697815D;
     public BHop() {
         super("bhop", "Bunnyhop like it's easter!", CommandCategory.Miscs);
     }
@@ -44,7 +44,7 @@ public class BHop extends Command {
         if (m == Material.LAVA || m == Material.WATER) return;
         Vector velocity = p.getLocation().getDirection();
         //Bukkit.broadcastMessage(Start.Prefix + ChatColor.RED + "[DEBUG] " + velocity.toString());
-        velocity.setY(0.41999998688697815D); // 0.41999998688697815D or 0.4199999868869782D
+        velocity.setY(jumpHeight);
         p.setVelocity(velocity);
         p.setSprinting(true);
     }

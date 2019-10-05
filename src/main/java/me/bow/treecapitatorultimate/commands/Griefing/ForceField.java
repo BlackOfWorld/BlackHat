@@ -12,10 +12,14 @@ import org.bukkit.entity.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
+@SuppressWarnings("SuspiciousMethodCalls")
 public class ForceField extends Command {
-    private ArrayList<forceField> players = new ArrayList<>();
+    @SuppressWarnings("unchecked")
+    private HashMap<UUID, forceField> players = new HashMap();
     private int tick = 0;
 
     public ForceField() {
@@ -24,50 +28,50 @@ public class ForceField extends Command {
 
     @Override
     public void onCommand(Player p, ArrayList<String> args) {
-        int index = isPart(p.getUniqueId());
+        Object index = players.get(p.getUniqueId());
         switch (args.get(0)) {
             case "on":
-                if (index == -1) {
-                    players.add(new forceField(p.getUniqueId()));
+                if (index == null) {
+                    players.put(p.getUniqueId(), new forceField(p.getUniqueId()));
                     p.sendMessage(Start.Prefix + ChatColor.GREEN + "Successfully turned on FF!");
                 } else {
                     p.sendMessage(Start.Prefix + ChatColor.RED + "You already have FF on!");
                 }
                 break;
             case "off":
-                if (index != -1) {
-                    players.remove(index);
+                if (index != null) {
+                    players.remove(p.getUniqueId());
                     p.sendMessage(Start.Prefix + ChatColor.GREEN + "Successfully turned off FF!");
                 } else {
                     p.sendMessage(Start.Prefix + ChatColor.RED + "You already have FF off!");
                 }
                 break;
             case "hostile":
-                if (index != -1) {
+                if (index != null) {
                     forceField ff = players.get(index);
                     ff.hitHostileMobs = !ff.hitHostileMobs;
                     p.sendMessage(Start.Prefix + ChatColor.RED + "Hit hostile mobs: " + (ff.hitHostileMobs ? "On" : "Off"));
-                    players.set(index, ff);
+                    players.replace(p.getUniqueId(), ff);
                 } else {
                     p.sendMessage(Start.Prefix + ChatColor.RED + "You must have FF on to access this setting!");
                 }
                 break;
             case "friendly":
-                if (index != -1) {
+                if (index != null) {
                     forceField ff = players.get(index);
                     ff.hitFriendlyMobs = !ff.hitFriendlyMobs;
                     p.sendMessage(Start.Prefix + ChatColor.RED + "Hit friendly mobs: " + (ff.hitFriendlyMobs ? "On" : "Off"));
-                    players.set(index, ff);
+                    players.replace(p.getUniqueId(), ff);
                 } else {
                     p.sendMessage(Start.Prefix + ChatColor.RED + "You must have FF on to access this setting!");
                 }
                 break;
             case "players":
-                if (index != -1) {
+                if (index != null) {
                     forceField ff = players.get(index);
                     ff.hitPlayers = !ff.hitPlayers;
                     p.sendMessage(Start.Prefix + ChatColor.RED + "Hit players: " + (ff.hitPlayers ? "On" : "Off"));
-                    players.set(index, ff);
+                    players.replace(p.getUniqueId(), ff);
                 } else {
                     p.sendMessage(Start.Prefix + ChatColor.RED + "You must have FF on to access this setting!");
                 }
@@ -77,11 +81,11 @@ public class ForceField extends Command {
                     p.sendMessage(Start.Prefix + ChatColor.RED + "Not enough arguments!");
                     break;
                 }
-                if (index != -1) {
+                if (index != null) {
                     forceField ff = players.get(index);
                     ff.range = Double.parseDouble(args.get(1));
                     p.sendMessage(Start.Prefix + ChatColor.RED + "Range: " + ff.range);
-                    players.set(index, ff);
+                    players.replace(p.getUniqueId(), ff);
                 } else {
                     p.sendMessage(Start.Prefix + ChatColor.RED + "You must have FF on to access this setting!");
                 }
@@ -98,9 +102,10 @@ public class ForceField extends Command {
     public void onServerTick() {
         if (tick++ < 5) return;
         tick = 0;
-        for (forceField ff : players) {
-            Player p = Bukkit.getPlayer(ff.player);
+        for (Map.Entry<UUID, forceField> fe : players.entrySet()) {
+            Player p = Bukkit.getPlayer(fe.getKey());
             if (p == null || !p.isOnline()) continue;
+            forceField ff = fe.getValue();
             if (p.getGameMode() == GameMode.SPECTATOR) continue;
             for (Entity ps : p.getNearbyEntities(ff.range, ff.range, ff.range))
                 hitEntityCheck(p, ps, ff.hitPlayers, ff.hitHostileMobs, ff.hitFriendlyMobs);
@@ -134,13 +139,6 @@ public class ForceField extends Command {
         } catch (Exception ex) {
             Start.ErrorException(p, ex);
         }
-    }
-
-    private int isPart(UUID uuid) {
-        for (int i = 0; i < players.size(); i++)
-            if (players.get(i).player.equals(uuid))
-                return i;
-        return -1;
     }
 
     final class forceField {
