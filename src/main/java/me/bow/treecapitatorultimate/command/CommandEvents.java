@@ -3,6 +3,7 @@ package me.bow.treecapitatorultimate.command;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.*;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.event.server.ServerCommandEvent;
 import org.bukkit.event.server.ServerListPingEvent;
@@ -71,6 +72,7 @@ public interface CommandEvents {
 
     default void onEntityToggleGlide(EntityToggleGlideEvent e) {
     }
+
     default void onPlayerAdvancementGet(PlayerAdvancementDoneEvent e) {
     }
 
@@ -85,6 +87,7 @@ public interface CommandEvents {
 
     default void onEntityDamageByEntity(EntityDamageByEntityEvent e) {
     }
+
     default void onEntityDamage(EntityDamageEvent e) {
     }
 
@@ -98,5 +101,8 @@ public interface CommandEvents {
     }
 
     default void onEntityShootBow(EntityShootBowEvent e) {
+    }
+
+    default void onInventoryClick(InventoryClickEvent e) {
     }
 }

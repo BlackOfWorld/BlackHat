@@ -45,7 +45,6 @@ public class Nuker extends Command implements Listener {
             if (chunksection == null) {
                 chunksection = sections[b.getY() >> 4] = new ChunkSection(b.getY() >> 4 << 4);
             }
-
             chunksection.setType(b.getX() & 15, b.getY() & 15, b.getZ() & 15, Blocks.AIR.getBlockData());
             //chunksection.b(b.getX() & 15, b.getY() & 15, b.getZ() & 15, data);
 
@@ -116,9 +115,10 @@ public class Nuker extends Command implements Listener {
         Location l = p.getLocation();
         for (int zPos = (int) l.getZ() + radius; zPos > l.getZ() - radius; zPos -= 16) {
             for (int xPos = (int) l.getX() + radius; xPos > l.getX() - radius; xPos -= 16) {
-                Location chunkLoc = new Location(p.getWorld(), xPos, 0, zPos);
+                Location chunkLoc = new Location(p.getWorld(), xPos, 1, zPos);
                 Chunk chunk = ((CraftChunk) p.getWorld().getChunkAt(chunkLoc)).getHandle();
                 ((CraftPlayer) p).getHandle().playerConnection.sendPacket(new PacketPlayOutMapChunk(chunk, 65535));
+                p.getWorld().refreshChunk((int) chunkLoc.getX(), (int) chunkLoc.getZ());
             }
         }
     }

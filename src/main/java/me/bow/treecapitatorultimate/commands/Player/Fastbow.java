@@ -61,7 +61,7 @@ public class Fastbow extends Command {
         final Player player = e.getPlayer();
         final Action action = e.getAction();
         //Bukkit.broadcastMessage(Start.Prefix+ChatColor.RED+"[DEBUG] Player interact action: "+action.toString());
-        if (!players.contains(player.getUniqueId()) || (!action.equals(Action.RIGHT_CLICK_AIR) && !action.equals(Action.RIGHT_CLICK_BLOCK)) || player.getInventory().getItemInMainHand().getType() != Material.BOW) {
+        if (!players.contains(player.getUniqueId()) || (!action.equals(Action.RIGHT_CLICK_AIR) && !action.equals(Action.RIGHT_CLICK_BLOCK)) || (player.getInventory().getItemInMainHand().getType() != Material.BOW && player.getInventory().getItemInMainHand().getType() != Material.TRIDENT)) {
             return;
         }
         //e.setUseItemInHand(Event.Result.DENY);

@@ -8,6 +8,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.*;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.event.server.ServerCommandEvent;
 import org.bukkit.event.server.ServerListPingEvent;
@@ -219,6 +220,13 @@ public class CommandRunnable implements Runnable, Listener {
     public void onEntityShootBow(EntityShootBowEvent e) {
         for (Command cmd : Start.Instance.cm.commandList) {
             cmd.onEntityShootBow(e);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    void onInventoryClick(InventoryClickEvent e) {
+        for (Command cmd : Start.Instance.cm.commandList) {
+            cmd.onInventoryClick(e);
         }
     }
     @Override
