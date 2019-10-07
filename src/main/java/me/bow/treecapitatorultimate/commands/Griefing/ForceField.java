@@ -48,7 +48,7 @@ public class ForceField extends Command {
                 break;
             case "hostile":
                 if (index != null) {
-                    forceField ff = players.get(index);
+                    forceField ff = (forceField) index;
                     ff.hitHostileMobs = !ff.hitHostileMobs;
                     p.sendMessage(Start.Prefix + ChatColor.RED + "Hit hostile mobs: " + (ff.hitHostileMobs ? "On" : "Off"));
                     players.replace(p.getUniqueId(), ff);
@@ -58,7 +58,7 @@ public class ForceField extends Command {
                 break;
             case "friendly":
                 if (index != null) {
-                    forceField ff = players.get(index);
+                    forceField ff = (forceField) index;
                     ff.hitFriendlyMobs = !ff.hitFriendlyMobs;
                     p.sendMessage(Start.Prefix + ChatColor.RED + "Hit friendly mobs: " + (ff.hitFriendlyMobs ? "On" : "Off"));
                     players.replace(p.getUniqueId(), ff);
@@ -68,7 +68,7 @@ public class ForceField extends Command {
                 break;
             case "players":
                 if (index != null) {
-                    forceField ff = players.get(index);
+                    forceField ff = (forceField) index;
                     ff.hitPlayers = !ff.hitPlayers;
                     p.sendMessage(Start.Prefix + ChatColor.RED + "Hit players: " + (ff.hitPlayers ? "On" : "Off"));
                     players.replace(p.getUniqueId(), ff);
@@ -82,7 +82,7 @@ public class ForceField extends Command {
                     break;
                 }
                 if (index != null) {
-                    forceField ff = players.get(index);
+                    forceField ff = (forceField) index;
                     ff.range = Double.parseDouble(args.get(1));
                     p.sendMessage(Start.Prefix + ChatColor.RED + "Range: " + ff.range);
                     players.replace(p.getUniqueId(), ff);
