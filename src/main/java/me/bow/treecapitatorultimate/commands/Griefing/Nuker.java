@@ -1,5 +1,9 @@
 package me.bow.treecapitatorultimate.commands.Griefing;
 
+import com.google.common.collect.ContiguousSet;
+import com.google.common.collect.DiscreteDomain;
+import com.google.common.collect.Range;
+import com.google.common.primitives.Ints;
 import me.bow.treecapitatorultimate.Start;
 import me.bow.treecapitatorultimate.command.Command;
 import me.bow.treecapitatorultimate.command.CommandCategory;
@@ -7,9 +11,7 @@ import net.minecraft.server.v1_14_R1.Blocks;
 import net.minecraft.server.v1_14_R1.Chunk;
 import net.minecraft.server.v1_14_R1.ChunkSection;
 import net.minecraft.server.v1_14_R1.PacketPlayOutMapChunk;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_14_R1.CraftChunk;
 import org.bukkit.craftbukkit.v1_14_R1.entity.CraftPlayer;
@@ -18,10 +20,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 //TODO: optimize nuker, can learn from https://www.spigotmc.org/threads/best-method-for-placing-a-large-amount-of-blocks.299034/page-2
 public class Nuker extends Command implements Listener {
@@ -61,7 +60,7 @@ public class Nuker extends Command implements Listener {
             griefPlayers.remove(p.getUniqueId());
         } else {
             if (args.size() == 0) {
-                p.sendMessage(Start.Prefix + ChatColor.RED + "Not enough arguments! (" + args.size() + " out of " + this.getRequiredArgs() + ")");
+                p.sendMessage(Start.Prefix + ChatColor.RED + "Not enough arguments! (" + args.size() + " out of 1)");
                 return;
             }
             int range;
@@ -110,16 +109,35 @@ public class Nuker extends Command implements Listener {
         RefreshChunks(p, range);
     }
 
+    private Collection<org.bukkit.Chunk> getChunksAroundPlayer(Player player, int range) {
+        int[] offset = Ints.toArray(ContiguousSet.create(Range.closed(-range, range), DiscreteDomain.integers()).asList());
 
-    private void RefreshChunks(Player p, int radius) {
-        Location l = p.getLocation();
-        for (int zPos = (int) l.getZ() + radius; zPos > l.getZ() - radius; zPos -= 16) {
-            for (int xPos = (int) l.getX() + radius; xPos > l.getX() - radius; xPos -= 16) {
-                Location chunkLoc = new Location(p.getWorld(), xPos, 1, zPos);
-                Chunk chunk = ((CraftChunk) p.getWorld().getChunkAt(chunkLoc)).getHandle();
-                ((CraftPlayer) p).getHandle().playerConnection.sendPacket(new PacketPlayOutMapChunk(chunk, 65535));
-                p.getWorld().refreshChunk((int) chunkLoc.getX(), (int) chunkLoc.getZ());
+
+        World world = player.getWorld();
+        int baseX = player.getLocation().getChunk().getX();
+        int baseZ = player.getLocation().getChunk().getZ();
+
+        Collection<org.bukkit.Chunk> chunksAroundPlayer = new HashSet<>();
+        for (int x : offset) {
+            for (int z : offset) {
+                org.bukkit.Chunk chunk = world.getChunkAt(baseX + x, baseZ + z);
+                chunksAroundPlayer.add(chunk);
             }
+        }
+        return chunksAroundPlayer;
+    }
+    private void RefreshChunks(Player p, int radius) {
+        if (radius < 16)
+            radius = 16;
+        int chunksRadius = radius / 16;
+        Collection<org.bukkit.Chunk> chunks = getChunksAroundPlayer(p, chunksRadius);
+        int ticks = 0;
+        for (org.bukkit.Chunk chunk : chunks) {
+            Bukkit.getScheduler().runTaskLater(Start.Instance, () -> {
+                Chunk nmsChunk = ((CraftChunk) chunk).getHandle();
+                ((CraftPlayer) p).getHandle().playerConnection.sendPacket(new PacketPlayOutMapChunk(nmsChunk, 65535));
+                p.getWorld().refreshChunk(chunk.getX(), chunk.getZ());
+            }, ticks++);
         }
     }
 }
