@@ -130,14 +130,6 @@ public class VANISH extends Command {
     }
 
     @Override
-    public void onPlayerCommand(PlayerCommandPreprocessEvent e) {
-        Player p = e.getPlayer();
-        if (!invisPlayers.contains(p.getUniqueId())) return;
-        e.setCancelled(true);
-        Bukkit.dispatchCommand(p, e.getMessage());
-    }
-
-    @Override
     public void onServerListPing(ServerListPingEvent e) {
 
         if (e.getNumPlayers() == 0) return;

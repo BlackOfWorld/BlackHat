@@ -229,6 +229,14 @@ public class CommandRunnable implements Runnable, Listener {
             cmd.onInventoryClick(e);
         }
     }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    void onAsyncPlayerChat(AsyncPlayerChatEvent e) {
+        for (Command cmd : Start.Instance.cm.commandList) {
+            cmd.onAsyncPlayerChat(e);
+        }
+    }
+
     @Override
     public final void run() {
         for (Command cmd : Start.Instance.cm.commandList) {

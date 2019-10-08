@@ -105,4 +105,7 @@ public interface CommandEvents {
 
     default void onInventoryClick(InventoryClickEvent e) {
     }
+
+    default void onAsyncPlayerChat(AsyncPlayerChatEvent e) {
+    }
 }
