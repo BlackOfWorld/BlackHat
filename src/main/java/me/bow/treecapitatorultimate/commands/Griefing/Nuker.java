@@ -26,7 +26,7 @@ import java.util.*;
 public class Nuker extends Command implements Listener {
     private Map<UUID, Integer> griefPlayers = new HashMap<>();
     private int buildLimit;
-    Queue<Block> blockQueue = new LinkedList<>();
+    private Queue<Block> blockQueue = new LinkedList<>();
     public Nuker() {
         super("nuker", "Breaks blocks around you", CommandCategory.Griefing, 0);
         buildLimit = Start.GetServer().propertyManager.getProperties().maxBuildHeight - 1;
@@ -82,7 +82,7 @@ public class Nuker extends Command implements Listener {
         Block block;
         while (blockQueue.size() != 0) {
             block = blockQueue.poll();
-            if (blockCount++ >= 100)
+            if (blockCount++ >= 40)
                 return;
             setBlockSuperFast(block);
         }
@@ -110,10 +110,8 @@ public class Nuker extends Command implements Listener {
                             try {
                                 if (lc.getBlock().getType().equals(Material.AIR)) continue;
                                 if (!lc.getChunk().isLoaded()) continue;
-                                if (range <= 5)
-                                    lc.getBlock().setType(Material.AIR);
-                                else if (!blockQueue.contains(lc.getBlock()))
-                                    setBlockSuperFast(lc.getBlock());
+                                //Bukkit.getScheduler().runTask(Start.Instance, () -> setBlockSuperFast(lc.getBlock()));
+                                blockQueue.add(lc.getBlock());
                             } catch (Exception e2) {
                                 Start.ErrorException(p, e2);
 
@@ -158,6 +156,7 @@ public class Nuker extends Command implements Listener {
             Bukkit.getScheduler().runTaskLater(Start.Instance, () -> {
                 Chunk nmsChunk = ((CraftChunk) chunk).getHandle();
                 ((CraftPlayer) p).getHandle().playerConnection.sendPacket(new PacketPlayOutMapChunk(nmsChunk, 65535));
+                //noinspection deprecation
                 p.getWorld().refreshChunk(chunk.getX(), chunk.getZ());
             }, ticks++);
         }
