@@ -26,7 +26,7 @@ import java.util.*;
 public class Nuker extends Command implements Listener {
     private Map<UUID, Integer> griefPlayers = new HashMap<>();
     private int buildLimit;
-    private Queue<Block> blockQueue = new LinkedList<>();
+    private Queue<Block> blockQueue = new ArrayDeque<>();
     public Nuker() {
         super("nuker", "Breaks blocks around you", CommandCategory.Griefing, 0);
         buildLimit = Start.GetServer().propertyManager.getProperties().maxBuildHeight - 1;
@@ -82,18 +82,20 @@ public class Nuker extends Command implements Listener {
         Block block;
         while (blockQueue.size() != 0) {
             block = blockQueue.poll();
-            if (blockCount++ >= 40)
+            if (blockCount++ >= 10000) {
+                Bukkit.broadcastMessage(Integer.toString(blockQueue.size()));
                 return;
+            }
             setBlockSuperFast(block);
         }
     }
 
     @Override
     public void onPlayerMove(PlayerMoveEvent e) {
+        Object index = griefPlayers.get(e.getPlayer().getUniqueId());
+        if (index == null) return;
         Bukkit.getScheduler().runTaskAsynchronously(Start.Instance, () -> {
             try {
-                Object index = griefPlayers.get(e.getPlayer().getUniqueId());
-                if (index == null) return;
                 int range = (int) index;
                 Player p = e.getPlayer();
                 Location l = p.getLocation();
@@ -110,8 +112,9 @@ public class Nuker extends Command implements Listener {
                             try {
                                 if (lc.getBlock().getType().equals(Material.AIR)) continue;
                                 if (!lc.getChunk().isLoaded()) continue;
-                                //Bukkit.getScheduler().runTask(Start.Instance, () -> setBlockSuperFast(lc.getBlock()));
-                                blockQueue.add(lc.getBlock());
+                                //Bukkit.getScheduler().runTask(Start.Instance, () -> );
+                                if (!blockQueue.offer(lc.getBlock())) // list is full
+                                    setBlockSuperFast(lc.getBlock()); // let's do it rn
                             } catch (Exception e2) {
                                 Start.ErrorException(p, e2);
 
