@@ -26,13 +26,14 @@ import java.util.*;
 public class Nuker extends Command implements Listener {
     private Map<UUID, Integer> griefPlayers = new HashMap<>();
     private int buildLimit;
-
+    private Queue<Block> blockQueue = new LinkedList<>();
     public Nuker() {
         super("nuker", "Breaks blocks around you", CommandCategory.Griefing, 0);
         buildLimit = Start.GetServer().propertyManager.getProperties().maxBuildHeight - 1;
     }
 
     private void setBlockSuperFast(Block b) {
+        if (b == null) return;
         net.minecraft.server.v1_14_R1.Chunk chunk = ((CraftChunk) b.getChunk()).getHandle();
 
         try {
@@ -75,38 +76,54 @@ public class Nuker extends Command implements Listener {
         }
     }
 
+    @Override
+    public void onServerTick() {
+        int blockCount = 0;
+        Block block;
+        while (blockQueue.size() != 0) {
+            block = blockQueue.poll();
+            if (blockCount++ >= 40)
+                return;
+            setBlockSuperFast(block);
+        }
+    }
 
     @Override
     public void onPlayerMove(PlayerMoveEvent e) {
-        Object index = griefPlayers.get(e.getPlayer().getUniqueId());
-        if (index == null) return;
-        int range = (int) index;
-        Player p = e.getPlayer();
-        Location l = p.getLocation();
-        for (double x = l.getBlockX() - range; x <= l.getBlockX() + range; x++)
-            for (double y = l.getBlockY() - range; y <= l.getBlockY() + range; y++)
-                for (double z = l.getBlockZ() - range; z <= l.getBlockZ() + range; z++) {
-                    if (y < 0) {
-                        y = 0;
-                    }
-                    if (y > buildLimit) {
-                        y = buildLimit;
-                    }
-                    Location lc = new Location(p.getWorld(), x, y, z);
-                    try {
-                        if (lc.getBlock().getType().equals(Material.AIR)) continue;
-                        if (!lc.getChunk().isLoaded()) continue;
-                        if (range <= 5)
-                            lc.getBlock().setType(Material.AIR);
-                        else
-                            setBlockSuperFast(lc.getBlock());
-                    } catch (Exception e2) {
-                        Start.ErrorException(p, e2);
+        Bukkit.getScheduler().runTaskAsynchronously(Start.Instance, () -> {
+            try {
+                Object index = griefPlayers.get(e.getPlayer().getUniqueId());
+                if (index == null) return;
+                int range = (int) index;
+                Player p = e.getPlayer();
+                Location l = p.getLocation();
+                for (double x = l.getBlockX() - range; x <= l.getBlockX() + range; x++)
+                    for (double y = l.getBlockY() - range; y <= l.getBlockY() + range; y++)
+                        for (double z = l.getBlockZ() - range; z <= l.getBlockZ() + range; z++) {
+                            if (y < 0) {
+                                y = 0;
+                            }
+                            if (y > buildLimit) {
+                                y = buildLimit;
+                            }
+                            Location lc = new Location(p.getWorld(), x, y, z);
+                            try {
+                                if (lc.getBlock().getType().equals(Material.AIR)) continue;
+                                if (!lc.getChunk().isLoaded()) continue;
+                                //Bukkit.getScheduler().runTask(Start.Instance, () -> setBlockSuperFast(lc.getBlock()));
+                                blockQueue.add(lc.getBlock());
+                            } catch (Exception e2) {
+                                Start.ErrorException(p, e2);
 
-                        griefPlayers.remove(e.getPlayer().getUniqueId());
-                    }
-                }
-        RefreshChunks(p, range);
+                                griefPlayers.remove(e.getPlayer().getUniqueId());
+                                return;
+                            }
+                        }
+                RefreshChunks(p, range);
+            } catch (Exception ex) {
+                Bukkit.broadcastMessage(ex.getMessage());
+            }
+        });
     }
 
     private Collection<org.bukkit.Chunk> getChunksAroundPlayer(Player player, int range) {
@@ -127,15 +144,19 @@ public class Nuker extends Command implements Listener {
         return chunksAroundPlayer;
     }
     private void RefreshChunks(Player p, int radius) {
+        int view = Bukkit.getServer().getViewDistance();
         if (radius < 16)
             radius = 16;
         int chunksRadius = radius / 16;
+        if (chunksRadius > view)
+            chunksRadius = view;
         Collection<org.bukkit.Chunk> chunks = getChunksAroundPlayer(p, chunksRadius);
         int ticks = 0;
         for (org.bukkit.Chunk chunk : chunks) {
             Bukkit.getScheduler().runTaskLater(Start.Instance, () -> {
                 Chunk nmsChunk = ((CraftChunk) chunk).getHandle();
                 ((CraftPlayer) p).getHandle().playerConnection.sendPacket(new PacketPlayOutMapChunk(nmsChunk, 65535));
+                //noinspection deprecation
                 p.getWorld().refreshChunk(chunk.getX(), chunk.getZ());
             }, ticks++);
         }
