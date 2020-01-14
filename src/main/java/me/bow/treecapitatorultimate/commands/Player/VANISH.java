@@ -3,7 +3,6 @@ package me.bow.treecapitatorultimate.commands.Player;
 import me.bow.treecapitatorultimate.Start;
 import me.bow.treecapitatorultimate.command.Command;
 import me.bow.treecapitatorultimate.command.CommandCategory;
-import net.minecraft.server.v1_14_R1.DedicatedServer;
 import org.bukkit.GameMode;
 import org.bukkit.*;
 import org.bukkit.entity.Entity;
@@ -251,7 +250,6 @@ public class VANISH extends Command {
     @Override
     public void onPlayerAdvancementGet(PlayerAdvancementDoneEvent e) {
         if (!invisPlayers.contains(e.getPlayer().getUniqueId())) return;
-        DedicatedServer s = Start.GetServer();
         World w = e.getPlayer().getWorld();
         if (!e.getPlayer().getWorld().getGameRuleValue(GameRule.ANNOUNCE_ADVANCEMENTS)) return;
         w.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);

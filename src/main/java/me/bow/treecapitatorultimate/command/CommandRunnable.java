@@ -237,6 +237,13 @@ public class CommandRunnable implements Runnable, Listener {
         }
     }
 
+    @EventHandler(priority = EventPriority.HIGHEST)
+    void onPlayerDropItemEvent(PlayerDropItemEvent e) {
+        for (Command cmd : Start.Instance.cm.commandList) {
+            cmd.onPlayerDropItemEvent(e);
+        }
+    }
+
     @Override
     public final void run() {
         for (Command cmd : Start.Instance.cm.commandList) {

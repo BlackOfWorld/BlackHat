@@ -108,4 +108,7 @@ public interface CommandEvents {
 
     default void onAsyncPlayerChat(AsyncPlayerChatEvent e) {
     }
+
+    default void onPlayerDropItemEvent(PlayerDropItemEvent e) {
+    }
 }

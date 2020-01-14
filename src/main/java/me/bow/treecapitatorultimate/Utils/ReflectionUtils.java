@@ -67,7 +67,7 @@ public class ReflectionUtils {
         do {
             for (Field field : clazz.getDeclaredFields()) {
                 if (field.getName().equals(name)) {
-                    return setAccessible(field, true);
+                    return (Field)setAccessible(field, true);
                 }
             }
         } while ((clazz = clazz.getSuperclass()) != null);
@@ -82,7 +82,7 @@ public class ReflectionUtils {
             f.setAccessible(false);
             return true;
         }
-        Field modField = setAccessible(Field.class.getDeclaredField("modifiers"), true);
+        Field modField = (Field)setAccessible(Field.class.getDeclaredField("modifiers"), true);
         if ((f.getModifiers() & Modifier.FINAL) == Modifier.FINAL) {
             modField.setInt(f, f.getModifiers() & ~Modifier.FINAL);
         }
@@ -111,7 +111,7 @@ public class ReflectionUtils {
         do {
             for (Method method : clazz.getDeclaredMethods()) {
                 if (method.getName().equals(name) && (method.getParameterTypes().length == paramlength)) {
-                    return setAccessible(method, true);
+                    return (Method)setAccessible(method, true);
                 }
             }
         } while ((clazz = clazz.getSuperclass()) != null);
@@ -129,12 +129,12 @@ public class ReflectionUtils {
         return classForName;
     }
 
-    private static Method getMethod(Class<?> clazz, String name, Class<?>... params) {
+    public static Method getMethod(Class<?> clazz, String name, Class<?>... params) {
         do {
             for (Method method : clazz.getDeclaredMethods()) {
                 if (method.getName().equals(name)) {
                     if (params.length == 0 || Arrays.equals(method.getParameterTypes(), params)) {
-                        return setAccessible(method, true);
+                        return (Method)setAccessible(method, true);
                     }
                 }
             }

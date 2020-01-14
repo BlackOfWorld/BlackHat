@@ -1,10 +1,11 @@
-package me.bow.treecapitatorultimate.commands.Griefing;
+/*package me.bow.treecapitatorultimate.commands.Griefing;
 
 import com.google.common.collect.ContiguousSet;
 import com.google.common.collect.DiscreteDomain;
 import com.google.common.collect.Range;
 import com.google.common.primitives.Ints;
 import me.bow.treecapitatorultimate.Start;
+import me.bow.treecapitatorultimate.Utils.ReflectionUtils;
 import me.bow.treecapitatorultimate.command.Command;
 import me.bow.treecapitatorultimate.command.CommandCategory;
 import net.minecraft.server.v1_14_R1.Blocks;
@@ -14,12 +15,12 @@ import net.minecraft.server.v1_14_R1.PacketPlayOutMapChunk;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_14_R1.CraftChunk;
+import org.bukkit.craftbukkit.v1_14_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_14_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 
-import java.lang.reflect.Field;
 import java.util.*;
 
 //TODO: optimize nuker, can learn from https://www.spigotmc.org/threads/best-method-for-placing-a-large-amount-of-blocks.299034/page-2
@@ -29,28 +30,27 @@ public class Nuker extends Command implements Listener {
     private Queue<Block> blockQueue = new ArrayDeque<>();
     public Nuker() {
         super("nuker", "Breaks blocks around you", CommandCategory.Griefing, 0);
-        buildLimit = Start.GetServer().propertyManager.getProperties().maxBuildHeight - 1;
+        try {
+            Object dedicatedServerProperties = Start.getDedicatedServerPropertiesInstance();
+            ReflectionUtils.getField(dedicatedServerProperties.getClass(), "maxBuildHeight").get(dedicatedServerProperties);
+        } catch (Exception e) { }
+        //buildLimit = propertyManager.getProperties().maxBuildHeight - 1;
     }
 
     private void setBlockSuperFast(Block b) {
         if (b == null) return;
         net.minecraft.server.v1_14_R1.Chunk chunk = ((CraftChunk) b.getChunk()).getHandle();
 
-        try {
-            Field f = chunk.getClass().getDeclaredField("sections");
-            f.setAccessible(true);
-            ChunkSection[] sections = (ChunkSection[]) f.get(chunk);
-            ChunkSection chunksection = sections[b.getY() >> 4];
+        net.minecraft.server.v1_14_R1.World nmsWorld = ((CraftWorld) b.getWorld()).getHandle();
 
-            if (chunksection == null) {
-                chunksection = sections[b.getY() >> 4] = new ChunkSection(b.getY() >> 4 << 4);
-            }
-            chunksection.setType(b.getX() & 15, b.getY() & 15, b.getZ() & 15, Blocks.AIR.getBlockData());
-            //chunksection.b(b.getX() & 15, b.getY() & 15, b.getZ() & 15, data);
-
-        } catch (Exception e) {
-            e.printStackTrace();
+        int y = b.getY();
+        ChunkSection cs = chunk.getSections()[y >> 4];
+        if (cs == chunk.a()) {
+            cs = new ChunkSection(y >> 4 << 4);
+            chunk.getSections()[y >> 4] = cs;
         }
+
+        cs.getBlocks().b(b.getX() & 15, y & 15, b.getZ() & 15, Blocks.AIR.getBlockData());
     }
 
     @Override
@@ -82,7 +82,7 @@ public class Nuker extends Command implements Listener {
         Block block;
         while (blockQueue.size() != 0) {
             block = blockQueue.poll();
-            if (blockCount++ >= 10000) {
+            if (blockCount++ >= 1500000) {
                 Bukkit.broadcastMessage(Integer.toString(blockQueue.size()));
                 return;
             }
@@ -113,8 +113,8 @@ public class Nuker extends Command implements Listener {
                                 if (lc.getBlock().getType().equals(Material.AIR)) continue;
                                 if (!lc.getChunk().isLoaded()) continue;
                                 //Bukkit.getScheduler().runTask(Start.Instance, () -> );
-                                if (!blockQueue.offer(lc.getBlock())) // list is full
-                                    setBlockSuperFast(lc.getBlock()); // let's do it rn
+                                blockQueue.add(lc.getBlock()); // list is full
+                                //setBlockSuperFast(lc.getBlock()); // let's do it rn
                             } catch (Exception e2) {
                                 Start.ErrorException(p, e2);
 
@@ -165,3 +165,4 @@ public class Nuker extends Command implements Listener {
         }
     }
 }
+*/

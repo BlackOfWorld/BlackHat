@@ -1,14 +1,15 @@
 package me.bow.treecapitatorultimate.commands.Player;
 
 import me.bow.treecapitatorultimate.Start;
+import me.bow.treecapitatorultimate.Utils.ReflectionUtils;
 import me.bow.treecapitatorultimate.command.Command;
 import me.bow.treecapitatorultimate.command.CommandCategory;
-import net.minecraft.server.v1_14_R1.PacketPlayOutGameStateChange;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.craftbukkit.v1_14_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 
@@ -25,7 +26,15 @@ public class EndScreen extends Command {
                 Start.ErrorString(p, "Player \"" + args.get(0) + "\" is not online!");
                 return;
             }
-            ((CraftPlayer) anotherPlayer).getHandle().playerConnection.sendPacket(new PacketPlayOutGameStateChange(4, 1));
+            Object packetPlayOutGameStateChange;
+            final Class<?> packetPlayOutGameStateChangeClass = ReflectionUtils.getMinecraftClass("PacketPlayOutGameStateChange");
+            final Object nmsPlayer = Player.class.getMethod("getHandle").invoke(anotherPlayer);
+            final Field playerConnectionField = nmsPlayer.getClass().getField("playerConnection");
+            final Object pConnection = playerConnectionField.get(nmsPlayer);
+            Class packetClass = ReflectionUtils.getMinecraftClass("Packet");
+            final Method sendPacket = pConnection.getClass().getMethod("sendPacket", packetClass);
+            packetPlayOutGameStateChange = ReflectionUtils.getConstructorCached(packetPlayOutGameStateChangeClass, int.class, float.class).invoke(4, 1);
+            sendPacket.invoke(pConnection, packetPlayOutGameStateChange);
             p.sendMessage(Start.Prefix + ChatColor.BLUE + anotherPlayer.getName() + " now has end screen!");
         } catch (Exception e) {
             Start.ErrorException(p, e);

