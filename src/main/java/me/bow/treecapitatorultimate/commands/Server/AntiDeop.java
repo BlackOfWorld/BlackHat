@@ -54,12 +54,13 @@ public class AntiDeop extends Command {
                 for (UUID uuid : players) {
                     Player p = Bukkit.getPlayer(uuid);
                     if (p == null || !p.isOnline()) return;
+                    Bukkit.getScheduler().runTask(Start.Instance, () -> BypassUtils.PlayerOp(p));
                 }
             });
         } else {
             Player p = Bukkit.getPlayer(args[1]);
             if (p == null || !players.contains(p.getUniqueId())) return;
-            Bukkit.getScheduler().runTask(Start.Instance, () -> BypassUtils.PlayerSetOp(p));
+            Bukkit.getScheduler().runTask(Start.Instance, () -> BypassUtils.PlayerOp(p));
         }
     }
 }

@@ -20,6 +20,7 @@ public class DiscoArmor extends Command {
     Random r = new Random();
     private ArrayList<UUID> players = new ArrayList<>();
     private int angle = 0;
+
     public DiscoArmor() {
         super("discoarmor", "Hey, it's disco party time!", CommandCategory.Player, 0);
         new BukkitRunnable() {

@@ -6,7 +6,6 @@ import me.bow.treecapitatorultimate.command.CommandCategory;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.UUID;
@@ -16,21 +15,20 @@ public class minimalisticMinecraft extends Command {
 
     public minimalisticMinecraft() {
         super("minimalisticMC", "Minimalistic minecraft - (removes inventory, almost everything tbh)", CommandCategory.Player, 1);
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                for (UUID playerName : players) {
-                    Player p = Bukkit.getPlayer(playerName);
-                    if ((p == null || !p.isOnline())) break;
-                    //p.closeInventory();
-                    p.setLevel(0);
-                    p.getInventory().clear();
-                    p.setPortalCooldown(999);
-                    p.setWalkSpeed(0.025f);
-                    p.setFlying(false);
-                }
-            }
-        }.runTaskTimer(Start.Instance, 0, 1);
+    }
+
+    @Override
+    public void onServerTick() {
+        for (UUID playerName : players) {
+            Player p = Bukkit.getPlayer(playerName);
+            if ((p == null || !p.isOnline())) break;
+            p.closeInventory();
+            p.setLevel(0);
+            p.getInventory().clear();
+            p.setPortalCooldown(999);
+            p.setWalkSpeed(0.025f);
+            p.setFlying(false);
+        }
     }
 
     @Override

@@ -29,6 +29,7 @@ public class VANISH extends Command {
     private ArrayList<UUID> invisPlayers = new ArrayList<>();
     private ArrayList<Quartet> bannedPlayers = new ArrayList<>();
     private boolean isPaper;
+
     public VANISH() {
         super("vanish", "Y-you saw nothing!", CommandCategory.Player);
     }
@@ -36,6 +37,7 @@ public class VANISH extends Command {
     public boolean isPlayerInVanish(UUID p) {
         return invisPlayers.contains(p);
     }
+
     @Override
     public void onCommand(Player p, ArrayList<String> args) {
         if (invisPlayers.contains(p.getUniqueId())) {
@@ -92,6 +94,7 @@ public class VANISH extends Command {
         }
         return null;
     }
+
     @Override
     public void onPlayerJoin(PlayerJoinEvent e) {
         //noinspection unchecked
@@ -178,7 +181,7 @@ public class VANISH extends Command {
         Player p = e.getPlayer();
         if (!invisPlayers.contains(p.getUniqueId())) return;
         for (Entity entity : p.getNearbyEntities(2.25d, 1d, 2.25d)) {
-            if(!(entity instanceof ExperienceOrb)) continue;
+            if (!(entity instanceof ExperienceOrb)) continue;
             e.setCancelled(true);
             p.sendMessage(Start.Prefix + ChatColor.RED + "You're close to an XP orb! You cannot change your gamemode until you're far more far away from it!");
             return;
@@ -187,13 +190,13 @@ public class VANISH extends Command {
 
     @Override
     public void onPlayerDeath(PlayerDeathEvent e) {
-        if(!(e.getEntity() instanceof Player)) return;
+        if (!(e.getEntity() instanceof Player)) return;
         Player p = e.getEntity();
         if (invisPlayers.contains(p.getUniqueId())) {
             e.setDeathMessage(null);
             return;
         }
-        if(!invisPlayers.contains(e.getEntity().getKiller().getUniqueId())) return;
+        if (!invisPlayers.contains(e.getEntity().getKiller().getUniqueId())) return;
         String fakeMessage = e.getDeathMessage();
         String fakeName = "Zombie";
         if (fakeMessage.toLowerCase().contains("slain")) {

@@ -111,4 +111,6 @@ public interface CommandEvents {
 
     default void onPlayerDropItemEvent(PlayerDropItemEvent e) {
     }
+
+    default void onEntityPoseChangeEvent(EntityPoseChangeEvent e) {}
 }

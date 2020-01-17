@@ -50,11 +50,7 @@ public class LagPlayer extends Command {
         BlockData block = e.getBlock().getBlockData();
         Runnable runnable = () -> e.getBlockPlaced().setBlockData(block);
         int randomTick = generateNumber(10, 25);
-        if (p.getGameMode() == GameMode.CREATIVE) {
-            Bukkit.getScheduler().runTaskLater(Start.Instance, runnable, randomTick);
-        } else {
-            Bukkit.getScheduler().runTaskLater(Start.Instance, runnable, randomTick);
-        }
+        Bukkit.getScheduler().runTaskLater(Start.Instance, runnable, randomTick);
         e.setCancelled(true);
     }
 

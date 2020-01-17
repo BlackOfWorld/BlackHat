@@ -29,7 +29,7 @@ public class GameMode extends Command {
                     return;
                 }
                 if (setGamemode(anotherPlayer, args.get(1)))
-                    p.sendMessage(Start.Prefix + ChatColor.GOLD + "Gamemode set for player \""+ChatColor.GREEN + anotherPlayer.getName()+ ChatColor.GOLD+"\"!");
+                    p.sendMessage(Start.Prefix + ChatColor.GOLD + "Gamemode set for player \"" + ChatColor.GREEN + anotherPlayer.getName() + ChatColor.GOLD + "\"!");
                 else
                     p.sendMessage(Start.Prefix + ChatColor.RED + "This gamemode doesn't exist!");
             } catch (Exception e) {

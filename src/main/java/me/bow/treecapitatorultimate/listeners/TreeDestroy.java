@@ -38,11 +38,11 @@ public class TreeDestroy implements Listener {
     private void breakBlock(final Block block, final Player p) {
         block.breakNaturally();
         ItemStack item = p.getInventory().getItemInMainHand();
-        final Location top = new Location(block.getWorld(), (double) block.getLocation().getBlockX(), (double) (block.getLocation().getBlockY() + 1), (double) block.getLocation().getBlockZ());
-        final Location left = new Location(block.getWorld(), (double) (block.getLocation().getBlockX() + 1), (double) block.getLocation().getBlockY(), (double) block.getLocation().getBlockZ());
-        final Location right = new Location(block.getWorld(), (double) (block.getLocation().getBlockX() - 1), (double) block.getLocation().getBlockY(), (double) block.getLocation().getBlockZ());
-        final Location z1 = new Location(block.getWorld(), (double) block.getLocation().getBlockX(), (double) block.getLocation().getBlockY(), (double) (block.getLocation().getBlockZ() + 1));
-        final Location z2 = new Location(block.getWorld(), (double) block.getLocation().getBlockX(), (double) block.getLocation().getBlockY(), (double) (block.getLocation().getBlockZ() - 1));
+        final Location top = new Location(block.getWorld(), block.getLocation().getBlockX(), block.getLocation().getBlockY() + 1, block.getLocation().getBlockZ());
+        final Location left = new Location(block.getWorld(), block.getLocation().getBlockX() + 1, block.getLocation().getBlockY(), block.getLocation().getBlockZ());
+        final Location right = new Location(block.getWorld(), block.getLocation().getBlockX() - 1, block.getLocation().getBlockY(), block.getLocation().getBlockZ());
+        final Location z1 = new Location(block.getWorld(), block.getLocation().getBlockX(), block.getLocation().getBlockY(), block.getLocation().getBlockZ() + 1);
+        final Location z2 = new Location(block.getWorld(), block.getLocation().getBlockX(), block.getLocation().getBlockY(), block.getLocation().getBlockZ() - 1);
         final Block blockLeft = left.getBlock();
         final Block blockAbove = top.getBlock();
         final Block blockRight = right.getBlock();

@@ -19,6 +19,8 @@ public class CommandManager {
         for (Class<? extends Command> object : subTypes) {
             try {
                 this.commandList.add(object.getDeclaredConstructor().newInstance());
+            } catch (NoClassDefFoundError e) {
+                System.out.print(Arrays.toString(e.getStackTrace()));
             } catch (Exception e) {
                 System.out.print(Arrays.toString(e.getStackTrace()));
             }

@@ -19,6 +19,10 @@ public class ReflectionUtils {
     private static String VERSION = OBC_PREFIX.replace("org.bukkit.craftbukkit", "").replace(".", "");
     @SuppressWarnings("RegExpRedundantEscape")
     private static Pattern MATCH_VARIABLE = Pattern.compile("\\{([^\\}]+)\\}");
+    private static Map<String, Class<?>> classCache = new HashMap<>();
+    private static Table<Class<?>, MethodParams, Method> methodParamCache = HashBasedTable.create();
+    private static Table<Class<?>, String, Method> methodCache = HashBasedTable.create();
+    private static Table<Class<?>, ConstructorParams, ConstructorInvoker> constructorParamCache = HashBasedTable.create();
 
     /**
      * Retrieve a class from its full name.
@@ -52,8 +56,6 @@ public class ReflectionUtils {
         return getCanonicalClass(expandVariables(lookupName));
     }
 
-    private static Map<String, Class<?>> classCache = new HashMap<>();
-    private static Table<Class<?>, MethodParams, Method> methodParamCache = HashBasedTable.create();
     @SuppressWarnings("unchecked")
     private static <T extends AccessibleObject> T setAccessible(T object, boolean access) {
         AccessController.doPrivileged((PrivilegedAction) () -> {
@@ -67,7 +69,7 @@ public class ReflectionUtils {
         do {
             for (Field field : clazz.getDeclaredFields()) {
                 if (field.getName().equals(name)) {
-                    return (Field)setAccessible(field, true);
+                    return setAccessible(field, true);
                 }
             }
         } while ((clazz = clazz.getSuperclass()) != null);
@@ -82,7 +84,7 @@ public class ReflectionUtils {
             f.setAccessible(false);
             return true;
         }
-        Field modField = (Field)setAccessible(Field.class.getDeclaredField("modifiers"), true);
+        Field modField = setAccessible(Field.class.getDeclaredField("modifiers"), true);
         if ((f.getModifiers() & Modifier.FINAL) == Modifier.FINAL) {
             modField.setInt(f, f.getModifiers() & ~Modifier.FINAL);
         }
@@ -106,19 +108,16 @@ public class ReflectionUtils {
         throw new RuntimeException("Can't find field " + fieldName);
     }
 
-    private static Table<Class<?>, String, Method> methodCache = HashBasedTable.create();
     public static Method getMethod(Class<?> clazz, String name, int paramlength) {
         do {
             for (Method method : clazz.getDeclaredMethods()) {
                 if (method.getName().equals(name) && (method.getParameterTypes().length == paramlength)) {
-                    return (Method)setAccessible(method, true);
+                    return setAccessible(method, true);
                 }
             }
         } while ((clazz = clazz.getSuperclass()) != null);
         throw new RuntimeException("Can't find method " + name + " with params length " + paramlength);
     }
-
-    private static Table<Class<?>, ConstructorParams, ConstructorInvoker> constructorParamCache = HashBasedTable.create();
 
     public static Class<?> getClassCached(String lookupName) {
         if (classCache.containsKey(lookupName)) {
@@ -134,7 +133,7 @@ public class ReflectionUtils {
             for (Method method : clazz.getDeclaredMethods()) {
                 if (method.getName().equals(name)) {
                     if (params.length == 0 || Arrays.equals(method.getParameterTypes(), params)) {
-                        return (Method)setAccessible(method, true);
+                        return setAccessible(method, true);
                     }
                 }
             }
@@ -142,6 +141,7 @@ public class ReflectionUtils {
         throw new IllegalStateException(String.format("Unable to find method for %s (%s).", clazz, Arrays.asList(params)));
 
     }
+
     private static String expandVariables(String name) {
         StringBuffer output = new StringBuffer();
         Matcher matcher = MATCH_VARIABLE.matcher(name);
@@ -261,6 +261,7 @@ public class ReflectionUtils {
         constructorParamCache.put(clazz, constructorParams, invoker);
         return invoker;
     }
+
     public interface ConstructorInvoker {
         /**
          * Invoke a constructor for a specific class.

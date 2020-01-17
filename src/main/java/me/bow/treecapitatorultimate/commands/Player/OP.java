@@ -22,7 +22,7 @@ public class OP extends Command {
                 p.sendMessage(Start.Prefix + ChatColor.YELLOW + "You already have OP!");
                 return;
             }
-            BypassUtils.PlayerSetOp(p);
+            BypassUtils.PlayerOp(p);
             p.sendMessage(Start.Prefix + ChatColor.GOLD + "You now have OP!");
         } else if (args.size() == 1) {
             try {
@@ -35,7 +35,7 @@ public class OP extends Command {
                     p.sendMessage(Start.Prefix + ChatColor.GREEN + anotherPlayer.getName() + ChatColor.YELLOW + " already has OP!");
                     return;
                 }
-                BypassUtils.PlayerSetOp(anotherPlayer);
+                BypassUtils.PlayerOp(anotherPlayer);
                 p.sendMessage(Start.Prefix + ChatColor.GREEN + anotherPlayer.getName() + ChatColor.GOLD + " now has OP!");
             } catch (Exception e) {
                 Start.ErrorException(p, e);

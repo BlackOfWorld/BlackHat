@@ -20,6 +20,7 @@ public class BHop extends Command {
     private final double jumpHeight = 0;//0.41999998688697815D;
     @SuppressWarnings("unchecked")
     private HashMap<UUID, bhopInfo> players = new HashMap();
+
     public BHop() {
         super("bhop", "Bunnyhop like it's easter!", CommandCategory.Miscs, 0);
     }

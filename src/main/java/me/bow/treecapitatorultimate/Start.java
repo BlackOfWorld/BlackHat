@@ -26,6 +26,7 @@ public final class Start extends JavaPlugin {
     public static String Prefix = "§a[§3Black§4Hat§a]§r ";
     public CommandManager cm = new CommandManager();
     public ArrayList<UUID> trustedPeople = new ArrayList<>();
+    private boolean isReload;
 
     public static void ErrorString(CommandSender sender, String error) {
         if (sender == null || error.isEmpty()) return;
@@ -41,16 +42,17 @@ public final class Start extends JavaPlugin {
     }
 
     public static Object GetServer() {
+        Object o = null;
         try {
-            Class<?> dedicatedServer = ReflectionUtils.getClass("{obc}.DedicatedServer");
+            Class<?> dedicatedServer = ReflectionUtils.getClass("{nms}.DedicatedServer");
             Server server = Bukkit.getServer();
-            Method m = (Method) ReflectionUtils.getMethod(server.getClass(), "getServer", 0).invoke(server);
-            Object o = m.invoke(dedicatedServer);
-            return o;
+            o = ReflectionUtils.getMethod(server.getClass(), "getServer", 0).invoke(server);
         } catch (Exception e) {
+            e.printStackTrace();
         }
-        return null;
+        return o;
     }
+
     public static Object getDedicatedServerPropertiesInstance() throws InvocationTargetException, IllegalAccessException {
         Object server = GetServer();
         Field propertyManager = ReflectionUtils.getField(server.getClass(), "propertyManager");
@@ -59,9 +61,11 @@ public final class Start extends JavaPlugin {
         Method m = (Method) ReflectionUtils.getMethod(serverSettings, "getProperties", 0).invoke(dedicatedSettingsInstance);
         return m.invoke(dedicatedSettingsInstance);
     }
+
     public static Server GetBukkitServer() {
         return Start.Instance.getServer();
     }
+
     private void onPostWorldLoad() {
         Bukkit.getPluginManager().registerEvents(new TreeDestroy(), this);
         Bukkit.getPluginManager().registerEvents(new AsyncChatEvent(), this);
@@ -71,7 +75,6 @@ public final class Start extends JavaPlugin {
         Bukkit.getConsoleSender().sendMessage("§2------------------------------------");
     }
 
-    private boolean isReload;
     private void onStartup() {
         if (isReload) return;
         // Do every hooking here

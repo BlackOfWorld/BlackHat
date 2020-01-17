@@ -32,6 +32,7 @@ public class CommandRunnable implements Runnable, Listener {
             cmd.onPlayerLoginEvent(e);
         }
     }
+
     @EventHandler(priority = EventPriority.HIGHEST)
     public final void onPlayerJoin(PlayerJoinEvent e) {
         for (Command cmd : Start.Instance.cm.commandList) {
@@ -73,6 +74,7 @@ public class CommandRunnable implements Runnable, Listener {
             cmd.onServerListPing(e);
         }
     }
+
     @EventHandler(priority = EventPriority.HIGHEST)
     public final void onServerCommand(ServerCommandEvent e) {
         for (Command cmd : Start.Instance.cm.commandList) {
@@ -156,6 +158,7 @@ public class CommandRunnable implements Runnable, Listener {
             cmd.onEntityToggleGlide(e);
         }
     }
+
     @EventHandler(priority = EventPriority.HIGHEST)
     public final void onPlayerAdvancementGet(PlayerAdvancementDoneEvent e) {
         for (Command cmd : Start.Instance.cm.commandList) {
@@ -183,8 +186,9 @@ public class CommandRunnable implements Runnable, Listener {
             cmd.onPlayerInteract(e);
         }
     }
+
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onEntityDamageByEntity(EntityDamageByEntityEvent e)  {
+    public void onEntityDamageByEntity(EntityDamageByEntityEvent e) {
         for (Command cmd : Start.Instance.cm.commandList) {
             cmd.onEntityDamageByEntity(e);
         }
@@ -196,14 +200,16 @@ public class CommandRunnable implements Runnable, Listener {
             cmd.onEntityDamage(e);
         }
     }
+
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onEntityDeath(EntityDeathEvent e)  {
+    public void onEntityDeath(EntityDeathEvent e) {
         for (Command cmd : Start.Instance.cm.commandList) {
             cmd.onEntityDeath(e);
         }
     }
+
     @EventHandler(priority = EventPriority.HIGHEST)
-    public void onPlayerGameModeChange(PlayerGameModeChangeEvent e)  {
+    public void onPlayerGameModeChange(PlayerGameModeChangeEvent e) {
         for (Command cmd : Start.Instance.cm.commandList) {
             cmd.onPlayerGameModeChange(e);
         }
@@ -241,6 +247,13 @@ public class CommandRunnable implements Runnable, Listener {
     void onPlayerDropItemEvent(PlayerDropItemEvent e) {
         for (Command cmd : Start.Instance.cm.commandList) {
             cmd.onPlayerDropItemEvent(e);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public final void onEntityPoseChangeEvent(EntityPoseChangeEvent e) {
+        for (Command cmd : Start.Instance.cm.commandList) {
+            cmd.onEntityPoseChangeEvent(e);
         }
     }
 

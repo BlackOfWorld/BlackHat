@@ -18,6 +18,8 @@ import java.util.UUID;
 
 @SuppressWarnings("SuspiciousMethodCalls")
 public class ForceField extends Command {
+    private final Class packetClass = ReflectionUtils.getMinecraftClass("Packet");
+    private final ReflectionUtils.ConstructorInvoker packetPlayOutAnimation = ReflectionUtils.getConstructor("{nms}.PacketPlayOutAnimation", ReflectionUtils.getClassCached("{nms}.Entity"), int.class);
     @SuppressWarnings("unchecked")
     private HashMap<UUID, forceField> players = new HashMap();
     private int tick = 0;
@@ -95,9 +97,6 @@ public class ForceField extends Command {
         }
     }
 
-    private final Class packetClass = ReflectionUtils.getMinecraftClass("Packet");
-    private final ReflectionUtils.ConstructorInvoker packetPlayOutAnimation = ReflectionUtils.getConstructor("{nms}.PacketPlayOutAnimation", ReflectionUtils.getClassCached("{nms}.Entity"), int.class);
-
     @Override
     public void onServerTick() {
         if (tick++ < 5) return;
@@ -113,14 +112,17 @@ public class ForceField extends Command {
     }
 
     private void hitEntityCheck(Player p, Entity e, boolean damagePlayer, boolean hitHostileMobs, boolean hitFriendlyMobs) {
-        if (!(e instanceof Monster || e instanceof Flying || e instanceof Ageable || e instanceof WaterMob || e instanceof HumanEntity || e instanceof Ambient))
+        if (!(e instanceof Monster || e instanceof Flying || e instanceof Ageable || e instanceof WaterMob || e instanceof HumanEntity || e instanceof Ambient || e instanceof Boss))
             return;
         if (e.isDead()) return;
         if (hitFriendlyMobs && (e instanceof Ageable || e instanceof WaterMob || e instanceof Ambient)) {
             hitEntity(p, e);
         }
-        if (hitHostileMobs && (e instanceof Monster || e instanceof Flying)) {
-            hitEntity(p, e);
+        if (hitHostileMobs && (e instanceof Monster || e instanceof Flying || e instanceof Boss)) {
+            if (e instanceof ComplexEntityPart)
+                hitEntity(p, ((ComplexEntityPart) ((ComplexLivingEntity) e).getParts().toArray()[0]));
+            else
+                hitEntity(p, e);
         }
         if (damagePlayer && e instanceof HumanEntity) {
             hitEntity(p, e);

