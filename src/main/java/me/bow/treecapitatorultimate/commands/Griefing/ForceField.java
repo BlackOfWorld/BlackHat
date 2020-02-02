@@ -118,8 +118,8 @@ public class ForceField extends Command {
         if (hitFriendlyMobs && (e instanceof Ageable || e instanceof WaterMob || e instanceof Ambient)) {
             hitEntity(p, e);
         }
-        if (hitHostileMobs && (e instanceof Monster || e instanceof Flying || e instanceof Boss)) {
-            if (e instanceof ComplexEntityPart)
+            if (hitHostileMobs && (e instanceof Monster || e instanceof Flying || e instanceof Boss)) {
+            if (e instanceof ComplexLivingEntity)
                 hitEntity(p, ((ComplexEntityPart) ((ComplexLivingEntity) e).getParts().toArray()[0]));
             else
                 hitEntity(p, e);

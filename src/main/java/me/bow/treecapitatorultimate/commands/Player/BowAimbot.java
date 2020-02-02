@@ -20,7 +20,7 @@ public class BowAimbot extends Command {
     private ArrayList<UUID> players = new ArrayList<>();
 
     public BowAimbot() {
-        super("bowaimbot", "Bow aimbot, yes that's it", CommandCategory.Player, 1);
+        super("bowaimbot", "Bow aimbot, yes that's it", CommandCategory.Player, 0);
     }
 
     @Override

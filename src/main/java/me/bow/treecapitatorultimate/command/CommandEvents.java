@@ -1,5 +1,6 @@
 package me.bow.treecapitatorultimate.command;
 
+import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.*;
@@ -8,6 +9,7 @@ import org.bukkit.event.player.*;
 import org.bukkit.event.server.ServerCommandEvent;
 import org.bukkit.event.server.ServerListPingEvent;
 import org.bukkit.event.server.TabCompleteEvent;
+import org.jetbrains.annotations.NotNull;
 
 public interface CommandEvents {
     default void onAsyncPlayerPreLogin(AsyncPlayerPreLoginEvent e) {
@@ -112,5 +114,9 @@ public interface CommandEvents {
     default void onPlayerDropItemEvent(PlayerDropItemEvent e) {
     }
 
-    default void onEntityPoseChangeEvent(EntityPoseChangeEvent e) {}
+    default void onEntityPoseChangeEvent(EntityPoseChangeEvent e) {
+    }
+
+    default void onPluginMessageReceived(@NotNull String s, @NotNull Player player, @NotNull byte[] bytes) {
+    }
 }

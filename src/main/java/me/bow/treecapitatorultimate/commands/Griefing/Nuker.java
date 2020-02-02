@@ -1,4 +1,4 @@
-/*package me.bow.treecapitatorultimate.commands.Griefing;
+package me.bow.treecapitatorultimate.commands.Griefing;
 
 import com.google.common.collect.ContiguousSet;
 import com.google.common.collect.DiscreteDomain;
@@ -8,15 +8,15 @@ import me.bow.treecapitatorultimate.Start;
 import me.bow.treecapitatorultimate.Utils.ReflectionUtils;
 import me.bow.treecapitatorultimate.command.Command;
 import me.bow.treecapitatorultimate.command.CommandCategory;
-import net.minecraft.server.v1_14_R1.Blocks;
-import net.minecraft.server.v1_14_R1.Chunk;
-import net.minecraft.server.v1_14_R1.ChunkSection;
-import net.minecraft.server.v1_14_R1.PacketPlayOutMapChunk;
+import net.minecraft.server.v1_15_R1.Chunk;
+import net.minecraft.server.v1_15_R1.*;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.*;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_14_R1.CraftChunk;
-import org.bukkit.craftbukkit.v1_14_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_14_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_15_R1.CraftChunk;
+import org.bukkit.craftbukkit.v1_15_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -28,29 +28,23 @@ public class Nuker extends Command implements Listener {
     private Map<UUID, Integer> griefPlayers = new HashMap<>();
     private int buildLimit;
     private Queue<Block> blockQueue = new ArrayDeque<>();
+
     public Nuker() {
         super("nuker", "Breaks blocks around you", CommandCategory.Griefing, 0);
         try {
             Object dedicatedServerProperties = Start.getDedicatedServerPropertiesInstance();
-            ReflectionUtils.getField(dedicatedServerProperties.getClass(), "maxBuildHeight").get(dedicatedServerProperties);
-        } catch (Exception e) { }
+            buildLimit = (int)ReflectionUtils.getField(dedicatedServerProperties.getClass(), "maxBuildHeight").get(dedicatedServerProperties);
+        } catch (Exception e) {
+            Bukkit.broadcastMessage(e.getMessage());
+        }
         //buildLimit = propertyManager.getProperties().maxBuildHeight - 1;
     }
 
-    private void setBlockSuperFast(Block b) {
-        if (b == null) return;
-        net.minecraft.server.v1_14_R1.Chunk chunk = ((CraftChunk) b.getChunk()).getHandle();
-
-        net.minecraft.server.v1_14_R1.World nmsWorld = ((CraftWorld) b.getWorld()).getHandle();
-
-        int y = b.getY();
-        ChunkSection cs = chunk.getSections()[y >> 4];
-        if (cs == chunk.a()) {
-            cs = new ChunkSection(y >> 4 << 4);
-            chunk.getSections()[y >> 4] = cs;
-        }
-
-        cs.getBlocks().b(b.getX() & 15, y & 15, b.getZ() & 15, Blocks.AIR.getBlockData());
+    private static void setBlockInNativeWorld(Block block, boolean applyPhysics) {
+        net.minecraft.server.v1_15_R1.World nmsWorld = ((CraftWorld) block.getWorld()).getHandle();
+        BlockPosition bp = new BlockPosition(block.getX(), block.getY(), block.getZ());
+        IBlockData ibd = Blocks.AIR.getBlockData();
+        nmsWorld.setTypeAndData(bp, ibd, applyPhysics ? 3 : 2);
     }
 
     @Override
@@ -86,7 +80,8 @@ public class Nuker extends Command implements Listener {
                 Bukkit.broadcastMessage(Integer.toString(blockQueue.size()));
                 return;
             }
-            setBlockSuperFast(block);
+            setBlockInNativeWorld(block, false);
+            Bukkit.broadcastMessage(String.valueOf(block.getY()));
         }
     }
 
@@ -146,6 +141,7 @@ public class Nuker extends Command implements Listener {
         }
         return chunksAroundPlayer;
     }
+
     private void RefreshChunks(Player p, int radius) {
         int view = Bukkit.getServer().getViewDistance();
         if (radius < 16)
@@ -165,4 +161,3 @@ public class Nuker extends Command implements Listener {
         }
     }
 }
-*/

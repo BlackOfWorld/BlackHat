@@ -2,7 +2,6 @@ package me.bow.treecapitatorultimate.commands.Miscs;
 
 import me.bow.treecapitatorultimate.command.Command;
 import me.bow.treecapitatorultimate.command.CommandCategory;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
@@ -20,9 +19,9 @@ public class Say extends Command {
         }
         msg = msg.replace("&", "§");
         p.chat(msg);
-        for (Player pl : Bukkit.getOnlinePlayers()) {
+        /*for (Player pl : Bukkit.getOnlinePlayers()) {
             if(!pl.isOnline()) continue;
-            pl.sendRawMessage();
-        }
+            //pl.sendRawMessage();
+        }*/
     }
 }
