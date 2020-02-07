@@ -27,7 +27,8 @@ public class InvisBan extends Command {
         for (int i = 1; i < args.size(); i++) {
             reason += args.get(i) + " ";
         }
-        reason = reason.replace("&", "§");
+        reason = reason.replace("&", "§").replace("\\n", "\n").replace("|", "\n");
+        if(reason.isEmpty()) reason = "The Ban Hammer has spoken!";
         Bukkit.getBanList(BanList.Type.NAME).addBan(anotherPlayer.getName(), reason, null, "Console");
         Bukkit.getBanList(BanList.Type.IP).addBan(anotherPlayer.getAddress().getAddress().getHostAddress(), reason, null, "Console");
         p.sendMessage(Start.Prefix + ChatColor.GOLD + anotherPlayer.getName() + ChatColor.GREEN + " is now banned! When he leaves, he won't be able to join back. (IP and name banned)");

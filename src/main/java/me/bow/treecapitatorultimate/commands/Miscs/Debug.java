@@ -21,5 +21,10 @@ public class Debug extends Command {
         p.sendMessage(Start.Prefix + "Locale: " + p.getLocale());
         p.sendMessage(Start.Prefix + "Op: " + p.isOp());
         p.sendMessage(Start.Prefix + "Dead: " + p.isDead());
+        p.sendMessage(Start.Prefix + "Gravity: " + p.hasGravity());
+        p.sendMessage(Start.Prefix + "Location: " + p.getLocation());
+        p.sendMessage(Start.Prefix + "Walk speed: " + p.getWalkSpeed());
+        p.sendMessage(Start.Prefix + "Fly speed: " + p.getFlySpeed());
+        p.sendMessage(Start.Prefix + "Address: " + p.getAddress());
     }
 }

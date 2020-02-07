@@ -23,14 +23,14 @@ public class KICK extends Command {
                 return;
             }
             if (args.size() == 1) {
-                anotherPlayer.kickPlayer("");
+                anotherPlayer.kickPlayer("Kicked from server.");
                 p.sendMessage(Start.Prefix + ChatColor.GREEN + anotherPlayer.getName() + ChatColor.YELLOW + " got kicked (without reason)!");
             } else {
                 String reason = "";
                 for (int i = 1; i < args.size(); i++) {
                     reason += args.get(i) + " ";
                 }
-                reason = reason.replace("&", "§");
+                reason = reason.replace("&", "§").replace("\\n", "\n").replace("|", "\n");
                 anotherPlayer.kickPlayer(reason);
                 p.sendMessage(Start.Prefix + ChatColor.GREEN + anotherPlayer.getName() + ChatColor.YELLOW + " got kicked (with reason)!");
             }

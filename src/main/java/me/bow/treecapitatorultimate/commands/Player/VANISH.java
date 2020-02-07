@@ -196,6 +196,7 @@ public class VANISH extends Command {
             e.setDeathMessage(null);
             return;
         }
+        if(e.getEntity().getKiller() == null) return;
         if (!invisPlayers.contains(e.getEntity().getKiller().getUniqueId())) return;
         String fakeMessage = e.getDeathMessage();
         String fakeName = "Zombie";
