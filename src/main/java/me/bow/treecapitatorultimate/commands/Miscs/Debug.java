@@ -7,10 +7,8 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 
+@Command.Info(command = "debug", description = "Debug", category = CommandCategory.Miscs)
 public class Debug extends Command {
-    public Debug() {
-        super("debug", "Debug", CommandCategory.Miscs, 0);
-    }
 
     @Override
     public void onCommand(Player p, ArrayList<String> args) {

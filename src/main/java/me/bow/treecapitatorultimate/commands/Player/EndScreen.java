@@ -11,11 +11,8 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 
-
+@Command.Info(command = "endscreen", description = "What?! You defeated the enderdragon already?!", category = CommandCategory.Player, requiredArgs = 1)
 public class EndScreen extends Command {
-    public EndScreen() {
-        super("endscreen", "What?! You defeated the enderdragon already?!", CommandCategory.Player, 1);
-    }
 
     @Override
     public void onCommand(Player p, ArrayList<String> args) {

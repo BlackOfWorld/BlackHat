@@ -16,14 +16,11 @@ import java.util.UUID;
 
 import static me.bow.treecapitatorultimate.commands.Miscs.BHop.bhopSpeed.Hop;
 
+@Command.Info(command = "bhop", description = "Bunnyhop like it's easter!", category = CommandCategory.Miscs)
 public class BHop extends Command {
     private final double jumpHeight = 0;//0.41999998688697815D;
     @SuppressWarnings("unchecked")
     private HashMap<UUID, bhopInfo> players = new HashMap();
-
-    public BHop() {
-        super("bhop", "Bunnyhop like it's easter!", CommandCategory.Miscs, 0);
-    }
 
     @Override
     public void onCommand(Player p, ArrayList<String> args) {
@@ -36,13 +33,7 @@ public class BHop extends Command {
         String type = args.get(0);
         if (!type.equalsIgnoreCase("yport") && !type.equalsIgnoreCase("hop") && !type.equalsIgnoreCase("smallhop"))
             return;
-        bhopSpeed speed = null;
-        if (type.equalsIgnoreCase("yPort"))
-            speed = bhopSpeed.yPort;
-        if (type.equalsIgnoreCase("smallhop"))
-            speed = bhopSpeed.smallHop;
-        if (type.equalsIgnoreCase("hop"))
-            speed = Hop;
+        bhopSpeed speed = bhopSpeed.valueOf(type);
         bhopInfo info = new bhopInfo();
         info.hopSpeed = speed;
         players.put(p.getUniqueId(), info);

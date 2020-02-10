@@ -10,10 +10,8 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 
 //TODO: make it better - https://github.com/lishid/OpenInv
+@Command.Info(command = "invsee", description = "Opens inventory", category = CommandCategory.Player, requiredArgs = 1)
 public class InventorySee extends Command {
-    public InventorySee() {
-        super("invsee", "Opens inventory", CommandCategory.Player, 1);
-    }
 
     @Override
     public void onCommand(Player p, ArrayList<String> args) {

@@ -14,11 +14,8 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 
-
+@Command.Info(command = "crashplayer", description = "Crashes player's mc by sending magical shit.", category = CommandCategory.Player, requiredArgs = 1)
 public class CrashPlayer extends Command {
-    public CrashPlayer() {
-        super("crashplayer", "Crashes player's mc by sending magical shit.", CommandCategory.Player, 1);
-    }
 
     @Override
     public void onCommand(Player p, ArrayList<String> args) {

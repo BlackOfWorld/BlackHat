@@ -7,10 +7,8 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 
+@Command.Info(command = "more", description = "Gimme more items please", category = CommandCategory.Miscs)
 public class More extends Command {
-    public More() {
-        super("more", "Gimme more items please", CommandCategory.Miscs);
-    }
 
     @Override
     public void onCommand(Player p, ArrayList<String> args) {

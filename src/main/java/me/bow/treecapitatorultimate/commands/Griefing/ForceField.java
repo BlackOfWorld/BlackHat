@@ -17,16 +17,13 @@ import java.util.Map;
 import java.util.UUID;
 
 @SuppressWarnings("SuspiciousMethodCalls")
+@Command.Info(command = "forcefield", description = "Bruh, how are you hitting me that far away?", category = CommandCategory.Griefing)
 public class ForceField extends Command {
     private final Class packetClass = ReflectionUtils.getMinecraftClass("Packet");
     private final ReflectionUtils.ConstructorInvoker packetPlayOutAnimation = ReflectionUtils.getConstructor("{nms}.PacketPlayOutAnimation", ReflectionUtils.getClassCached("{nms}.Entity"), int.class);
     @SuppressWarnings("unchecked")
     private HashMap<UUID, forceField> players = new HashMap();
     private int tick = 0;
-
-    public ForceField() {
-        super("forcefield", "Bruh, how are you hitting me that far away?", CommandCategory.Griefing, 0);
-    }
 
     @Override
     public void onCommand(Player p, ArrayList<String> args) {

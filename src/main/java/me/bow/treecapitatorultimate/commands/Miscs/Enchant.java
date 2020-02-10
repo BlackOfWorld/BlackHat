@@ -16,11 +16,8 @@ import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 
+@Command.Info(command = "enchant", description = "Something like Essentials's enchant", category = CommandCategory.Miscs, requiredArgs = 2)
 public class Enchant extends Command {
-    public Enchant() {
-        super("enchant", "Something like Essentials's enchant", CommandCategory.Miscs, 2);
-    }
-
 
     /**
      * @noinspection ConstantConditions

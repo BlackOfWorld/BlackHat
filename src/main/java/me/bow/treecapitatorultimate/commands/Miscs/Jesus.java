@@ -12,12 +12,9 @@ import org.bukkit.util.Vector;
 import java.util.ArrayList;
 import java.util.UUID;
 
+@Command.Info(command = "jesus", description = "Walk on water! UwU", category = CommandCategory.Miscs)
 public class Jesus extends Command {
     private ArrayList<UUID> players = new ArrayList<>();
-
-    public Jesus() {
-        super("jesus", "Walk on water! UwU", CommandCategory.Miscs);
-    }
 
     @Override
     public void onCommand(Player p, ArrayList<String> args) {

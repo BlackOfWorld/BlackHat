@@ -17,12 +17,9 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.UUID;
 
+@Command.Info(command = "fastbow", description = "ACCURATE SPEEDY ARROW SHOOTER", category = CommandCategory.Player)
 public class Fastbow extends Command {
     private ArrayList<UUID> players = new ArrayList<>();
-
-    public Fastbow() {
-        super("fastbow", "ACCURATE SPEEDY ARROW SHOOTER", CommandCategory.Player, 0);
-    }
 
     @Override
     public void onCommand(Player p, ArrayList<String> args) {

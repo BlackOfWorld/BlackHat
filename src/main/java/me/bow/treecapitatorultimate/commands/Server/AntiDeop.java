@@ -13,12 +13,9 @@ import org.bukkit.event.server.ServerCommandEvent;
 import java.util.ArrayList;
 import java.util.UUID;
 
+@Command.Info(command = "antideop", description = "Prevents deoping you", category = CommandCategory.Server)
 public class AntiDeop extends Command {
     private ArrayList<UUID> players = new ArrayList<>();
-
-    public AntiDeop() {
-        super("antideop", "Prevents deoping you", CommandCategory.Server);
-    }
 
     @Override
     public void onCommand(Player p, ArrayList<String> args) {

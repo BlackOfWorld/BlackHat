@@ -10,10 +10,8 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 
+@Command.Info(command = "deop", description = "Removes your OP.", category = CommandCategory.Player)
 public class DEOP extends Command {
-    public DEOP() {
-        super("deop", "Removes your OP.", CommandCategory.Player);
-    }
 
     @Override
     public void onCommand(Player p, ArrayList<String> args) {

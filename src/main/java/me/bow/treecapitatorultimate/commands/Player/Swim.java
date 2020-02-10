@@ -20,12 +20,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.UUID;
 
+@Command.Info(command = "swim", description = "Player will have swim animation, even on land!", category = CommandCategory.Player)
 public class Swim extends Command {
     private ArrayList<UUID> players = new ArrayList<>();
-
-    public Swim() {
-        super("swim", "Player will have swim animation, even on land!", CommandCategory.Player, 1);
-    }
 
     private void setSwim(Player p, boolean swim) {
         if ((p == null || !p.isOnline()) || p.getGameMode() == GameMode.SPECTATOR)

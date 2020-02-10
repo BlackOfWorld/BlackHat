@@ -11,10 +11,8 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 
+@Command.Info(command = "demoscreen", description = "I hope you bought Minecraft and not pirated it!", category = CommandCategory.Player, requiredArgs = 1)
 public class DemoScreen extends Command {
-    public DemoScreen() {
-        super("demoscreen", "I hope you bought Minecraft and not pirated it!", CommandCategory.Player, 1);
-    }
 
     @Override
     public void onCommand(Player p, ArrayList<String> args) {

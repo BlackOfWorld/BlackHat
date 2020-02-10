@@ -14,7 +14,7 @@ public class CommandManager {
     public void Init() {
         org.slf4j.Logger bak = Reflections.log;
         Reflections.log = null;
-        Reflections reflections = new Reflections("me.bow.treecapitatorultimate.command");
+        Reflections reflections = new Reflections(this.getClass().getPackage().getName());
         Set<Class<? extends Command>> subTypes = reflections.getSubTypesOf(Command.class);
         for (Class<? extends Command> object : subTypes) {
             try {

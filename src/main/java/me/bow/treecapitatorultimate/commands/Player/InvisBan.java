@@ -10,10 +10,8 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 
+@Command.Info(command = "invisban", description = "Bans player without kicking him.", category = CommandCategory.Player, requiredArgs = 1)
 public class InvisBan extends Command {
-    public InvisBan() {
-        super("invisban", "Bans player without kicking him.", CommandCategory.Player, 1);
-    }
 
     @SuppressWarnings({"StringConcatenationInLoop", "ConstantConditions"})
     @Override

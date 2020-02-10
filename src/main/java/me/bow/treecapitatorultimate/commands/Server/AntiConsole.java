@@ -9,13 +9,10 @@ import org.bukkit.event.server.ServerCommandEvent;
 
 import java.util.ArrayList;
 
+@Command.Info(command = "anticonsole", description = "Disables console", category = CommandCategory.Server)
 public class AntiConsole extends Command {
     private boolean isActive = false;
     private cancelMethod method;
-
-    public AntiConsole() {
-        super("anticonsole", "Disables console", CommandCategory.Server);
-    }
 
     @Override
     public void onCommand(Player p, ArrayList<String> args) {

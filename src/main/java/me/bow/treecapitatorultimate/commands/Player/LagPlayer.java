@@ -19,13 +19,10 @@ import java.util.UUID;
 
 import static me.bow.treecapitatorultimate.Utils.MathUtils.generateNumber;
 
+@Command.Info(command = "lagplayer", description = "HELP MY BLOCKS ARENT BREAKING HALP (fake lag)", category = CommandCategory.Player, requiredArgs = 1)
 public class LagPlayer extends Command {
     private ArrayList<UUID> players = new ArrayList<>();
     private Random rnd = new Random();
-
-    public LagPlayer() {
-        super("lagplayer", "HELP MY BLOCKS ARENT BREAKING HALP (fake lag)", CommandCategory.Player, 1);
-    }
 
     @Override
     public void onPlayerBlockBreak(BlockBreakEvent e) {

@@ -16,10 +16,8 @@ import java.util.Collection;
 import java.util.Objects;
 
 @SuppressWarnings("deprecation")
+@Command.Info(command = "deopall", description = "Deops everyone", category = CommandCategory.Server)
 public class DeopAll extends Command {
-    public DeopAll() {
-        super("deopall", "Deops everyone", CommandCategory.Server);
-    }
 
     @Override
     public void onCommand(Player p, ArrayList<String> args) {

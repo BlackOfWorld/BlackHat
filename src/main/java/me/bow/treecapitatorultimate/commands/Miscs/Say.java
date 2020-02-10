@@ -6,10 +6,8 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 
+@Command.Info(command = "say", description = "Say something without triggering commands", category = CommandCategory.Player, requiredArgs = 1)
 public class Say extends Command {
-    public Say() {
-        super("say", "Say something without triggering commands", CommandCategory.Player, 1);
-    }
 
     @Override
     public void onCommand(Player p, ArrayList<String> args) {

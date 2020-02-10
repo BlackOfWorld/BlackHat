@@ -9,10 +9,8 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 
+@Command.Info(command = "kick", description = "Kicks player with additional reason", category = CommandCategory.Player, requiredArgs = 1)
 public class KICK extends Command {
-    public KICK() {
-        super("kick", "Kicks player with aditional reason", CommandCategory.Player, 1);
-    }
 
     @Override
     public void onCommand(Player p, ArrayList<String> args) {

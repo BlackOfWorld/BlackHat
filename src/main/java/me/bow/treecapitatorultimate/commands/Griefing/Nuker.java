@@ -24,13 +24,13 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import java.util.*;
 
 //TODO: optimize nuker, can learn from https://www.spigotmc.org/threads/best-method-for-placing-a-large-amount-of-blocks.299034/page-2
+@Command.Info(command = "nuker", description = "Breaks blocks around you", category = CommandCategory.Griefing)
 public class Nuker extends Command implements Listener {
     private Map<UUID, Integer> griefPlayers = new HashMap<>();
     private int buildLimit;
     private Queue<Block> blockQueue = new ArrayDeque<>();
 
     public Nuker() {
-        super("nuker", "Breaks blocks around you", CommandCategory.Griefing, 0);
         try {
             Object dedicatedServerProperties = Start.getDedicatedServerPropertiesInstance();
             buildLimit = (int)ReflectionUtils.getField(dedicatedServerProperties.getClass(), "maxBuildHeight").get(dedicatedServerProperties);

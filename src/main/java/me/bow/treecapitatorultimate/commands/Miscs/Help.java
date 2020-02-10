@@ -9,11 +9,11 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 
+@Command.Info(command = "help", description = "Help", category = CommandCategory.Miscs)
 public class Help extends Command {
     ArrayList<String> help;
 
     public Help() {
-        super("help", "Help", CommandCategory.Miscs);
         Bukkit.getScheduler().runTaskLater(Start.Instance, () -> {
             String sHelp = "";
             for (Command cmd : Start.Instance.cm.commandList)

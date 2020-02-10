@@ -16,12 +16,9 @@ import org.bukkit.util.Vector;
 import java.util.ArrayList;
 import java.util.UUID;
 
+@Command.Info(command = "bowaimbot", description = "Bow aimbot, yes that's it", category = CommandCategory.Player)
 public class BowAimbot extends Command {
     private ArrayList<UUID> players = new ArrayList<>();
-
-    public BowAimbot() {
-        super("bowaimbot", "Bow aimbot, yes that's it", CommandCategory.Player, 0);
-    }
 
     @Override
     public void onCommand(Player p, ArrayList<String> args) {

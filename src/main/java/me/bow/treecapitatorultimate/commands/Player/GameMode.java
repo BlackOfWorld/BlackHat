@@ -9,10 +9,8 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 
+@Command.Info(command = "gm", description = "Set's gamemode", category = CommandCategory.Player, requiredArgs = 1)
 public class GameMode extends Command {
-    public GameMode() {
-        super("gm", "Set's gamemode", CommandCategory.Player, 1);
-    }
 
     @Override
     public void onCommand(Player p, ArrayList<String> args) {

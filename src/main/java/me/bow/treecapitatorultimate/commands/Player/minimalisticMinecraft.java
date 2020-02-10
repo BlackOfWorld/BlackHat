@@ -10,12 +10,9 @@ import org.bukkit.entity.Player;
 import java.util.ArrayList;
 import java.util.UUID;
 
+@Command.Info(command = "minimalisticMC", description = "Minimalistic minecraft - (removes inventory, almost everything tbh)", category = CommandCategory.Player, requiredArgs = 1)
 public class minimalisticMinecraft extends Command {
     ArrayList<UUID> players = new ArrayList<>();
-
-    public minimalisticMinecraft() {
-        super("minimalisticMC", "Minimalistic minecraft - (removes inventory, almost everything tbh)", CommandCategory.Player, 1);
-    }
 
     @Override
     public void onServerTick() {

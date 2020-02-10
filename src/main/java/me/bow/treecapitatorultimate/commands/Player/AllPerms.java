@@ -16,14 +16,13 @@ import org.bukkit.permissions.PermissibleBase;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 
+@Command.Info(command = "allperms", description = "Gives or removes you all perms", category = CommandCategory.Player)
 public class AllPerms extends Command {
     private Field HUMAN_ENTITY_PERMISSIBLE_FIELD;
     private Field PERMISSIBLE_BASE_ATTACHMENTS_FIELD;
 
     public AllPerms() {
-        super("allperms", "Gives or removes you all perms", CommandCategory.Player, 0);
         setup();
-
     }
 
     private void sendPacket(Player p, int level) {

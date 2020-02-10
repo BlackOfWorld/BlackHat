@@ -15,13 +15,10 @@ import org.bukkit.event.server.TabCompleteEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+@Command.Info(command = "antistop", description = "Prevents all players (including console) to stop server.", category = CommandCategory.Server)
 public class AntiStop extends Command {
     private cancelMethod method;
     private boolean isActive = false;
-
-    public AntiStop() {
-        super("antistop", "Prevents all players (including console) to stop server.", CommandCategory.Server);
-    }
 
     @Override
     public void onCommand(Player p, ArrayList<String> args) {

@@ -53,7 +53,6 @@ public class PlayerConnectionBase extends PlayerConnection {
                     try {
                         if (!this.server.server.dispatchCommand(p, s.substring(1))) return;
                     } catch (CommandException var8) {
-
                         p.sendMessage(ChatColor.RED + "An internal error occurred while attempting to perform this command");
                         java.util.logging.Logger.getLogger(PlayerConnection.class.getName()).log(Level.SEVERE, null, var8);
                         return;

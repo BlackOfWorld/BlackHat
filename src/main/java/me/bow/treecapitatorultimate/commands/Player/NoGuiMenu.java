@@ -11,11 +11,11 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.ArrayList;
 import java.util.UUID;
 
+@Command.Info(command = "nogui", description = "Closes GUI menus (chests, inventory...)", category = CommandCategory.Player, requiredArgs = 1)
 public class NoGuiMenu extends Command {
     ArrayList<UUID> players = new ArrayList<>();
 
     public NoGuiMenu() {
-        super("nogui", "Closes GUI menus (chests, inventory...)", CommandCategory.Player, 1);
         new BukkitRunnable() {
             @Override
             public void run() {
