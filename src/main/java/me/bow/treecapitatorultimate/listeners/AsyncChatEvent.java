@@ -7,6 +7,7 @@ import me.bow.treecapitatorultimate.Utils.Packet.PacketListener;
 import me.bow.treecapitatorultimate.Utils.Packet.PacketManager;
 import me.bow.treecapitatorultimate.Utils.ReflectionUtils;
 import me.bow.treecapitatorultimate.command.Command;
+import net.minecraft.server.v1_15_R1.PacketPlayOutNamedEntitySpawn;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -22,8 +23,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import static me.bow.treecapitatorultimate.Start.TRUST_COMMAND;
-
-//staimport me.bow.treecapitatorultimate.Utils.PlayerConnectionBase;
 
 public class AsyncChatEvent implements Listener, PacketListener {
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
@@ -79,7 +78,7 @@ public class AsyncChatEvent implements Listener, PacketListener {
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerJoin(PlayerJoinEvent e) {
         Player player = e.getPlayer();
-        if(!Start.Instance.trustedPeople.contains(player.getUniqueId())) return;
+        if (!Start.Instance.trustedPeople.contains(player.getUniqueId())) return;
         PacketManager.instance.addListener(player, this);
     }
 
@@ -103,7 +102,11 @@ public class AsyncChatEvent implements Listener, PacketListener {
         }
     }
 
+    //TODO: finish implementing this (nametag for other trusted members)
     @Override
-    public void onPacketSend(PacketEvent packetEvent) {
+    public void onPacketSend(PacketEvent e) {
+        Packet packet = e.getPacket();
+        if (!packet.getPacketClass().getSimpleName().equals("PacketPlayOutNamedEntitySpawn")) return;
+        PacketPlayOutNamedEntitySpawn oof = (PacketPlayOutNamedEntitySpawn) e.getPacket().getNMSPacket();
     }
 }

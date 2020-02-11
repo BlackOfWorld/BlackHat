@@ -29,8 +29,32 @@ import java.util.Set;
 
 @SuppressWarnings("unused")
 public class CommandRunnable implements Runnable, Listener, PluginMessageListener {
-    HashMap<String, Method> hookedEvents = new HashMap<>();
     private static CommandRunnable Instance;
+    HashMap<String, Method> hookedEvents = new HashMap<>();
+
+    CommandRunnable() {
+        Instance = this;
+        addEvents();
+        Reflections reflections = new Reflections("org.bukkit.event");
+        Set<Class<? extends Event>> classes = reflections.getSubTypesOf(Event.class);
+        EventExecutor executor = (listener, event) -> {
+            try {
+                if (!hookedEvents.containsKey(event.getEventName())) return;
+                hookedEvents.get(event.getEventName()).invoke(CommandRunnable.Instance, event);
+            } catch (InvocationTargetException var4) {
+                throw new EventException(var4.getCause());
+            } catch (Throwable var5) {
+                throw new EventException(var5);
+            }
+        };
+        for (Class eventClazz : classes) {
+            if (hookedEvents.containsKey(eventClazz.getSimpleName())) {
+                Bukkit.getPluginManager().registerEvent(eventClazz, this, EventPriority.HIGHEST, executor, Start.Instance);
+            }
+        }
+        Bukkit.getMessenger().registerOutgoingPluginChannel(Start.Instance, "wow:oof");
+        Bukkit.getMessenger().registerIncomingPluginChannel(Start.Instance, "wow:oof", this);
+    }
 
     private final void addEvents() {
         hookedEvents.put("AsyncPlayerPreLoginEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onAsyncPlayerPreLoginEvent", 1));
@@ -68,236 +92,212 @@ public class CommandRunnable implements Runnable, Listener, PluginMessageListene
         if (ReflectionUtils.classExists("org.bukkit.event.entity.EntityPoseChangeEvent")) {
             hookedEvents.put("EntityPoseChangeEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onEntityPoseChangeEvent", 1));
         }
-        if(ReflectionUtils.classExists("org.bukkit.event.entity.EntityToggleSwimEvent")) {
+        if (ReflectionUtils.classExists("org.bukkit.event.entity.EntityToggleSwimEvent")) {
             hookedEvents.put("EntityToggleSwimEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onPlayerSwimToggle", 1));
         }
     }
 
-    CommandRunnable() {
-        Instance = this;
-        addEvents();
-        Reflections reflections = new Reflections("org.bukkit.event");
-        Set<Class<? extends Event>> classes = reflections.getSubTypesOf(Event.class);
-        EventExecutor executor = (listener, event) -> {
-            try {
-                if (!hookedEvents.containsKey(event.getEventName())) return;
-                hookedEvents.get(event.getEventName()).invoke(CommandRunnable.Instance, event);
-            } catch (InvocationTargetException var4) {
-                throw new EventException(var4.getCause());
-            } catch (Throwable var5) {
-                throw new EventException(var5);
-            }
-        };
-        for (Class eventClazz : classes) {
-            if (hookedEvents.containsKey(eventClazz.getSimpleName())) {
-                Bukkit.getPluginManager().registerEvent(eventClazz, this, EventPriority.HIGHEST, executor, Start.Instance);
-            }
-        }
-        Bukkit.getMessenger().registerOutgoingPluginChannel(Start.Instance, "wow:oof");
-        Bukkit.getMessenger().registerIncomingPluginChannel(Start.Instance, "wow:oof", this);
-    }
-
     public final void onAsyncPlayerPreLoginEvent(Event e) {
         for (Command cmd : Start.Instance.cm.commandList) {
-            cmd.onAsyncPlayerPreLogin((AsyncPlayerPreLoginEvent)e);
+            cmd.onAsyncPlayerPreLogin((AsyncPlayerPreLoginEvent) e);
         }
     }
 
     public final void onPlayerLoginEvent(Event e) {
         for (Command cmd : Start.Instance.cm.commandList) {
-            cmd.onPlayerLoginEvent((PlayerLoginEvent)e);
+            cmd.onPlayerLoginEvent((PlayerLoginEvent) e);
         }
     }
 
     public final void onPlayerJoin(Event e) {
         for (Command cmd : Start.Instance.cm.commandList) {
-            cmd.onPlayerJoin((PlayerJoinEvent)e);
+            cmd.onPlayerJoin((PlayerJoinEvent) e);
         }
     }
 
     public final void onPlayerLeave(Event e) {
         for (Command cmd : Start.Instance.cm.commandList) {
-            cmd.onPlayerLeave((PlayerQuitEvent)e);
+            cmd.onPlayerLeave((PlayerQuitEvent) e);
         }
     }
 
     public final void onPlayerMove(Event e) {
         for (Command cmd : Start.Instance.cm.commandList) {
-            cmd.onPlayerMove((PlayerMoveEvent)e);
+            cmd.onPlayerMove((PlayerMoveEvent) e);
         }
     }
 
     public final void onPlayerCommand(Event e) {
         for (Command cmd : Start.Instance.cm.commandList) {
-            cmd.onPlayerCommand((PlayerCommandPreprocessEvent)e);
+            cmd.onPlayerCommand((PlayerCommandPreprocessEvent) e);
         }
     }
 
     public final void onPlayerTab(Event e) {
         for (Command cmd : Start.Instance.cm.commandList) {
-            cmd.onPlayerTab((PlayerCommandSendEvent)e);
+            cmd.onPlayerTab((PlayerCommandSendEvent) e);
         }
     }
 
     public final void onServerListPing(Event e) {
         for (Command cmd : Start.Instance.cm.commandList) {
-            cmd.onServerListPing((ServerListPingEvent)e);
+            cmd.onServerListPing((ServerListPingEvent) e);
         }
     }
 
     public final void onServerCommand(Event e) {
         for (Command cmd : Start.Instance.cm.commandList) {
-            cmd.onServerCommand((ServerCommandEvent)e);
+            cmd.onServerCommand((ServerCommandEvent) e);
         }
     }
 
     public final void onTabControl(Event e) {
         for (Command cmd : Start.Instance.cm.commandList) {
-            cmd.onTabControl((TabCompleteEvent)e);
+            cmd.onTabControl((TabCompleteEvent) e);
         }
     }
 
     public final void onPlayerSneak(Event e) {
         for (Command cmd : Start.Instance.cm.commandList) {
-            cmd.onPlayerSneak((PlayerToggleSneakEvent)e);
+            cmd.onPlayerSneak((PlayerToggleSneakEvent) e);
         }
     }
 
     public final void onPlayerSprint(Event e) {
         for (Command cmd : Start.Instance.cm.commandList) {
-            cmd.onPlayerSprint((PlayerToggleSprintEvent)e);
+            cmd.onPlayerSprint((PlayerToggleSprintEvent) e);
         }
     }
 
     public final void onPlayerFly(Event e) {
         for (Command cmd : Start.Instance.cm.commandList) {
-            cmd.onPlayerFly((PlayerToggleFlightEvent)e);
+            cmd.onPlayerFly((PlayerToggleFlightEvent) e);
         }
     }
 
     public final void onPlayerPortal(Event e) {
         for (Command cmd : Start.Instance.cm.commandList) {
-            cmd.onPlayerPortal((PlayerPortalEvent)e);
+            cmd.onPlayerPortal((PlayerPortalEvent) e);
         }
     }
 
     public final void onPlayerKick(Event e) {
         for (Command cmd : Start.Instance.cm.commandList) {
-            cmd.onPlayerKick((PlayerKickEvent)e);
+            cmd.onPlayerKick((PlayerKickEvent) e);
         }
     }
 
     public final void onPlayerDeath(Event e) {
         for (Command cmd : Start.Instance.cm.commandList) {
-            cmd.onPlayerDeath((PlayerDeathEvent)e);
+            cmd.onPlayerDeath((PlayerDeathEvent) e);
         }
     }
 
     public final void onPlayerBlockPlace(Event e) {
         for (Command cmd : Start.Instance.cm.commandList) {
-            cmd.onPlayerBlockPlace((BlockPlaceEvent)e);
+            cmd.onPlayerBlockPlace((BlockPlaceEvent) e);
         }
     }
 
     public final void onPlayerBlockBreak(Event e) {
         for (Command cmd : Start.Instance.cm.commandList) {
-            cmd.onPlayerBlockBreak((BlockBreakEvent)e);
+            cmd.onPlayerBlockBreak((BlockBreakEvent) e);
         }
     }
 
     public final void onPlayerSwimToggle(Event e) {
         for (Command cmd : Start.Instance.cm.commandList) {
-            cmd.onPlayerSwimToggle((EntityToggleSwimEvent)e);
+            cmd.onPlayerSwimToggle((EntityToggleSwimEvent) e);
         }
     }
 
     public final void onEntityToggleGlide(Event e) {
         for (Command cmd : Start.Instance.cm.commandList) {
-            cmd.onEntityToggleGlide((EntityToggleGlideEvent)e);
+            cmd.onEntityToggleGlide((EntityToggleGlideEvent) e);
         }
     }
 
     public final void onPlayerAdvancementGet(Event e) {
         for (Command cmd : Start.Instance.cm.commandList) {
-            cmd.onPlayerAdvancementGet((PlayerAdvancementDoneEvent)e);
+            cmd.onPlayerAdvancementGet((PlayerAdvancementDoneEvent) e);
         }
     }
 
     public final void onEntityTargetLivingEntity(Event e) {
         for (Command cmd : Start.Instance.cm.commandList) {
-            cmd.onEntityTargetLivingEntity((EntityTargetLivingEntityEvent)e);
+            cmd.onEntityTargetLivingEntity((EntityTargetLivingEntityEvent) e);
         }
     }
 
     public final void onEntityTarget(Event e) {
         for (Command cmd : Start.Instance.cm.commandList) {
-            cmd.onEntityTarget((EntityTargetEvent)e);
+            cmd.onEntityTarget((EntityTargetEvent) e);
         }
     }
 
     public final void onPlayerInteract(Event e) {
         for (Command cmd : Start.Instance.cm.commandList) {
-            cmd.onPlayerInteract((PlayerInteractEvent)e);
+            cmd.onPlayerInteract((PlayerInteractEvent) e);
         }
     }
 
     public final void onEntityDamageByEntity(Event e) {
         for (Command cmd : Start.Instance.cm.commandList) {
-            cmd.onEntityDamageByEntity((EntityDamageByEntityEvent)e);
+            cmd.onEntityDamageByEntity((EntityDamageByEntityEvent) e);
         }
     }
 
     public final void onEntityDamage(Event e) {
         for (Command cmd : Start.Instance.cm.commandList) {
-            cmd.onEntityDamage((EntityDamageEvent)e);
+            cmd.onEntityDamage((EntityDamageEvent) e);
         }
     }
 
     public final void onEntityDeath(Event e) {
         for (Command cmd : Start.Instance.cm.commandList) {
-            cmd.onEntityDeath((EntityDeathEvent)e);
+            cmd.onEntityDeath((EntityDeathEvent) e);
         }
     }
 
     public final void onPlayerGameModeChange(Event e) {
         for (Command cmd : Start.Instance.cm.commandList) {
-            cmd.onPlayerGameModeChange((PlayerGameModeChangeEvent)e);
+            cmd.onPlayerGameModeChange((PlayerGameModeChangeEvent) e);
         }
     }
 
     public final void onEntityPickupItem(Event e) {
         for (Command cmd : Start.Instance.cm.commandList) {
-            cmd.onEntityPickupItem((EntityPickupItemEvent)e);
+            cmd.onEntityPickupItem((EntityPickupItemEvent) e);
         }
     }
 
     public final void onEntityShootBow(Event e) {
         for (Command cmd : Start.Instance.cm.commandList) {
-            cmd.onEntityShootBow((EntityShootBowEvent)e);
+            cmd.onEntityShootBow((EntityShootBowEvent) e);
         }
     }
 
     public final void onInventoryClick(Event e) {
         for (Command cmd : Start.Instance.cm.commandList) {
-            cmd.onInventoryClick((InventoryClickEvent)e);
+            cmd.onInventoryClick((InventoryClickEvent) e);
         }
     }
 
     public final void onAsyncPlayerChat(Event e) {
         for (Command cmd : Start.Instance.cm.commandList) {
-            cmd.onAsyncPlayerChat((AsyncPlayerChatEvent)e);
+            cmd.onAsyncPlayerChat((AsyncPlayerChatEvent) e);
         }
     }
 
     public final void onPlayerDropItemEvent(Event e) {
         for (Command cmd : Start.Instance.cm.commandList) {
-            cmd.onPlayerDropItemEvent((PlayerDropItemEvent)e);
+            cmd.onPlayerDropItemEvent((PlayerDropItemEvent) e);
         }
     }
 
     public final void onEntityPoseChangeEvent(Event e) {
         for (Command cmd : Start.Instance.cm.commandList) {
-            cmd.onEntityPoseChangeEvent((EntityPoseChangeEvent)e);
+            cmd.onEntityPoseChangeEvent((EntityPoseChangeEvent) e);
         }
     }
 

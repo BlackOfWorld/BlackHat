@@ -9,7 +9,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class AllStarPermBase extends PermissibleBase {
 
-    private static Field ATTACHMENTS_FIELD;
+    private static final Field ATTACHMENTS_FIELD;
 
     static {
         try {

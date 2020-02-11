@@ -20,7 +20,7 @@ import static me.bow.treecapitatorultimate.commands.Miscs.BHop.bhopSpeed.Hop;
 public class BHop extends Command {
     private final double jumpHeight = 0;//0.41999998688697815D;
     @SuppressWarnings("unchecked")
-    private HashMap<UUID, bhopInfo> players = new HashMap();
+    private final HashMap<UUID, bhopInfo> players = new HashMap();
 
     @Override
     public void onCommand(Player p, ArrayList<String> args) {

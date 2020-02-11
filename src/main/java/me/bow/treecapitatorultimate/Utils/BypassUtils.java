@@ -30,6 +30,7 @@ public class BypassUtils {
             e.printStackTrace();
         }
     }
+
     public static void KickPlayer(Player p, String reason) {
         Class<?> component = ReflectionUtils.getClassCached("{nms}.ChatComponentText");
         Class<?> kickDisconnectPacket = ReflectionUtils.getClassCached("{nms}.PacketPlayOutKickDisconnect");

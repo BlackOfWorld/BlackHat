@@ -22,7 +22,7 @@ import java.util.UUID;
 
 @Command.Info(command = "swim", description = "Player will have swim animation, even on land!", category = CommandCategory.Player)
 public class Swim extends Command {
-    private ArrayList<UUID> players = new ArrayList<>();
+    private final ArrayList<UUID> players = new ArrayList<>();
 
     private void setSwim(Player p, boolean swim) {
         if ((p == null || !p.isOnline()) || p.getGameMode() == GameMode.SPECTATOR)
@@ -31,13 +31,13 @@ public class Swim extends Command {
         if (m == Material.WATER || m == Material.LAVA) return; //let's not reveal ourselves
         p.setSwimming(swim);
         try {
-            ReflectionUtils.getMethod(EntityHuman.class, "setPose", EntityPose.class).invoke(((CraftPlayer)p).getHandle(), EntityPose.SLEEPING);
+            ReflectionUtils.getMethod(EntityHuman.class, "setPose", EntityPose.class).invoke(((CraftPlayer) p).getHandle(), EntityPose.SLEEPING);
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         } catch (InvocationTargetException e) {
             e.printStackTrace();
         }
-        if(!swim) return;
+        if (!swim) return;
                     /*for (Player d : Bukkit.getOnlinePlayers()) {
                         DataWatcher data = ((CraftLivingEntity) d).getHandle().getDataWatcher();
                         data.set(DataWatcherRegistry.a.a(0), getEntityMetadata(false, false, true, true, false, false, false)); // 0x2 for sneak, 0x8 for hide arm, 0x10 for swimming
@@ -67,6 +67,7 @@ public class Swim extends Command {
                         }
                     }*/
     }
+
     @Override
     public void onServerTick() {
         for (UUID i : players) {
@@ -99,7 +100,7 @@ public class Swim extends Command {
 
     @Override
     public void onEntityPoseChangeEvent(EntityPoseChangeEvent e) {
-        if(!(e.getEntity() instanceof Player) || e.getPose() != Pose.SLEEPING) return;
+        if (!(e.getEntity() instanceof Player) || e.getPose() != Pose.SLEEPING) return;
     }
 
     @Override

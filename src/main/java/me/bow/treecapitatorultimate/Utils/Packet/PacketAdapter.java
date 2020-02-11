@@ -6,12 +6,12 @@ package me.bow.treecapitatorultimate.Utils.Packet;
 public class PacketAdapter implements PacketListener {
 
     @Override
-    public void onPacketReceived(PacketEvent packetEvent){
+    public void onPacketReceived(PacketEvent packetEvent) {
 
     }
 
     @Override
-    public void onPacketSend(PacketEvent packetEvent){
+    public void onPacketSend(PacketEvent packetEvent) {
 
     }
 }

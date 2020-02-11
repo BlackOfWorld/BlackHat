@@ -23,7 +23,7 @@ public class ForceField extends Command {
     private final Class packetClass = ReflectionUtils.getMinecraftClass("Packet");
     private final ReflectionUtils.ConstructorInvoker packetPlayOutAnimation = ReflectionUtils.getConstructor("{nms}.PacketPlayOutAnimation", ReflectionUtils.getClassCached("{nms}.Entity"), int.class);
     @SuppressWarnings("unchecked")
-    private HashMap<UUID, forceField> players = new HashMap();
+    private final HashMap<UUID, forceField> players = new HashMap();
     private int tick = 0;
 
     @Override

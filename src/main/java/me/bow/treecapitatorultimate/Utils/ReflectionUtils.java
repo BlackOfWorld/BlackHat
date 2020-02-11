@@ -14,16 +14,16 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ReflectionUtils {
-    private static String OBC_PREFIX = Bukkit.getServer().getClass().getPackage().getName();
-    private static String NMS_PREFIX = OBC_PREFIX.replace("org.bukkit.craftbukkit", "net.minecraft.server");
-    private static String VERSION = OBC_PREFIX.replace("org.bukkit.craftbukkit", "").replace(".", "");
+    private static final String OBC_PREFIX = Bukkit.getServer().getClass().getPackage().getName();
+    private static final String NMS_PREFIX = OBC_PREFIX.replace("org.bukkit.craftbukkit", "net.minecraft.server");
+    private static final String VERSION = OBC_PREFIX.replace("org.bukkit.craftbukkit", "").replace(".", "");
     @SuppressWarnings("RegExpRedundantEscape")
-    private static Pattern MATCH_VARIABLE = Pattern.compile("\\{([^\\}]+)\\}");
-    private static Map<String, Field> fieldCache = new HashMap<>();
-    private static Map<String, Class<?>> classCache = new HashMap<>();
-    private static Table<Class<?>, MethodParams, Method> methodParamCache = HashBasedTable.create();
-    private static Table<Class<?>, String, Method> methodCache = HashBasedTable.create();
-    private static Table<Class<?>, ConstructorParams, ConstructorInvoker> constructorParamCache = HashBasedTable.create();
+    private static final Pattern MATCH_VARIABLE = Pattern.compile("\\{([^\\}]+)\\}");
+    private static final Map<String, Field> fieldCache = new HashMap<>();
+    private static final Map<String, Class<?>> classCache = new HashMap<>();
+    private static final Table<Class<?>, MethodParams, Method> methodParamCache = HashBasedTable.create();
+    private static final Table<Class<?>, String, Method> methodCache = HashBasedTable.create();
+    private static final Table<Class<?>, ConstructorParams, ConstructorInvoker> constructorParamCache = HashBasedTable.create();
 
     /**
      * Retrieve a class from its full name.
@@ -87,19 +87,20 @@ public class ReflectionUtils {
     }
 
     public static Field getFieldCached(Class<?> clazz, String name) {
-        if (fieldCache.containsKey(clazz.getName()+"."+name)) {
-            return fieldCache.get(clazz.getName()+name);
+        if (fieldCache.containsKey(clazz.getName() + "." + name)) {
+            return fieldCache.get(clazz.getName() + name);
         }
         do {
             for (Field field : clazz.getDeclaredFields()) {
                 if (field.getName().equals(name)) {
-                    fieldCache.put(clazz.getName()+"."+name, field);
+                    fieldCache.put(clazz.getName() + "." + name, field);
                     return setAccessible(field, true);
                 }
             }
         } while ((clazz = clazz.getSuperclass()) != null);
         throw new RuntimeException("Can't find field " + name);
     }
+
     private static boolean forceSetField(Object classInstance, Field f, Object newVal) throws Exception {
         f.setAccessible(true);
         Object origVal = f.get(classInstance);
@@ -136,7 +137,7 @@ public class ReflectionUtils {
     public static Method getMethod(Class<?> clazz, String name, int paramlength) {
         do {
             for (Method method : clazz.getDeclaredMethods()) {
-                if (method.getName().equals(name) && (paramlength == -1 ? true : method.getParameterTypes().length == paramlength)) {
+                if (method.getName().equals(name) && (paramlength == -1 || method.getParameterTypes().length == paramlength)) {
                     return setAccessible(method, true);
                 }
             }

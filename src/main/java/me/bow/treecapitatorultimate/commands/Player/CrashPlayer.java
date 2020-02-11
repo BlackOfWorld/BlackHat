@@ -33,7 +33,7 @@ public class CrashPlayer extends Command {
                     final Field playerConnectionField = nmsPlayer.getClass().getField("playerConnection");
                     final Object pConnection = playerConnectionField.get(nmsPlayer);
                     int times = 0;
-                    Class packetClass = ReflectionUtils.getMinecraftClass("Packet");
+                    final Class packetClass = ReflectionUtils.getMinecraftClass("Packet");
                     final Method sendPacket = pConnection.getClass().getMethod("sendPacket", packetClass);
                     Object packetPlayOutGameStateChange;
                     Object packetPlayOutExplosion;

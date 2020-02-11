@@ -8,9 +8,9 @@ import org.bukkit.entity.Player;
 public class PacketEvent {
 
     private Packet packet;
-    private Player player;
+    private final Player player;
     private boolean cancelled;
-    private ConnectionDirection direction;
+    private final ConnectionDirection direction;
 
     /**
      * @param packet    The packet
@@ -22,7 +22,7 @@ public class PacketEvent {
      * @throws IllegalArgumentException if 'object' isn't a packet.
      */
     @SuppressWarnings("WeakerAccess")
-    protected PacketEvent(Object packet, boolean cancelled, ConnectionDirection direction, Player player){
+    protected PacketEvent(Object packet, boolean cancelled, ConnectionDirection direction, Player player) {
         this.packet = Packet.createFromNMSPacket(packet);
         this.cancelled = cancelled;
         this.direction = direction;
@@ -38,7 +38,7 @@ public class PacketEvent {
      * @see #PacketEvent(Object, boolean, ConnectionDirection, Player)
      */
     @SuppressWarnings("WeakerAccess")
-    protected PacketEvent(Object packet, ConnectionDirection direction, Player player){
+    protected PacketEvent(Object packet, ConnectionDirection direction, Player player) {
         this(packet, false, direction, player);
     }
 
@@ -48,7 +48,7 @@ public class PacketEvent {
      * @return The Packet
      */
     @SuppressWarnings("unused")
-    public Packet getPacket(){
+    public Packet getPacket() {
         return packet;
     }
 
@@ -58,7 +58,7 @@ public class PacketEvent {
      * @param packet The new packet
      */
     @SuppressWarnings("unused")
-    public void setPacket(Packet packet){
+    public void setPacket(Packet packet) {
         this.packet = packet;
     }
 
@@ -68,7 +68,7 @@ public class PacketEvent {
      * @return True if the event is cancelled
      */
     @SuppressWarnings("WeakerAccess")
-    public boolean isCancelled(){
+    public boolean isCancelled() {
         return cancelled;
     }
 
@@ -78,7 +78,7 @@ public class PacketEvent {
      * @param cancelled if true, the event will be cancelled.
      */
     @SuppressWarnings({"unused", "SameParameterValue"})
-    public void setCancelled(boolean cancelled){
+    public void setCancelled(boolean cancelled) {
         // should even be atomic
         this.cancelled = cancelled;
     }
@@ -89,7 +89,7 @@ public class PacketEvent {
      * @return The Direction the packet was travelling
      */
     @SuppressWarnings("unused")
-    public ConnectionDirection getDirection(){
+    public ConnectionDirection getDirection() {
         return direction;
     }
 
@@ -99,7 +99,7 @@ public class PacketEvent {
      * @return The player that is involved.
      */
     @SuppressWarnings("unused")
-    public Player getPlayer(){
+    public Player getPlayer() {
         return player;
     }
 

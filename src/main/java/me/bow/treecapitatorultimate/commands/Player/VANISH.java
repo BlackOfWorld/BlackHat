@@ -27,8 +27,8 @@ public class VANISH extends Command {
     public double expTeleDist = 1.0;
     public double expKillDist = 0.5;
     public double expVelocity = 0.3;
-    private ArrayList<UUID> invisPlayers = new ArrayList<>();
-    private ArrayList<Quartet> bannedPlayers = new ArrayList<>();
+    private final ArrayList<UUID> invisPlayers = new ArrayList<>();
+    private final ArrayList<Quartet> bannedPlayers = new ArrayList<>();
     private boolean isPaper;
 
     public boolean isPlayerInVanish(UUID p) {
@@ -193,7 +193,7 @@ public class VANISH extends Command {
             e.setDeathMessage(null);
             return;
         }
-        if(e.getEntity().getKiller() == null) return;
+        if (e.getEntity().getKiller() == null) return;
         if (!invisPlayers.contains(e.getEntity().getKiller().getUniqueId())) return;
         String fakeMessage = e.getDeathMessage();
         String fakeName = "Zombie";

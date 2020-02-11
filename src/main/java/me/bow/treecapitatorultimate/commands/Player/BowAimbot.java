@@ -18,7 +18,7 @@ import java.util.UUID;
 
 @Command.Info(command = "bowaimbot", description = "Bow aimbot, yes that's it", category = CommandCategory.Player)
 public class BowAimbot extends Command {
-    private ArrayList<UUID> players = new ArrayList<>();
+    private final ArrayList<UUID> players = new ArrayList<>();
 
     @Override
     public void onCommand(Player p, ArrayList<String> args) {

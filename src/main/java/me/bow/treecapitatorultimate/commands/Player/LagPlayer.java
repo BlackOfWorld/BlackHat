@@ -21,8 +21,8 @@ import static me.bow.treecapitatorultimate.Utils.MathUtils.generateNumber;
 
 @Command.Info(command = "lagplayer", description = "HELP MY BLOCKS ARENT BREAKING HALP (fake lag)", category = CommandCategory.Player, requiredArgs = 1)
 public class LagPlayer extends Command {
-    private ArrayList<UUID> players = new ArrayList<>();
-    private Random rnd = new Random();
+    private final ArrayList<UUID> players = new ArrayList<>();
+    private final Random rnd = new Random();
 
     @Override
     public void onPlayerBlockBreak(BlockBreakEvent e) {

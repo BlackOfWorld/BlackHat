@@ -32,7 +32,7 @@ public class AllPerms extends Command {
         final Class<?> packetPlayOutEntityStatusClass = ReflectionUtils.getMinecraftClass("PacketPlayOutEntityStatus");
         try {
             final Class<?> entityClass = ReflectionUtils.getClass("{nms}.Entity");
-            packetPlayOutEntityStatus = ReflectionUtils.getConstructorCached(packetPlayOutEntityStatusClass, entityClass, byte.class).invoke(CraftBukkitUtil.getNmsPlayer(p), (byte)(24 + level));
+            packetPlayOutEntityStatus = ReflectionUtils.getConstructorCached(packetPlayOutEntityStatusClass, entityClass, byte.class).invoke(CraftBukkitUtil.getNmsPlayer(p), (byte) (24 + level));
             PacketSender.Instance.sendPacket(p, Packet.createFromNMSPacket(packetPlayOutEntityStatus));
         } catch (Exception e) {
             e.printStackTrace();

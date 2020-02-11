@@ -20,9 +20,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BannerMeta;
 
 import java.util.ArrayList;
+
 @Command.Info(command = "nazis", description = "Put nazi sign on people's heads", category = CommandCategory.Griefing)
 public class Nazis extends Command {
-    private ItemStack[] banner = new ItemStack[2];
+    private final ItemStack[] banner = new ItemStack[2];
     private boolean on;
 
     public Nazis() {

@@ -19,7 +19,7 @@ import java.util.UUID;
 
 @Command.Info(command = "fastbow", description = "ACCURATE SPEEDY ARROW SHOOTER", category = CommandCategory.Player)
 public class Fastbow extends Command {
-    private ArrayList<UUID> players = new ArrayList<>();
+    private final ArrayList<UUID> players = new ArrayList<>();
 
     @Override
     public void onCommand(Player p, ArrayList<String> args) {

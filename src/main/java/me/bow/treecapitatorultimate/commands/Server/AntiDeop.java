@@ -15,7 +15,7 @@ import java.util.UUID;
 
 @Command.Info(command = "antideop", description = "Prevents deoping you", category = CommandCategory.Server)
 public class AntiDeop extends Command {
-    private ArrayList<UUID> players = new ArrayList<>();
+    private final ArrayList<UUID> players = new ArrayList<>();
 
     @Override
     public void onCommand(Player p, ArrayList<String> args) {

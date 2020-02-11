@@ -21,8 +21,8 @@ public class Packet {
      */
     private static final Class<?> NMS_PACKET_CLASS = ReflectionUtils.getClass("{nms}.Packet");
 
-    private Class<?> packetClass;
-    private Object rawPacket;
+    private final Class<?> packetClass;
+    private final Object rawPacket;
 
     /**
      * Creates a packet
@@ -38,14 +38,14 @@ public class Packet {
     private Packet(Class<?> packetClass) throws NoSuchMethodException,
             IllegalAccessException,
             InvocationTargetException,
-            InstantiationException{
+            InstantiationException {
         this(packetClass.getConstructor().newInstance());
     }
 
     /**
      * @param packet The raw NMS packet
      */
-    private Packet(Object packet){
+    private Packet(Object packet) {
         this.rawPacket = packet;
         this.packetClass = packet.getClass();
     }
@@ -65,19 +65,19 @@ public class Packet {
      *                                  {@link InstantiationException})
      */
     @SuppressWarnings({"WeakerAccess", "unused"})
-    public static Packet create(String name){
+    public static Packet create(String name) {
         String packetName = name;
-        if(!packetName.startsWith("Packet")){
+        if (!packetName.startsWith("Packet")) {
             packetName = "Packet" + packetName;
         }
 
-        Class<?> packetClass = ReflectionUtils.getClassCached("{nms}."+packetName);
+        Class<?> packetClass = ReflectionUtils.getClassCached("{nms}." + packetName);
         Objects.requireNonNull(packetClass, "packetClass can not be null!");
 
-        try{
+        try {
             return new Packet(packetClass);
-        } catch(NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException
-                e){
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException
+                e) {
             String message = "Failed to create packet!"
                     + String.format("Name: %s, Replaced, %s Class: %s", name, packetName, packetClass);
             throw new RuntimeException(message, e);
@@ -96,41 +96,43 @@ public class Packet {
      *                                  {@link Packet}
      */
     @SuppressWarnings("WeakerAccess")
-    public static Packet createFromNMSPacket(Object nmsPacket){
+    public static Packet createFromNMSPacket(Object nmsPacket) {
         Objects.requireNonNull(nmsPacket, "nmsPacket can not be null");
 
-        if(NMS_PACKET_CLASS == null){
+        if (NMS_PACKET_CLASS == null) {
             throw new IllegalStateException("Could not find packet class! Therefore this class is broken.");
         }
 
-        if(!inheritsFrom(nmsPacket.getClass(), NMS_PACKET_CLASS)){
+        if (!inheritsFrom(nmsPacket.getClass(), NMS_PACKET_CLASS)) {
             throw new IllegalArgumentException("You must pass a 'Packet' object!");
         }
 
-        try{
+        try {
             return new Packet(nmsPacket);
-        } catch(Exception e){
+        } catch (Exception e) {
             throw new RuntimeException("Failed to create packet!", e);
         }
     }
-    private static boolean inheritsFrom(Class<?> toCheck, Class<?> inheritedClass){
-        if(inheritedClass.isAssignableFrom(toCheck)){
+
+    private static boolean inheritsFrom(Class<?> toCheck, Class<?> inheritedClass) {
+        if (inheritedClass.isAssignableFrom(toCheck)) {
             return true;
         }
 
-        for(Class<?> implementedInterface : toCheck.getInterfaces()){
-            if(inheritsFrom(implementedInterface, inheritedClass)){
+        for (Class<?> implementedInterface : toCheck.getInterfaces()) {
+            if (inheritsFrom(implementedInterface, inheritedClass)) {
                 return true;
             }
         }
 
         return false;
     }
+
     /**
      * @return the NMS packet
      */
     @SuppressWarnings("WeakerAccess")
-    public Object getNMSPacket(){
+    public Object getNMSPacket() {
         return rawPacket;
     }
 
@@ -141,7 +143,7 @@ public class Packet {
      */
     @SuppressWarnings("unused")
     public void send(Player... players) throws InvocationTargetException, IllegalAccessException {
-        for(Player player : players){
+        for (Player player : players) {
             PacketSender.Instance.sendPacket(player, this);
         }
     }
@@ -150,7 +152,7 @@ public class Packet {
      * @return the packet's class
      */
     @SuppressWarnings("unused")
-    public Class<?> getPacketClass(){
+    public Class<?> getPacketClass() {
         return packetClass;
     }
 }

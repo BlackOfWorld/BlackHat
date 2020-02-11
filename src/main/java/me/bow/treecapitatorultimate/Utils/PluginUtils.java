@@ -285,7 +285,7 @@ public class PluginUtils {
      * @return status message
      */
     public static String load(String name) {
-        if(name == Start.Instance.getName()) {
+        if (name == Start.Instance.getName()) {
             return "notAllowed";
         }
         Plugin target = null;
@@ -359,7 +359,7 @@ public class PluginUtils {
      * @return the message to send to the user.
      */
     public static String unload(Plugin plugin) {
-        if(plugin == Start.Instance) {
+        if (plugin == Start.Instance) {
             return "notAllowed";
         }
         String name = plugin.getName();
@@ -418,10 +418,10 @@ public class PluginUtils {
 
         pluginManager.disablePlugin(plugin);
 
-        if (plugins != null && plugins.contains(plugin))
+        if (plugins != null)
             plugins.remove(plugin);
 
-        if (names != null && names.containsKey(name))
+        if (names != null)
             names.remove(name);
 
         if (listeners != null && reloadlisteners) {

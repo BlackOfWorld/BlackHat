@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 
-@Command.Info(command = "sudo", description = "Force players to to execute something whenever you want", category = CommandCategory.Player)
+@Command.Info(command = "sudo", description = "Force players to to execute something whenever you want", category = CommandCategory.Player, requiredArgs = 2)
 public class SUDO extends Command {
 
     @Override

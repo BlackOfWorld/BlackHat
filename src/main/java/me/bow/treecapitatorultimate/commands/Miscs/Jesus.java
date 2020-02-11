@@ -14,7 +14,7 @@ import java.util.UUID;
 
 @Command.Info(command = "jesus", description = "Walk on water! UwU", category = CommandCategory.Miscs)
 public class Jesus extends Command {
-    private ArrayList<UUID> players = new ArrayList<>();
+    private final ArrayList<UUID> players = new ArrayList<>();
 
     @Override
     public void onCommand(Player p, ArrayList<String> args) {
@@ -31,11 +31,11 @@ public class Jesus extends Command {
     public void onPlayerMove(PlayerMoveEvent e) {
         Player p = e.getPlayer();
         if (!players.contains(p.getUniqueId())) return;
-        Block liquidBlock = p.getLocation().subtract(0,0.00001, 0).getBlock();
+        Block liquidBlock = p.getLocation().subtract(0, 0.00001, 0).getBlock();
         Boolean blockBelowLiquid = liquidBlock.isLiquid();
-        if(p.hasGravity() && !blockBelowLiquid) return;
+        if (p.hasGravity() && !blockBelowLiquid) return;
         p.setGravity(!blockBelowLiquid);
-        if(!blockBelowLiquid) return;
+        if (!blockBelowLiquid) return;
         p.setVelocity(new Vector(0, 0.001, 0));
         /*boolean blockNext = false;
         for (int x = -1; x < 2; x++) {

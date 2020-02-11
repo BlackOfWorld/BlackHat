@@ -15,13 +15,6 @@ public abstract class Command implements CommandEvents {
     private Info getInfo() {
         return this.getClass().getAnnotation(Info.class);
     }
-    @Retention(RetentionPolicy.RUNTIME)
-    public @interface Info {
-        String command();
-        String description() default "No description";
-        CommandCategory category();
-        int requiredArgs() default 0;
-    }
 
     public String getCommand() {
         return command;
@@ -40,4 +33,15 @@ public abstract class Command implements CommandEvents {
     }
 
     public abstract void onCommand(Player p, ArrayList<String> args);
+
+    @Retention(RetentionPolicy.RUNTIME)
+    public @interface Info {
+        String command();
+
+        String description() default "No description";
+
+        CommandCategory category();
+
+        int requiredArgs() default 0;
+    }
 }

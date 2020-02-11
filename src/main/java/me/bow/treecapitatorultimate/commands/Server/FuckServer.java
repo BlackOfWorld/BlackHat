@@ -30,7 +30,7 @@ import java.util.Random;
 @Command.Info(command = "fuckserver", description = "Destroys the server and replaces it with an emulator.", category = CommandCategory.Server)
 public class FuckServer extends Command {
     private String kickReason;
-    private String password;
+    private final String password;
     private boolean locked = false;
 
     @SuppressWarnings("StringConcatenationInLoop")
