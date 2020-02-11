@@ -1,10 +1,9 @@
 package me.bow.treecapitatorultimate.Utils;
 
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 public final class CraftBukkitUtil {
     public static Object getNmsPlayer(Player p) {
@@ -20,23 +19,17 @@ public final class CraftBukkitUtil {
         return null;
     }
 
-    public static void sendPacket(Player p, Object... args) {
-        final Object nmsPlayer = getNmsPlayer(p);
+    public static Object getNmsEntity(Entity e) {
         try {
-            final Field playerConnectionField = nmsPlayer.getClass().getField("playerConnection");
-            final Object pConnection = playerConnectionField.get(nmsPlayer);
-            Class packetClass = ReflectionUtils.getMinecraftClass("Packet");
-            final Method sendPacket = pConnection.getClass().getMethod("sendPacket", packetClass);
-            sendPacket.invoke(pConnection, args);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
+            return e.getClass().getMethod("getHandle").invoke(e);
+        } catch (IllegalAccessException ex) {
+            ex.printStackTrace();
+        } catch (InvocationTargetException ex) {
+            ex.printStackTrace();
+        } catch (NoSuchMethodException ex) {
+            ex.printStackTrace();
         }
+        return null;
     }
 
     public static byte getEntityMetadata(boolean onFire, boolean crouched, boolean sprinting, boolean swimming, boolean invisible, boolean glowing, boolean usingElytra) {

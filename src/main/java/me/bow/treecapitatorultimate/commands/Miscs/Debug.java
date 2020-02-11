@@ -14,6 +14,7 @@ public class Debug extends Command {
     public void onCommand(Player p, ArrayList<String> args) {
         p.sendMessage(Start.Prefix + "Name: " + p.getName());
         p.sendMessage(Start.Prefix + "Display name: " + p.getDisplayName());
+        p.sendMessage(Start.Prefix + "UUID: " + p.getUniqueId().toString());
         p.sendMessage(Start.Prefix + "Health: " + p.getHealth());
         p.sendMessage(Start.Prefix + "Health scale: " + p.getHealthScale());
         p.sendMessage(Start.Prefix + "Locale: " + p.getLocale());

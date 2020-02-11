@@ -1,4 +1,4 @@
-package me.bow.treecapitatorultimate.Utils;
+/*package me.bow.treecapitatorultimate.Utils;
 
 import net.minecraft.server.v1_15_R1.EntityPlayer;
 import net.minecraft.server.v1_15_R1.EnumChatVisibility;
@@ -31,7 +31,7 @@ public class PlayerConnectionBase extends PlayerConnection {
         return this.oldConnection;
     }
 
-    public void setOldConnection(PlayerConnection connection) {
+    public void setOldConnection(Object connection) {
         this.oldConnection = connection;
     }
 
@@ -63,3 +63,4 @@ public class PlayerConnectionBase extends PlayerConnection {
         }
     }
 }
+*/

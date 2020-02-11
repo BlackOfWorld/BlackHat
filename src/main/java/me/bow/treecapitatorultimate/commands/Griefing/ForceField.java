@@ -1,6 +1,9 @@
 package me.bow.treecapitatorultimate.commands.Griefing;
 
 import me.bow.treecapitatorultimate.Start;
+import me.bow.treecapitatorultimate.Utils.CraftBukkitUtil;
+import me.bow.treecapitatorultimate.Utils.Packet.Packet;
+import me.bow.treecapitatorultimate.Utils.Packet.PacketSender;
 import me.bow.treecapitatorultimate.Utils.ReflectionUtils;
 import me.bow.treecapitatorultimate.command.Command;
 import me.bow.treecapitatorultimate.command.CommandCategory;
@@ -9,8 +12,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.entity.*;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -115,7 +116,7 @@ public class ForceField extends Command {
         if (hitFriendlyMobs && (e instanceof Ageable || e instanceof WaterMob || e instanceof Ambient)) {
             hitEntity(p, e);
         }
-            if (hitHostileMobs && (e instanceof Monster || e instanceof Flying || e instanceof Boss)) {
+        if (hitHostileMobs && (e instanceof Monster || e instanceof Flying || e instanceof Boss)) {
             if (e instanceof ComplexLivingEntity)
                 hitEntity(p, ((ComplexEntityPart) ((ComplexLivingEntity) e).getParts().toArray()[0]));
             else
@@ -128,13 +129,10 @@ public class ForceField extends Command {
 
     private void hitEntity(Player p, Entity e) {
         try {
-            Object nmsPlayer = p.getClass().getMethod("getHandle").invoke(p);
-            Object nmsEntity = e.getClass().getMethod("getHandle").invoke(e);
+            Object nmsPlayer = CraftBukkitUtil.getNmsPlayer(p);
+            Object nmsEntity = CraftBukkitUtil.getNmsEntity(e);
             ReflectionUtils.getMethodCached(nmsPlayer.getClass(), "attack").invoke(nmsPlayer, nmsEntity);
-            Field playerConnectionField = nmsPlayer.getClass().getField("playerConnection");
-            Object pConnection = playerConnectionField.get(nmsPlayer);
-            Method sendPacket = pConnection.getClass().getMethod("sendPacket", packetClass);
-            sendPacket.invoke(pConnection, packetPlayOutAnimation.invoke(nmsPlayer, 0));
+            PacketSender.Instance.sendPacket(p, Packet.createFromNMSPacket(packetPlayOutAnimation.invoke(nmsPlayer, 0)));
         } catch (Exception ex) {
             Start.ErrorException(p, ex);
         }

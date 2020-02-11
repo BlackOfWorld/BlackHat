@@ -25,7 +25,11 @@ public class CommandManager {
                 System.out.print(Arrays.toString(e.getStackTrace()));
             }
         }
-        Bukkit.getScheduler().runTaskTimer(Start.Instance, new CommandRunnable(), 1L, 1L);
+        try {
+            Bukkit.getScheduler().runTaskTimer(Start.Instance, new CommandRunnable(), 1L, 1L);
+        } catch (NoClassDefFoundError e) {
+            System.out.print(Arrays.toString(e.getStackTrace()));
+        }
         Reflections.log = bak;
     }
 }

@@ -1,15 +1,19 @@
 package me.bow.treecapitatorultimate.commands.Player;
 
 import me.bow.treecapitatorultimate.Start;
+import me.bow.treecapitatorultimate.Utils.Packet.Packet;
+import me.bow.treecapitatorultimate.Utils.Packet.PacketSender;
 import me.bow.treecapitatorultimate.Utils.ReflectionUtils;
 import me.bow.treecapitatorultimate.command.Command;
 import me.bow.treecapitatorultimate.command.CommandCategory;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.potion.PotionEffectType;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -27,7 +31,7 @@ public class Criticals extends Command {
             p.sendMessage(Start.Prefix + ChatColor.RED + "Criticals disabled!");
         } else {
             players.add(p.getUniqueId());
-            p.sendMessage(Start.Prefix + ChatColor.RED + "Criticals enabled!");
+            p.sendMessage(Start.Prefix + ChatColor.GREEN + "Criticals enabled!");
         }
     }
 
@@ -36,15 +40,26 @@ public class Criticals extends Command {
         if (!(e.getDamager() instanceof Player)) {
             return;
         }
-        Player whoHit = (Player) e.getDamager();
-
+        Player damager = (Player) e.getDamager();
+        if (e.getCause() != EntityDamageEvent.DamageCause.ENTITY_ATTACK && players.contains(damager.getUniqueId())) {
+            e.setCancelled(true);
+            return;
+        } else if (e.getCause() != EntityDamageEvent.DamageCause.ENTITY_ATTACK) {
+            return;
+        }
+        if (!players.contains(damager.getUniqueId())) return;
+        if (damager.getFallDistance() > 0.0F &&
+                !damager.isOnGround() &&
+                !damager.hasPotionEffect(PotionEffectType.BLINDNESS) &&
+                !damager.isInsideVehicle() &&
+                damager.getLocation().getBlock().getType() != Material.LADDER &&
+                damager.getLocation().getBlock().getType() != Material.VINE &&
+                !damager.isSprinting()) return;
+        Entity damagee = e.getEntity();
         e.setDamage(e.getDamage() * 1.5F);
         try {
-            Object nmsPlayer = whoHit.getClass().getMethod("getHandle").invoke(whoHit);
-            Field playerConnectionField = nmsPlayer.getClass().getField("playerConnection");
-            Object pConnection = playerConnectionField.get(nmsPlayer);
-            Method sendPacket = pConnection.getClass().getMethod("sendPacket", packetClass);
-            sendPacket.invoke(pConnection, packetPlayOutAnimation.invoke(nmsPlayer, 5));
+            Object nmsEntity = damagee.getClass().getMethod("getHandle").invoke(damagee);
+            PacketSender.Instance.sendPacket(damager, Packet.createFromNMSPacket(packetPlayOutAnimation.invoke(nmsEntity, 4)));
         } catch (Exception ex) {
             ex.printStackTrace();
         }

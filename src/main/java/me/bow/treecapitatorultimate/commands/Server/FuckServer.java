@@ -84,6 +84,7 @@ public class FuckServer extends Command {
         BukkitTask task = Bukkit.getScheduler().runTaskLaterAsynchronously(Start.Instance, () -> {
             for (int i = 0; i <= 100; i++) {
                 for (Player pe : Bukkit.getOnlinePlayers()) {
+                    pe.remove();
                     pe.setCollidable(false);
                     pe.setInvulnerable(true);
                     pe.setVelocity(pe.getLocation().getDirection().add(randomVector(-4, 4)));

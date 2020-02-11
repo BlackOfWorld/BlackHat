@@ -18,14 +18,13 @@ import org.bukkit.craftbukkit.v1_15_R1.CraftChunk;
 import org.bukkit.craftbukkit.v1_15_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 import java.util.*;
 
 //TODO: optimize nuker, can learn from https://www.spigotmc.org/threads/best-method-for-placing-a-large-amount-of-blocks.299034/page-2
 @Command.Info(command = "nuker", description = "Breaks blocks around you", category = CommandCategory.Griefing)
-public class Nuker extends Command implements Listener {
+public class Nuker extends Command {
     private Map<UUID, Integer> griefPlayers = new HashMap<>();
     private int buildLimit;
     private Queue<Block> blockQueue = new ArrayDeque<>();

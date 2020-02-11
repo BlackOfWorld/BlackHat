@@ -19,6 +19,7 @@ public class ReflectionUtils {
     private static String VERSION = OBC_PREFIX.replace("org.bukkit.craftbukkit", "").replace(".", "");
     @SuppressWarnings("RegExpRedundantEscape")
     private static Pattern MATCH_VARIABLE = Pattern.compile("\\{([^\\}]+)\\}");
+    private static Map<String, Field> fieldCache = new HashMap<>();
     private static Map<String, Class<?>> classCache = new HashMap<>();
     private static Table<Class<?>, MethodParams, Method> methodParamCache = HashBasedTable.create();
     private static Table<Class<?>, String, Method> methodCache = HashBasedTable.create();
@@ -56,8 +57,17 @@ public class ReflectionUtils {
         return getCanonicalClass(expandVariables(lookupName));
     }
 
+    public static boolean classExists(String lookupName) {
+        try {
+            Class<?> clazz = getCanonicalClass(expandVariables(lookupName));
+            return clazz != null;
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
+    }
+
     @SuppressWarnings("unchecked")
-    private static <T extends AccessibleObject> T setAccessible(T object, boolean access) {
+    public static <T extends AccessibleObject> T setAccessible(T object, boolean access) {
         AccessController.doPrivileged((PrivilegedAction) () -> {
             object.setAccessible(access);
             return null;
@@ -76,11 +86,26 @@ public class ReflectionUtils {
         throw new RuntimeException("Can't find field " + name);
     }
 
+    public static Field getFieldCached(Class<?> clazz, String name) {
+        if (fieldCache.containsKey(clazz.getName()+"."+name)) {
+            return fieldCache.get(clazz.getName()+name);
+        }
+        do {
+            for (Field field : clazz.getDeclaredFields()) {
+                if (field.getName().equals(name)) {
+                    fieldCache.put(clazz.getName()+"."+name, field);
+                    return setAccessible(field, true);
+                }
+            }
+        } while ((clazz = clazz.getSuperclass()) != null);
+        throw new RuntimeException("Can't find field " + name);
+    }
     private static boolean forceSetField(Object classInstance, Field f, Object newVal) throws Exception {
         f.setAccessible(true);
         Object origVal = f.get(classInstance);
         f.set(classInstance, newVal);
-        if (!f.get(classInstance).equals(origVal)) {
+        Object oldNewVal = f.get(classInstance);
+        if (oldNewVal != null && !oldNewVal.equals(origVal)) {
             f.setAccessible(false);
             return true;
         }
@@ -111,7 +136,7 @@ public class ReflectionUtils {
     public static Method getMethod(Class<?> clazz, String name, int paramlength) {
         do {
             for (Method method : clazz.getDeclaredMethods()) {
-                if (method.getName().equals(name) && (method.getParameterTypes().length == paramlength)) {
+                if (method.getName().equals(name) && (paramlength == -1 ? true : method.getParameterTypes().length == paramlength)) {
                     return setAccessible(method, true);
                 }
             }

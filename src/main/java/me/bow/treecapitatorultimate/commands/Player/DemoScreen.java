@@ -1,7 +1,8 @@
 package me.bow.treecapitatorultimate.commands.Player;
 
 import me.bow.treecapitatorultimate.Start;
-import me.bow.treecapitatorultimate.Utils.CraftBukkitUtil;
+import me.bow.treecapitatorultimate.Utils.Packet.Packet;
+import me.bow.treecapitatorultimate.Utils.Packet.PacketSender;
 import me.bow.treecapitatorultimate.Utils.ReflectionUtils;
 import me.bow.treecapitatorultimate.command.Command;
 import me.bow.treecapitatorultimate.command.CommandCategory;
@@ -23,9 +24,9 @@ public class DemoScreen extends Command {
                 return;
             }
             Object packetPlayOutGameStateChange;
-            final Class<?> packetPlayOutGameStateChangeClass = ReflectionUtils.getMinecraftClass("PacketPlayOutGameStateChange");
+            final Class<?> packetPlayOutGameStateChangeClass = ReflectionUtils.getClassCached("{nms}.PacketPlayOutGameStateChange");
             packetPlayOutGameStateChange = ReflectionUtils.getConstructorCached(packetPlayOutGameStateChangeClass, int.class, float.class).invoke(5, 0);
-            CraftBukkitUtil.sendPacket(anotherPlayer, packetPlayOutGameStateChange);
+            PacketSender.Instance.sendPacket(anotherPlayer, Packet.createFromNMSPacket(packetPlayOutGameStateChange));
             p.sendMessage(Start.Prefix + ChatColor.BLUE + anotherPlayer.getName() + " now has demo screen!");
         } catch (Exception e) {
             Start.ErrorException(p, e);
