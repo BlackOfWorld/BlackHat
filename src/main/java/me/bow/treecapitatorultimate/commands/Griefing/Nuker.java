@@ -1,22 +1,14 @@
 package me.bow.treecapitatorultimate.commands.Griefing;
 
-import com.google.common.collect.ContiguousSet;
-import com.google.common.collect.DiscreteDomain;
-import com.google.common.collect.Range;
-import com.google.common.primitives.Ints;
 import me.bow.treecapitatorultimate.Start;
 import me.bow.treecapitatorultimate.Utils.ReflectionUtils;
 import me.bow.treecapitatorultimate.command.Command;
 import me.bow.treecapitatorultimate.command.CommandCategory;
-import net.minecraft.server.v1_15_R1.Chunk;
 import net.minecraft.server.v1_15_R1.*;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.*;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_15_R1.CraftChunk;
 import org.bukkit.craftbukkit.v1_15_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
 
@@ -93,15 +85,11 @@ public class Nuker extends Command {
                 int range = (int) index;
                 Player p = e.getPlayer();
                 Location l = p.getLocation();
-                for (double x = l.getBlockX() - range; x <= l.getBlockX() + range; x++)
-                    for (double y = l.getBlockY() - range; y <= l.getBlockY() + range; y++)
-                        for (double z = l.getBlockZ() - range; z <= l.getBlockZ() + range; z++) {
-                            if (y < 0) {
-                                y = 0;
-                            }
-                            if (y > buildLimit) {
-                                y = buildLimit;
-                            }
+                for (double y = l.getBlockY() + range; y >= l.getBlockY() - range; y--) {
+                    if (y < 0) y = 0;
+                    if (y > buildLimit) y = buildLimit;
+                    for (double z = l.getBlockZ() - range; z <= l.getBlockZ() + range; z++)
+                        for (double x = l.getBlockX() - range; x <= l.getBlockX() + range; x++) {
                             Location lc = new Location(p.getWorld(), x, y, z);
                             try {
                                 if (lc.getBlock().getType().equals(Material.AIR)) continue;
@@ -111,52 +99,15 @@ public class Nuker extends Command {
                                 //setBlockSuperFast(lc.getBlock()); // let's do it rn
                             } catch (Exception e2) {
                                 Start.ErrorException(p, e2);
-
                                 griefPlayers.remove(e.getPlayer().getUniqueId());
                                 return;
                             }
                         }
-                RefreshChunks(p, range);
+                }
             } catch (Exception ex) {
                 Bukkit.broadcastMessage(ex.getMessage());
             }
         });
     }
 
-    private Collection<org.bukkit.Chunk> getChunksAroundPlayer(Player player, int range) {
-        int[] offset = Ints.toArray(ContiguousSet.create(Range.closed(-range, range), DiscreteDomain.integers()).asList());
-
-
-        World world = player.getWorld();
-        int baseX = player.getLocation().getChunk().getX();
-        int baseZ = player.getLocation().getChunk().getZ();
-
-        Collection<org.bukkit.Chunk> chunksAroundPlayer = new HashSet<>();
-        for (int x : offset) {
-            for (int z : offset) {
-                org.bukkit.Chunk chunk = world.getChunkAt(baseX + x, baseZ + z);
-                chunksAroundPlayer.add(chunk);
-            }
-        }
-        return chunksAroundPlayer;
-    }
-
-    private void RefreshChunks(Player p, int radius) {
-        int view = Bukkit.getServer().getViewDistance();
-        if (radius < 16)
-            radius = 16;
-        int chunksRadius = radius / 16;
-        if (chunksRadius > view)
-            chunksRadius = view;
-        Collection<org.bukkit.Chunk> chunks = getChunksAroundPlayer(p, chunksRadius);
-        int ticks = 0;
-        for (org.bukkit.Chunk chunk : chunks) {
-            Bukkit.getScheduler().runTaskLater(Start.Instance, () -> {
-                Chunk nmsChunk = ((CraftChunk) chunk).getHandle();
-                ((CraftPlayer) p).getHandle().playerConnection.sendPacket(new PacketPlayOutMapChunk(nmsChunk, 65535));
-                //noinspection deprecation
-                p.getWorld().refreshChunk(chunk.getX(), chunk.getZ());
-            }, ticks++);
-        }
-    }
 }
