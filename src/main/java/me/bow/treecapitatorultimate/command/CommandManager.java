@@ -7,6 +7,7 @@ import org.reflections.Reflections;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Set;
+import java.util.logging.Level;
 
 public class CommandManager {
     public ArrayList<Command> commandList = new ArrayList<>();
@@ -15,14 +16,14 @@ public class CommandManager {
         org.slf4j.Logger bak = Reflections.log;
         Reflections.log = null;
         Reflections reflections = new Reflections(this.getClass().getPackage().getName());
-        Set<Class<? extends Command>> subTypes = reflections.getSubTypesOf(Command.class);
-        for (Class<? extends Command> object : subTypes) {
+        Set<Class<?>> subTypes = reflections.getTypesAnnotatedWith(Command.Info.class);
+        for (Class<?> object : subTypes) {
             try {
-                this.commandList.add(object.getDeclaredConstructor().newInstance());
+                this.commandList.add((Command)object.getDeclaredConstructor().newInstance());
             } catch (NoClassDefFoundError e) {
-                System.out.print(Arrays.toString(e.getStackTrace()));
+                Start.Instance.LOGGER.log(Level.SEVERE, e.getCause().toString());
             } catch (Exception e) {
-                System.out.print(Arrays.toString(e.getStackTrace()));
+                Start.Instance.LOGGER.log(Level.SEVERE, e.getCause().toString());
             }
         }
         try {
