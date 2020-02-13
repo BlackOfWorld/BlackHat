@@ -49,6 +49,10 @@ public class Help extends Command {
                 arguments = Integer.parseInt(args.get(0));
             } catch (Exception e) {
             }
+        if(help == null){
+            p.sendMessage(Start.Prefix + "Help is still generating!");
+            return;
+        }
         if (arguments <= 0 || arguments >= (help.size() + 1)) {
             p.sendMessage(Start.Prefix + "Help out of bounds");
             return;

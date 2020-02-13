@@ -310,22 +310,14 @@ public class ReflectionUtils {
         // Ugly autogenned Lombok code
         @Override
         public boolean equals(final Object o) {
-            if (o == this) {
-                return true;
-            }
-            if (!(o instanceof MethodParams)) {
-                return false;
-            }
+            if (o == this) return true;
+            if (!(o instanceof MethodParams)) return false;
             final MethodParams that = (MethodParams) o;
-            if (!that.canEqual(this)) {
-                return false;
-            }
+            if (!that.canEqual(this)) return false;
             final Object thisName = this.name;
             final Object thatName = that.name;
             if (thisName == null) {
-                if (thatName == null) {
-                    return Arrays.deepEquals(this.params, that.params);
-                }
+                if (thatName == null) return Arrays.deepEquals(this.params, that.params);
             } else if (thisName.equals(thatName)) {
                 return Arrays.deepEquals(this.params, that.params);
             }
@@ -368,5 +360,27 @@ public class ReflectionUtils {
         public int hashCode() {
             return Arrays.deepHashCode(params);
         }
+    }
+    public static boolean versionIsNewerOrEqualAs(int major, int minor, int patch){
+        return getMajorVersion() >= major && getMinorVersion() >= minor && getPatchVersion() >= patch;
+    }
+    private static int getMajorVersion(){
+        return Integer.parseInt(getVersionSanitized().split("_")[0]);
+    }
+
+    private static String getVersionSanitized(){
+        return VERSION.replaceAll("[^\\d_]", "");
+    }
+
+    private static int getMinorVersion(){
+        return Integer.parseInt(getVersionSanitized().split("_")[1]);
+    }
+
+    private static int getPatchVersion(){
+        String[] split = getVersionSanitized().split("_");
+        if(split.length < 3){
+            return 0;
+        }
+        return Integer.parseInt(split[2]);
     }
 }

