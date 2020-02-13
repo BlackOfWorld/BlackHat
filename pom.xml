@@ -86,8 +86,8 @@
                         </option>
                         <option>-keep public class ${packageName}.listeners.TreeDestroy</option>
                         <option>-keep public class ${packageName}.listeners.AsyncChatEvent</option>
-                        <option>-keepclassmembers class * extends java.lang.Enum {
-                            public static **[] values();
+                        <option>-keepclassmembers public enum ${packageName}.command.CommandCategory { public static
+                            **[] values();
                             public static ** valueOf(java.lang.String);
                             }
                         </option>
