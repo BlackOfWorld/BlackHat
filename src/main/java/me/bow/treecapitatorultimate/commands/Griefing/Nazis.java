@@ -19,18 +19,39 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BannerMeta;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
 @Command.Info(command = "nazis", description = "Put nazi sign on people's heads", category = CommandCategory.Griefing)
 public class Nazis extends Command {
     private final ItemStack[] banner = new ItemStack[2];
     private boolean on;
-
     public Nazis() {
-        banner[0] = new ItemStack(Material.RED_BANNER, 64);
-        banner[1] = new ItemStack(Material.RED_BANNER, 64);
-        BannerMeta bannerMeta1 = (BannerMeta) banner[0].getItemMeta();
-        BannerMeta bannerMeta2 = (BannerMeta) banner[0].getItemMeta();
+        try {
+            Material[] enums = (Material[]) Material.class.getDeclaredMethod("values").invoke(null);
+            for (Material anEnum : enums) {
+                if(anEnum.name().equals("RED_BANNER")) {
+                    this.banner[0] = new ItemStack(anEnum, 64);
+                    this.banner[1] = new ItemStack(anEnum, 64);
+                    break;
+                } else if(anEnum.name().equals("BANNER")) {
+                    for(int i = 0; i < banner.length; i++) {
+                        ItemStack banner = new ItemStack(anEnum, 64);
+                        BannerMeta meta = (BannerMeta) banner.getItemMeta();
+                        meta.setBaseColor(DyeColor.RED);
+                        banner.setItemMeta(meta);
+                        this.banner[i] = banner;
+                    }
+                }
+            }
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        //ItemStack banner = new ItemStack(Material.BANNER, 1);
+        //BannerMeta meta = (BannerMeta)banner.getItemMeta();
+        //meta.setBaseColor(DyeColor.RED);
+        BannerMeta bannerMeta1 = (BannerMeta) this.banner[0].getItemMeta();
+        BannerMeta bannerMeta2 = (BannerMeta) this.banner[1].getItemMeta();
         if (bannerMeta1 == null || bannerMeta2 == null) return; // should never happen
         bannerMeta1.addPattern(new Pattern(DyeColor.BLACK, PatternType.STRIPE_MIDDLE));
         bannerMeta1.addPattern(new Pattern(DyeColor.BLACK, PatternType.STRIPE_CENTER));
@@ -47,8 +68,8 @@ public class Nazis extends Command {
         bannerMeta2.addPattern(new Pattern(DyeColor.BLACK, PatternType.STRAIGHT_CROSS));
         bannerMeta2.addPattern(new Pattern(DyeColor.BLACK, PatternType.SQUARE_TOP_LEFT));
         bannerMeta2.addPattern(new Pattern(DyeColor.RED, PatternType.BORDER));
-        banner[0].setItemMeta(bannerMeta1);
-        banner[1].setItemMeta(bannerMeta2);
+        this.banner[0].setItemMeta(bannerMeta1);
+        this.banner[1].setItemMeta(bannerMeta2);
     }
 
     // /minecraft:give @p red_banner{BlockEntityTag:{Base:1,Patterns:[{Pattern:ms,Color:15},{Pattern:cs,Color:15},{Pattern:mr,Color:15},{Pattern:sc,Color:0},{Pattern:mc,Color:0},{Pattern:mc,Color:0}]}}

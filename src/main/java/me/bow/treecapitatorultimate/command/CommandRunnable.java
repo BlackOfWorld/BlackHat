@@ -39,8 +39,15 @@ public class CommandRunnable implements Runnable, Listener, PluginMessageListene
         Set<Class<? extends Event>> classes = reflections.getSubTypesOf(Event.class);
         EventExecutor executor = (listener, event) -> {
             try {
-                if (!hookedEvents.containsKey(event.getEventName())) return;
-                hookedEvents.get(event.getEventName()).invoke(CommandRunnable.Instance, event);
+                Class<?> clazz = event.getClass();
+                do {
+                    if (!hookedEvents.containsKey(clazz.getSimpleName())) {
+                        clazz = clazz.getSuperclass();
+                        continue;
+                    }
+                    hookedEvents.get(clazz.getSimpleName()).invoke(CommandRunnable.Instance, event);
+                    return;
+                } while (clazz != Object.class);
             } catch (InvocationTargetException var4) {
                 throw new EventException(var4.getCause());
             } catch (Throwable var5) {

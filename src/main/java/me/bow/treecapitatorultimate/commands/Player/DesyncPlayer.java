@@ -42,9 +42,7 @@ public class DesyncPlayer extends Command {
 
     @Override
     public void onPacketReceived(PacketEvent e) {
-        if(e.getPacket().getPacketClass().getSimpleName().contains("KeepAlive")) return;
-        if (rnd.nextInt(100) >= 20) return;
-        e.setCancelled(true);
+        onPacketSend(e);
     }
 
     @Override
