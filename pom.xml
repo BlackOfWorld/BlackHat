@@ -15,7 +15,7 @@
         <packageName>me.bow.treecapitatorultimate</packageName>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <minecraftVersion>1.15.1-R0.1-SNAPSHOT</minecraftVersion>
+        <minecraftVersion>1.15.2-R0.1-SNAPSHOT</minecraftVersion>
     </properties>
 
     <build>

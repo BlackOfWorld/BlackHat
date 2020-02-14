@@ -15,6 +15,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.potion.PotionEffectType;
 
 import java.lang.reflect.Field;
@@ -101,6 +102,12 @@ public class Criticals extends Command {
             Objects.requireNonNull(ReflectionUtils.getClass("{nms}.PacketPlayOutWorldParticles"));
     private Method getParticleName;
     private Field particleParamField;
+
+    @Override
+    public void onPlayerJoin(PlayerJoinEvent e) {
+        if (!players.contains(e.getPlayer().getUniqueId())) return;
+        PacketManager.instance.addListener(e.getPlayer(), this);
+    }
 
     @Override
     public void onPacketSend(PacketEvent e) {

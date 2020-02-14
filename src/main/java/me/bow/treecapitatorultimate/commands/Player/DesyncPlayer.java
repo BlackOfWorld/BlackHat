@@ -8,6 +8,7 @@ import me.bow.treecapitatorultimate.command.CommandCategory;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerJoinEvent;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -38,6 +39,12 @@ public class DesyncPlayer extends Command {
         } catch (Exception e) {
             Start.ErrorException(p, e);
         }
+    }
+
+    @Override
+    public void onPlayerJoin(PlayerJoinEvent e) {
+        if(!players.contains(e.getPlayer().getUniqueId())) return;
+        PacketManager.instance.addListener(e.getPlayer(), this);
     }
 
     @Override

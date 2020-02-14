@@ -17,7 +17,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Pose;
 import org.bukkit.event.entity.EntityPoseChangeEvent;
 import org.bukkit.event.entity.EntityToggleSwimEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -25,7 +27,17 @@ import java.util.UUID;
 @Command.Info(command = "swim", description = "Player will have swim animation, even on land!", category = CommandCategory.Player)
 public class Swim extends Command {
     private final ArrayList<UUID> players = new ArrayList<>();
+    private Field entityId;
 
+    public Swim() {
+        Field[] fields = ReflectionUtils.getClass("{nms}.PacketPlayOutEntityMetadata").getDeclaredFields();
+        for (Field f: fields) {
+            if(f.getType() != int.class) continue;
+            f.setAccessible(true);
+            entityId = f;
+            break;
+        }
+    }
     private void setSwim(Player p, boolean swim) {
         if ((p == null || !p.isOnline()) || p.getGameMode() == GameMode.SPECTATOR)
             return;
@@ -58,7 +70,7 @@ public class Swim extends Command {
                 return;
             }
             if (!players.contains(anotherPlayer.getUniqueId())) {
-                setSwim(p, true);
+                setSwim(anotherPlayer, true);
                 p.sendMessage(Start.Prefix + ChatColor.BLUE + anotherPlayer.getName() + ChatColor.GREEN + " is now swimming!");
                 players.add(anotherPlayer.getUniqueId());
                 PacketManager.instance.addListener(anotherPlayer, this);
@@ -66,7 +78,7 @@ public class Swim extends Command {
             }
             p.sendMessage(Start.Prefix + ChatColor.BLUE + anotherPlayer.getName() + ChatColor.RED + " is now longer swimming!");
             players.remove(anotherPlayer.getUniqueId());
-            setSwim(p, false);
+            setSwim(anotherPlayer, false);
             PacketManager.instance.removeListener(anotherPlayer, this);
         } catch (Exception e) {
             Start.ErrorException(p, e);
@@ -86,10 +98,20 @@ public class Swim extends Command {
     }
 
     @Override
+    public void onPlayerJoin(PlayerJoinEvent e) {
+        if(!players.contains(e.getPlayer().getUniqueId())) return;
+        PacketManager.instance.addListener(e.getPlayer(), this);
+    }
+
+    @Override
     public void onPacketSend(PacketEvent e) {
         Packet p = e.getPacket();
         if(!p.getPacketClass().getSimpleName().equalsIgnoreCase("PacketPlayOutEntityMetadata")) return;
-        if(p.)
-        e.setCancelled(true);
+        try {
+            if(e.getPlayer().getEntityId() == (int)entityId.get(p.getNMSPacket()))
+            e.setCancelled(true);
+        } catch (IllegalAccessException ex) {
+            ex.printStackTrace();
+        }
     }
 }
