@@ -1,7 +1,6 @@
 package me.bow.treecapitatorultimate.Utils.Packet;
 
 import io.netty.channel.*;
-import me.bow.treecapitatorultimate.Start;
 import me.bow.treecapitatorultimate.Utils.ReflectionUtils;
 import org.bukkit.entity.Player;
 
@@ -10,7 +9,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.logging.Level;
 
 /**
  * A simple packet injector, to modify the packets sent and received
@@ -41,7 +39,7 @@ class PacketInjector extends ChannelDuplexHandler {
     }
 
     private static void debug(String message, Object... formatArgs) {
-        Start.LOGGER.log(Level.ALL, "PacketInjector: " + message, formatArgs);
+        //Start.LOGGER.log(Level.ALL, "PacketInjector: " + message, formatArgs);
     }
 
     /**
@@ -163,7 +161,7 @@ class PacketInjector extends ChannelDuplexHandler {
                     packetListener.onPacketSend(event);
                 }
             } catch (Exception e) {
-                Start.LOGGER.log(Level.ALL, "Error in a packet listener (send).", e);
+                //Start.LOGGER.log(Level.ALL, "Error in a packet listener (send).", e);
             }
         }
 
@@ -199,7 +197,7 @@ class PacketInjector extends ChannelDuplexHandler {
                     packetListener.onPacketReceived(event);
                 }
             } catch (Exception e) {
-                Start.LOGGER.log(Level.ALL, "Error in a packet listener (receive).", e);
+                //Start.LOGGER.log(Level.ALL, "Error in a packet listener (receive).", e);
             }
         }
 

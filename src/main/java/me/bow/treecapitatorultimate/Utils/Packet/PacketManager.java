@@ -10,7 +10,6 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.Plugin;
 
 import java.util.*;
-import java.util.logging.Level;
 
 /**
  * Manages PacketListeners and stuff
@@ -63,7 +62,7 @@ public class PacketManager implements Listener {
                     injector.addPacketListener(listener);
                     injectorMap.put(player.getUniqueId(), injector);
                 } catch (Exception e) {
-                    Start.LOGGER.log(Level.ALL, "Error attaching packet listener!", e);
+                    //Start.LOGGER.log(Level.ALL, "Error attaching packet listener!", e);
                 }
             }
         }

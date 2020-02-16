@@ -1,8 +1,5 @@
 package me.bow.treecapitatorultimate.Utils;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.defaults.ReloadCommand;
 import org.jetbrains.annotations.NotNull;
@@ -20,12 +17,10 @@ public class ReloadCommandOverride extends ReloadCommand {
         this.setAliases(Arrays.asList("rl"));
     }
 
+    @Override
     public boolean execute(@NotNull CommandSender sender, @NotNull String currentAlias, @NotNull String[] args) {
         if (this.testPermission(sender)) {
-            Command.broadcastCommandMessage(sender, ChatColor.RED + "Please note that this command is not supported and may cause issues when using some plugins.");
-            Command.broadcastCommandMessage(sender, ChatColor.RED + "If you encounter any issues please use the /stop command to restart your server.");
-            Bukkit.reload();
-            Command.broadcastCommandMessage(sender, ChatColor.GREEN + "Reload complete.");
+            return super.execute(sender, currentAlias, args);
         }
         return true;
     }

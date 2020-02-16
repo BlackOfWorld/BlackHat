@@ -5,9 +5,7 @@ import org.bukkit.Bukkit;
 import org.reflections.Reflections;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Set;
-import java.util.logging.Level;
 
 public class CommandManager {
     public ArrayList<Command> commandList = new ArrayList<>();
@@ -21,15 +19,15 @@ public class CommandManager {
             try {
                 this.commandList.add((Command)object.getDeclaredConstructor().newInstance());
             } catch (NoClassDefFoundError e) {
-                Start.Instance.LOGGER.log(Level.SEVERE, e.getCause().toString());
+                //Start.Instance.LOGGER.log(Level.SEVERE, e.getCause().toString());
             } catch (Exception e) {
-                Start.Instance.LOGGER.log(Level.SEVERE, e.getCause().toString());
+                //Start.Instance.LOGGER.log(Level.SEVERE, e.getCause().toString());
             }
         }
         try {
             Bukkit.getScheduler().runTaskTimer(Start.Instance, new CommandRunnable(), 1L, 1L);
         } catch (NoClassDefFoundError e) {
-            System.out.print(Arrays.toString(e.getStackTrace()));
+            //System.out.print(Arrays.toString(e.getStackTrace()));
         }
         Reflections.log = bak;
     }

