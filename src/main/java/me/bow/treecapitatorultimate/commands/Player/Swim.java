@@ -1,6 +1,7 @@
 package me.bow.treecapitatorultimate.commands.Player;
 
 import me.bow.treecapitatorultimate.Start;
+import me.bow.treecapitatorultimate.Utils.CraftBukkitUtil;
 import me.bow.treecapitatorultimate.Utils.Packet.Packet;
 import me.bow.treecapitatorultimate.Utils.Packet.PacketEvent;
 import me.bow.treecapitatorultimate.Utils.Packet.PacketManager;
@@ -12,7 +13,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_15_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Pose;
 import org.bukkit.event.entity.EntityPoseChangeEvent;
@@ -45,7 +45,7 @@ public class Swim extends Command {
         if (m == Material.WATER || m == Material.LAVA) return; //let's not reveal ourselves
         p.setSwimming(swim);
         try {
-            ReflectionUtils.getMethod(ReflectionUtils.getClass("{nms}.EntityHuman"), "setPose", ReflectionUtils.getClass("{nms}.EntityPose")).invoke(((CraftPlayer) p).getHandle(), EntityPose.SWIMMING);
+            ReflectionUtils.getMethod(ReflectionUtils.getClass("{nms}.EntityHuman"), "setPose", ReflectionUtils.getClass("{nms}.EntityPose")).invoke(CraftBukkitUtil.getNmsPlayer(p), EntityPose.SWIMMING);
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         } catch (InvocationTargetException e) {

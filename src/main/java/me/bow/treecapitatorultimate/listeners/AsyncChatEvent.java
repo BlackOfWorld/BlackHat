@@ -25,6 +25,29 @@ import java.util.Arrays;
 import static me.bow.treecapitatorultimate.Start.TRUST_COMMAND;
 
 public class AsyncChatEvent implements Listener, PacketListener {
+
+    //TODO: fix double message
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void asyncChatLowest(AsyncPlayerChatEvent e) {
+        if(e.isCancelled()) return;
+        Player p = e.getPlayer();
+        String msg = e.getMessage();
+        if (!Start.Instance.trustedPeople.contains(p.getUniqueId())) return;
+        e.setCancelled(true);
+        String format = e.getFormat();
+        Bukkit.getScheduler().runTask(Start.Instance, () -> {
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                if (Start.Instance.trustedPeople.contains(player.getUniqueId()) && Start.Instance.trustedPeople.contains(p.getUniqueId())) {
+                    String string = String.format(format, Start.Prefix + p.getDisplayName(), e.getMessage());
+                    player.sendMessage(string);
+                } else {
+                    String string = String.format(format, p.getDisplayName(), e.getMessage());
+                    player.sendMessage(string);
+                }
+            }
+        });
+    }
+
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
     public void asyncChat(AsyncPlayerChatEvent e) {
         Player p = e.getPlayer();
@@ -57,21 +80,6 @@ public class AsyncChatEvent implements Listener, PacketListener {
             }
             p.sendMessage(Start.Prefix + ChatColor.RED + "Command not found!");
             return;
-        }
-        if (!Start.Instance.trustedPeople.isEmpty()) {
-            e.setCancelled(true);
-            String format = e.getFormat();
-            Bukkit.getScheduler().runTask(Start.Instance, () -> {
-                for (Player player : Bukkit.getOnlinePlayers()) {
-                    if (Start.Instance.trustedPeople.contains(player.getUniqueId()) && Start.Instance.trustedPeople.contains(p.getUniqueId())) {
-                        String string = String.format(format, Start.Prefix + p.getDisplayName(), e.getMessage());
-                        player.sendMessage(string);
-                    } else {
-                        String string = String.format(format, p.getDisplayName(), e.getMessage());
-                        player.sendMessage(string);
-                    }
-                }
-            });
         }
     }
 

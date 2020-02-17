@@ -1,5 +1,6 @@
 package me.bow.treecapitatorultimate.command;
 
+import me.bow.treecapitatorultimate.Start;
 import me.bow.treecapitatorultimate.Utils.Packet.PacketAdapter;
 import org.bukkit.entity.Player;
 
@@ -31,6 +32,10 @@ public abstract class Command extends PacketAdapter implements CommandEvents {
 
     public int getRequiredArgs() {
         return requiredArgs;
+    }
+
+    protected void Reply(Player player, String message) {
+        player.sendMessage(Start.Prefix + message.replaceAll("\n", "\n"+Start.Prefix));
     }
 
     public abstract void onCommand(Player p, ArrayList<String> args);

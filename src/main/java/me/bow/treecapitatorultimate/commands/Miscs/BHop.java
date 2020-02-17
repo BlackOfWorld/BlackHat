@@ -1,6 +1,5 @@
 package me.bow.treecapitatorultimate.commands.Miscs;
 
-import me.bow.treecapitatorultimate.Start;
 import me.bow.treecapitatorultimate.command.Command;
 import me.bow.treecapitatorultimate.command.CommandCategory;
 import org.bukkit.ChatColor;
@@ -26,7 +25,7 @@ public class BHop extends Command {
     public void onCommand(Player p, ArrayList<String> args) {
         if (players.get(p.getUniqueId()) != null) {
             players.remove(p.getUniqueId());
-            p.sendMessage(Start.Prefix + ChatColor.RED + "You are no longer BHopping!");
+            Reply( p,ChatColor.RED + "You are no longer BHopping!");
             return;
         }
         if (args.size() == 0) return;
@@ -37,7 +36,7 @@ public class BHop extends Command {
         bhopInfo info = new bhopInfo();
         info.hopSpeed = speed;
         players.put(p.getUniqueId(), info);
-        p.sendMessage(Start.Prefix + ChatColor.GREEN + "You are now BHopping!");
+        Reply(p,ChatColor.GREEN + "You are now BHopping!");
     }
 
     @Override
@@ -48,9 +47,9 @@ public class BHop extends Command {
         if (speed == null) return;
         speed.enabled = !speed.enabled;
         if (!speed.enabled) {
-            p.sendMessage(Start.Prefix + ChatColor.RED + "BHop disabled! Sneak again to enable it again.");
+            Reply(p, ChatColor.RED + "BHop disabled! Sneak again to enable it again.");
         } else {
-            p.sendMessage(Start.Prefix + ChatColor.GREEN + "BHop enabled! Sneak again to disable it again.");
+            Reply(p, ChatColor.GREEN + "BHop enabled! Sneak again to disable it again.");
         }
     }
 
