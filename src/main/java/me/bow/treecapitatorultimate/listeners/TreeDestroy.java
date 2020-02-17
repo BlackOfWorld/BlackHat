@@ -8,6 +8,7 @@ import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
@@ -17,7 +18,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.Objects;
 
 public class TreeDestroy implements Listener {
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR)
     public void breakingBlock(final BlockBreakEvent e) {
         if (e.isCancelled()) {
             return;

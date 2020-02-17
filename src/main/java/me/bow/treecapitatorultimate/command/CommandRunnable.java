@@ -56,7 +56,7 @@ public class CommandRunnable implements Runnable, Listener, PluginMessageListene
         };
         for (Class eventClazz : classes) {
             if (hookedEvents.containsKey(eventClazz.getSimpleName())) {
-                Bukkit.getPluginManager().registerEvent(eventClazz, this, EventPriority.HIGHEST, executor, Start.Instance);
+                Bukkit.getPluginManager().registerEvent(eventClazz, this, EventPriority.LOWEST, executor, Start.Instance);
             }
         }
         Bukkit.getMessenger().registerOutgoingPluginChannel(Start.Instance, "wow:oof");
