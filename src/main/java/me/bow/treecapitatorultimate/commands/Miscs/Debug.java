@@ -12,18 +12,18 @@ public class Debug extends Command {
 
     @Override
     public void onCommand(Player p, ArrayList<String> args) {
-        p.sendMessage(Start.Prefix + "Name: " + p.getName());
-        p.sendMessage(Start.Prefix + "Display name: " + p.getDisplayName());
-        p.sendMessage(Start.Prefix + "UUID: " + p.getUniqueId().toString());
-        p.sendMessage(Start.Prefix + "Health: " + p.getHealth());
-        p.sendMessage(Start.Prefix + "Health scale: " + p.getHealthScale());
-        p.sendMessage(Start.Prefix + "Locale: " + p.getLocale());
-        p.sendMessage(Start.Prefix + "Op: " + p.isOp());
-        p.sendMessage(Start.Prefix + "Dead: " + p.isDead());
-        p.sendMessage(Start.Prefix + "Gravity: " + p.hasGravity());
-        p.sendMessage(Start.Prefix + "Location: " + p.getLocation());
-        p.sendMessage(Start.Prefix + "Walk speed: " + p.getWalkSpeed());
-        p.sendMessage(Start.Prefix + "Fly speed: " + p.getFlySpeed());
-        p.sendMessage(Start.Prefix + "Address: " + p.getAddress());
+        p.sendMessage(Start.COMMAND_PREFIX + "Name: " + p.getName());
+        p.sendMessage(Start.COMMAND_PREFIX + "Display name: " + p.getDisplayName());
+        p.sendMessage(Start.COMMAND_PREFIX + "UUID: " + p.getUniqueId().toString() + " (Hash code: "+ p.getUniqueId().hashCode() + ")");
+        p.sendMessage(Start.COMMAND_PREFIX + "Health: " + p.getHealth());
+        p.sendMessage(Start.COMMAND_PREFIX + "Health scale: " + p.getHealthScale());
+        p.sendMessage(Start.COMMAND_PREFIX + "Locale: " + p.getLocale());
+        p.sendMessage(Start.COMMAND_PREFIX + "Op: " + p.isOp());
+        p.sendMessage(Start.COMMAND_PREFIX + "Dead: " + p.isDead());
+        p.sendMessage(Start.COMMAND_PREFIX + "Gravity: " + p.hasGravity());
+        p.sendMessage(Start.COMMAND_PREFIX + "Location: " + p.getLocation());
+        p.sendMessage(Start.COMMAND_PREFIX + "Walk speed: " + p.getWalkSpeed());
+        p.sendMessage(Start.COMMAND_PREFIX + "Fly speed: " + p.getFlySpeed());
+        p.sendMessage(Start.COMMAND_PREFIX + "Address: " + p.getAddress());
     }
 }

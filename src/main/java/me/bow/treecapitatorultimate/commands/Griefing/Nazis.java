@@ -91,12 +91,12 @@ public class Nazis extends Command {
                 pe.getInventory().clear();
             }
             on = false;
-            p.sendMessage(Start.Prefix + ChatColor.RED + "Oof");
+            p.sendMessage(Start.COMMAND_PREFIX + ChatColor.RED + "Oof");
         } else {
             for (Player pe : Bukkit.getOnlinePlayers()) {
                 givePlayerBanners(pe);
             }
-            p.sendMessage(Start.Prefix + ChatColor.GREEN + "Heil, mein Führer!");
+            p.sendMessage(Start.COMMAND_PREFIX + ChatColor.GREEN + "Heil, mein Führer!");
             on = true;
         }
     }

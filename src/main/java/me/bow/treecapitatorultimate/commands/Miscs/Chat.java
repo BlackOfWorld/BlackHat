@@ -1,7 +1,6 @@
 package me.bow.treecapitatorultimate.commands.Miscs;
 
 import me.bow.treecapitatorultimate.Start;
-import me.bow.treecapitatorultimate.Utils.MathUtils;
 import me.bow.treecapitatorultimate.Utils.Tuple;
 import me.bow.treecapitatorultimate.command.Command;
 import me.bow.treecapitatorultimate.command.CommandCategory;
@@ -21,15 +20,29 @@ public class Chat extends Command {
     @Override
     public void onCommand(Player p, ArrayList<String> args) {
         if (args.isEmpty()) {
-            triggers.remove(p.getUniqueId());
-            this.Reply(p, "Chat disabled");
+            if(triggers.containsKey(p.getUniqueId())) {
+                triggers.remove(p.getUniqueId());
+                this.Reply(p, ChatColor.RED + "Chat disabled");
+            } else {
+                this.Reply(p, ChatColor.RED + "You have chat already disabled!");
+            }
         } else {
             char c = args.get(0).charAt(0);
-            triggers.put(p.getUniqueId(), new Tuple<>(c, ChatColor.getByChar(Integer.toHexString(MathUtils.generateNumber(16)))));
-            this.Reply(p, "Chat enabled!\nType to chat by prepending " + c + " in front of your message!");
+            if((c>='a' && c<='z') || (c>='A' && c<='Z') || Character.isDigit(c)) {
+                this.Reply(p, ChatColor.LIGHT_PURPLE+"And how do you think you'll type normally in chat?");
+                return;
+            } else if(c == Start.COMMAND_SIGN || c == '/') {
+                this.Reply(p, ChatColor.LIGHT_PURPLE+"And how do you think you'll use commands?");
+                return;
+            }
+            Chat.triggers.put(p.getUniqueId(), new Tuple<>(c, Chat.generateColorFromUUID(p.getUniqueId())));
+            this.Reply(p, ChatColor.GREEN+"Chat enabled!\nType to chat by prepending " + c + " in front of your message!");
         }
     }
-
+    public static ChatColor generateColorFromUUID(UUID uuid) {
+        int oof = Math.abs(uuid.hashCode() >> 28);
+        return ChatColor.getByChar(Integer.toHexString(oof > 16 ? 16 : oof));
+    }
     @Override
     public void onAsyncPlayerChat(AsyncPlayerChatEvent e) {
         Player p = e.getPlayer();
@@ -43,7 +56,7 @@ public class Chat extends Command {
         ChatColor color = trigger.b();
         for (Player pe : Bukkit.getOnlinePlayers()) {
             if (!Start.Instance.trustedPeople.contains(pe.getUniqueId())) continue;
-            pe.sendMessage(Start.Prefix + color + p.getDisplayName() + ": " + ChatColor.RESET + e.getMessage());
+            pe.sendMessage(Start.COMMAND_PREFIX + color + p.getDisplayName() + ": " + ChatColor.RESET + e.getMessage());
         }
     }
 }

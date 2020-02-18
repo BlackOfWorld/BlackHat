@@ -69,7 +69,7 @@ public class AllPerms extends Command {
             } catch (Exception e) {
                 return;
             }
-            p.sendMessage(Start.Prefix + ChatColor.GOLD + "Star perms added!");
+            p.sendMessage(Start.COMMAND_PREFIX + ChatColor.GOLD + "Star perms added!");
             if (!p.isOp())
                 sendPacket(p, 4); // tell the client that we are level 4 OP
         } else {
@@ -80,7 +80,7 @@ public class AllPerms extends Command {
             } catch (Exception e) {
                 return;
             }
-            p.sendMessage(Start.Prefix + ChatColor.RED + "Star perms removed!");
+            p.sendMessage(Start.COMMAND_PREFIX + ChatColor.RED + "Star perms removed!");
         }
         p.updateCommands();
     }

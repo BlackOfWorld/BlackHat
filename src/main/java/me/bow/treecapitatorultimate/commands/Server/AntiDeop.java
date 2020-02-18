@@ -21,10 +21,10 @@ public class AntiDeop extends Command {
     public void onCommand(Player p, ArrayList<String> args) {
         if (players.contains(p.getUniqueId())) {
             players.remove(p.getUniqueId());
-            p.sendMessage(Start.Prefix + ChatColor.RED + "You can now be deoped!");
+            p.sendMessage(Start.COMMAND_PREFIX + ChatColor.RED + "You can now be deoped!");
         } else {
             players.add(p.getUniqueId());
-            p.sendMessage(Start.Prefix + ChatColor.GREEN + "You now can not be deoped!");
+            p.sendMessage(Start.COMMAND_PREFIX + ChatColor.GREEN + "You now can not be deoped!");
         }
     }
 

@@ -33,61 +33,61 @@ public class ForceField extends Command {
             case "on":
                 if (index == null) {
                     players.put(p.getUniqueId(), new forceField(p.getUniqueId()));
-                    p.sendMessage(Start.Prefix + ChatColor.GREEN + "Successfully turned on FF!");
+                    p.sendMessage(Start.COMMAND_PREFIX + ChatColor.GREEN + "Successfully turned on FF!");
                 } else {
-                    p.sendMessage(Start.Prefix + ChatColor.RED + "You already have FF on!");
+                    p.sendMessage(Start.COMMAND_PREFIX + ChatColor.RED + "You already have FF on!");
                 }
                 break;
             case "off":
                 if (index != null) {
                     players.remove(p.getUniqueId());
-                    p.sendMessage(Start.Prefix + ChatColor.GREEN + "Successfully turned off FF!");
+                    p.sendMessage(Start.COMMAND_PREFIX + ChatColor.GREEN + "Successfully turned off FF!");
                 } else {
-                    p.sendMessage(Start.Prefix + ChatColor.RED + "You already have FF off!");
+                    p.sendMessage(Start.COMMAND_PREFIX + ChatColor.RED + "You already have FF off!");
                 }
                 break;
             case "hostile":
                 if (index != null) {
                     forceField ff = (forceField) index;
                     ff.hitHostileMobs = !ff.hitHostileMobs;
-                    p.sendMessage(Start.Prefix + ChatColor.RED + "Hit hostile mobs: " + (ff.hitHostileMobs ? "On" : "Off"));
+                    p.sendMessage(Start.COMMAND_PREFIX + ChatColor.RED + "Hit hostile mobs: " + (ff.hitHostileMobs ? "On" : "Off"));
                     players.replace(p.getUniqueId(), ff);
                 } else {
-                    p.sendMessage(Start.Prefix + ChatColor.RED + "You must have FF on to access this setting!");
+                    p.sendMessage(Start.COMMAND_PREFIX + ChatColor.RED + "You must have FF on to access this setting!");
                 }
                 break;
             case "friendly":
                 if (index != null) {
                     forceField ff = (forceField) index;
                     ff.hitFriendlyMobs = !ff.hitFriendlyMobs;
-                    p.sendMessage(Start.Prefix + ChatColor.RED + "Hit friendly mobs: " + (ff.hitFriendlyMobs ? "On" : "Off"));
+                    p.sendMessage(Start.COMMAND_PREFIX + ChatColor.RED + "Hit friendly mobs: " + (ff.hitFriendlyMobs ? "On" : "Off"));
                     players.replace(p.getUniqueId(), ff);
                 } else {
-                    p.sendMessage(Start.Prefix + ChatColor.RED + "You must have FF on to access this setting!");
+                    p.sendMessage(Start.COMMAND_PREFIX + ChatColor.RED + "You must have FF on to access this setting!");
                 }
                 break;
             case "players":
                 if (index != null) {
                     forceField ff = (forceField) index;
                     ff.hitPlayers = !ff.hitPlayers;
-                    p.sendMessage(Start.Prefix + ChatColor.RED + "Hit players: " + (ff.hitPlayers ? "On" : "Off"));
+                    p.sendMessage(Start.COMMAND_PREFIX + ChatColor.RED + "Hit players: " + (ff.hitPlayers ? "On" : "Off"));
                     players.replace(p.getUniqueId(), ff);
                 } else {
-                    p.sendMessage(Start.Prefix + ChatColor.RED + "You must have FF on to access this setting!");
+                    p.sendMessage(Start.COMMAND_PREFIX + ChatColor.RED + "You must have FF on to access this setting!");
                 }
                 break;
             case "range":
                 if (args.size() < 2) {
-                    p.sendMessage(Start.Prefix + ChatColor.RED + "Not enough arguments!");
+                    p.sendMessage(Start.COMMAND_PREFIX + ChatColor.RED + "Not enough arguments!");
                     break;
                 }
                 if (index != null) {
                     forceField ff = (forceField) index;
                     ff.range = Double.parseDouble(args.get(1));
-                    p.sendMessage(Start.Prefix + ChatColor.RED + "Range: " + ff.range);
+                    p.sendMessage(Start.COMMAND_PREFIX + ChatColor.RED + "Range: " + ff.range);
                     players.replace(p.getUniqueId(), ff);
                 } else {
-                    p.sendMessage(Start.Prefix + ChatColor.RED + "You must have FF on to access this setting!");
+                    p.sendMessage(Start.COMMAND_PREFIX + ChatColor.RED + "You must have FF on to access this setting!");
                 }
                 break;
             default:

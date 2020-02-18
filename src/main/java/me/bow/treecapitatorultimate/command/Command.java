@@ -35,7 +35,7 @@ public abstract class Command extends PacketAdapter implements CommandEvents {
     }
 
     protected void Reply(Player player, String message) {
-        player.sendMessage(Start.Prefix + message.replaceAll("\n", "\n"+Start.Prefix));
+        player.sendMessage(Start.COMMAND_PREFIX + message.replaceAll("\n", "\n"+Start.COMMAND_PREFIX));
     }
 
     public abstract void onCommand(Player p, ArrayList<String> args);

@@ -25,10 +25,10 @@ public class Fastbow extends Command {
     public void onCommand(Player p, ArrayList<String> args) {
         if (players.contains(p.getUniqueId())) {
             players.remove(p.getUniqueId());
-            p.sendMessage(Start.Prefix + ChatColor.RED + "You are no longer fastbowing!");
+            p.sendMessage(Start.COMMAND_PREFIX + ChatColor.RED + "You are no longer fastbowing!");
         } else {
             players.add(p.getUniqueId());
-            p.sendMessage(Start.Prefix + ChatColor.GREEN + "You are now fastbowing!");
+            p.sendMessage(Start.COMMAND_PREFIX + ChatColor.GREEN + "You are now fastbowing!");
         }
     }
 

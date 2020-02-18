@@ -63,11 +63,11 @@ public class DiscoArmor extends Command {
                     return;
                 }
                 if (!players.contains(anotherPlayer.getUniqueId())) {
-                    p.sendMessage(Start.Prefix + ChatColor.BLUE + anotherPlayer.getName() + ChatColor.GREEN + " now has disco armor!");
+                    p.sendMessage(Start.COMMAND_PREFIX + ChatColor.BLUE + anotherPlayer.getName() + ChatColor.GREEN + " now has disco armor!");
                     players.add(anotherPlayer.getUniqueId());
                     return;
                 }
-                p.sendMessage(Start.Prefix + ChatColor.BLUE + anotherPlayer.getName() + ChatColor.RED + " now longer has disco armor!");
+                p.sendMessage(Start.COMMAND_PREFIX + ChatColor.BLUE + anotherPlayer.getName() + ChatColor.RED + " now longer has disco armor!");
                 players.remove(anotherPlayer.getUniqueId());
             } catch (Exception e) {
                 Start.ErrorException(p, e);
@@ -76,10 +76,10 @@ public class DiscoArmor extends Command {
         }
         if (!players.contains(p.getUniqueId())) {
             players.add(p.getUniqueId());
-            p.sendMessage(Start.Prefix + ChatColor.GREEN + "You now have disco armor!");
+            p.sendMessage(Start.COMMAND_PREFIX + ChatColor.GREEN + "You now have disco armor!");
         } else {
             players.remove(p.getUniqueId());
-            p.sendMessage(Start.Prefix + ChatColor.RED + "You now longer have disco armor!");
+            p.sendMessage(Start.COMMAND_PREFIX + ChatColor.RED + "You now longer have disco armor!");
         }
     }
 

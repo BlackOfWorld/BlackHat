@@ -71,12 +71,12 @@ public class Swim extends Command {
             }
             if (!players.contains(anotherPlayer.getUniqueId())) {
                 setSwim(anotherPlayer, true);
-                p.sendMessage(Start.Prefix + ChatColor.BLUE + anotherPlayer.getName() + ChatColor.GREEN + " is now swimming!");
+                p.sendMessage(Start.COMMAND_PREFIX + ChatColor.BLUE + anotherPlayer.getName() + ChatColor.GREEN + " is now swimming!");
                 players.add(anotherPlayer.getUniqueId());
                 PacketManager.instance.addListener(anotherPlayer, this);
                 return;
             }
-            p.sendMessage(Start.Prefix + ChatColor.BLUE + anotherPlayer.getName() + ChatColor.RED + " is now longer swimming!");
+            p.sendMessage(Start.COMMAND_PREFIX + ChatColor.BLUE + anotherPlayer.getName() + ChatColor.RED + " is now longer swimming!");
             players.remove(anotherPlayer.getUniqueId());
             setSwim(anotherPlayer, false);
             PacketManager.instance.removeListener(anotherPlayer, this);

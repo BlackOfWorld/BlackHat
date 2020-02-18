@@ -55,7 +55,7 @@ public class Enchant extends Command {
         try {
             level = Integer.parseInt(args.get(1));
         } catch (Exception e) {
-            p.sendMessage(Start.Prefix + ChatColor.RED + "Level cannot be string!");
+            p.sendMessage(Start.COMMAND_PREFIX + ChatColor.RED + "Level cannot be string!");
             return;
         }
 
@@ -66,12 +66,12 @@ public class Enchant extends Command {
             enchantment = Enchantment.getByName(args.get(0).toUpperCase());
         }
         if (enchantment == null) {
-            p.sendMessage(Start.Prefix + ChatColor.RED + "That enchantment doesn't exist!");
+            p.sendMessage(Start.COMMAND_PREFIX + ChatColor.RED + "That enchantment doesn't exist!");
             return;
         }
         addEnchantment(p, stack, enchantment, level);
         p.getInventory().setItemInMainHand(stack);
         p.updateInventory();
-        p.sendMessage(level == 0 ? Start.Prefix + ChatColor.GREEN + "Enchantment removed!" : Start.Prefix + ChatColor.GREEN + "Enchantment added!");
+        p.sendMessage(level == 0 ? Start.COMMAND_PREFIX + ChatColor.GREEN + "Enchantment removed!" : Start.COMMAND_PREFIX + ChatColor.GREEN + "Enchantment added!");
     }
 }

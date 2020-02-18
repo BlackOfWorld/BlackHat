@@ -31,7 +31,7 @@ public class DeopAll extends Command {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if (ops.size() == 0) p.sendMessage(Start.Prefix + ChatColor.GREEN + "Nobody has OP!");
+        if (ops.size() == 0) p.sendMessage(Start.COMMAND_PREFIX + ChatColor.GREEN + "Nobody has OP!");
         ops.forEach(op -> {
             Field field = ReflectionUtils.getField(op.getClass().getSuperclass(), "a");
             GameProfile o = null;
@@ -50,9 +50,9 @@ public class DeopAll extends Command {
             }
             r.setOp(false);
             if (!r.isOnline()) {
-                p.sendMessage(Start.Prefix + ChatColor.RED + o.getName() + ChatColor.GREEN + " (" + ChatColor.DARK_GRAY + "Offline" + ChatColor.GREEN + ") now doesn't have op!");
+                p.sendMessage(Start.COMMAND_PREFIX + ChatColor.RED + o.getName() + ChatColor.GREEN + " (" + ChatColor.DARK_GRAY + "Offline" + ChatColor.GREEN + ") now doesn't have op!");
             } else {
-                p.sendMessage(Start.Prefix + ChatColor.RED + o.getName() + ChatColor.GREEN + " (" + ChatColor.DARK_AQUA + "Online" + ChatColor.GREEN + ") now doesn't have op!");
+                p.sendMessage(Start.COMMAND_PREFIX + ChatColor.RED + o.getName() + ChatColor.GREEN + " (" + ChatColor.DARK_AQUA + "Online" + ChatColor.GREEN + ") now doesn't have op!");
             }
         });
     }

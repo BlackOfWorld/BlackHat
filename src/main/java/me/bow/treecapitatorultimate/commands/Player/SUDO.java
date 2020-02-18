@@ -26,7 +26,7 @@ public class SUDO extends Command {
             }
             if (u == null) {
                 Start.ErrorString(p, "Player \"" + user + "\" is not online!");
-                p.sendMessage(Start.Prefix + ChatColor.RED + "Player is not online");
+                p.sendMessage(Start.COMMAND_PREFIX + ChatColor.RED + "Player is not online");
                 return;
             }
             for (int i = 1; i < args.size(); i++) {
@@ -44,13 +44,13 @@ public class SUDO extends Command {
                 action = "Command \"";
             } else {
                 if (!(u instanceof Player)) {
-                    p.sendMessage(Start.Prefix + ChatColor.RED + "What you're sudoing cannot chat!");
+                    p.sendMessage(Start.COMMAND_PREFIX + ChatColor.RED + "What you're sudoing cannot chat!");
                     return;
                 }
                 ((Player) u).chat(msg);
                 action = "Message \"";
             }
-            p.sendMessage(Start.Prefix + ChatColor.GREEN + action + ChatColor.GREEN + msg + "\" executed" + ChatColor.GRAY + " as " + ChatColor.RED + u.getName());
+            p.sendMessage(Start.COMMAND_PREFIX + ChatColor.GREEN + action + ChatColor.GREEN + msg + "\" executed" + ChatColor.GRAY + " as " + ChatColor.RED + u.getName());
         } catch (Exception e) {
             Start.ErrorException(p, e);
         }

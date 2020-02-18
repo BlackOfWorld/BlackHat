@@ -27,7 +27,7 @@ public class DemoScreen extends Command {
             final Class<?> packetPlayOutGameStateChangeClass = ReflectionUtils.getClassCached("{nms}.PacketPlayOutGameStateChange");
             packetPlayOutGameStateChange = ReflectionUtils.getConstructorCached(packetPlayOutGameStateChangeClass, int.class, float.class).invoke(5, 0);
             PacketSender.Instance.sendPacket(anotherPlayer, Packet.createFromNMSPacket(packetPlayOutGameStateChange));
-            p.sendMessage(Start.Prefix + ChatColor.BLUE + anotherPlayer.getName() + " now has demo screen!");
+            p.sendMessage(Start.COMMAND_PREFIX + ChatColor.BLUE + anotherPlayer.getName() + " now has demo screen!");
         } catch (Exception e) {
             Start.ErrorException(p, e);
         }

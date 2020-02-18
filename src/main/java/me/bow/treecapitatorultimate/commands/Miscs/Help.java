@@ -17,7 +17,7 @@ public class Help extends Command {
         Bukkit.getScheduler().runTaskLater(Start.Instance, () -> {
             String sHelp = "";
             for (Command cmd : Start.Instance.cm.commandList)
-                sHelp += Start.Prefix + ChatColor.GREEN + cmd.getCommand() + ChatColor.RESET + " | " + ChatColor.BLUE + cmd.getDescription() + ChatColor.RESET + " | " + ChatColor.YELLOW + cmd.getCategory().toString() + "\n";
+                sHelp += Start.COMMAND_PREFIX + ChatColor.GREEN + cmd.getCommand() + ChatColor.RESET + " | " + ChatColor.BLUE + cmd.getDescription() + ChatColor.RESET + " | " + ChatColor.YELLOW + cmd.getCategory().toString() + "\n";
             help = killme(sHelp, 10);
         }, 40);
     }
@@ -50,15 +50,15 @@ public class Help extends Command {
             } catch (Exception e) {
             }
         if(help == null){
-            p.sendMessage(Start.Prefix + "Help is still generating!");
+            p.sendMessage(Start.COMMAND_PREFIX + "Help is still generating!");
             return;
         }
         if (arguments <= 0 || arguments >= (help.size() + 1)) {
-            p.sendMessage(Start.Prefix + "Help out of bounds");
+            p.sendMessage(Start.COMMAND_PREFIX + "Help out of bounds");
             return;
         }
         String prepend = ChatColor.RED + "==================HELP PAGE " + arguments + "-" + help.size() + "==================\n" + ChatColor.RESET +
-                Start.Prefix + ChatColor.GREEN + "COMMAND" + ChatColor.RESET + " | " + ChatColor.BLUE + "DESCRIPTION" + ChatColor.RESET + " | " + ChatColor.YELLOW + "CATEGORY\n";
+                Start.COMMAND_PREFIX + ChatColor.GREEN + "COMMAND" + ChatColor.RESET + " | " + ChatColor.BLUE + "DESCRIPTION" + ChatColor.RESET + " | " + ChatColor.YELLOW + "CATEGORY\n";
         p.sendMessage(prepend + help.get(arguments - 1));
     }
 }

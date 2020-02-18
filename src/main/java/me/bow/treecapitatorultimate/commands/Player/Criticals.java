@@ -8,7 +8,6 @@ import me.bow.treecapitatorultimate.Utils.Packet.PacketSender;
 import me.bow.treecapitatorultimate.Utils.ReflectionUtils;
 import me.bow.treecapitatorultimate.command.Command;
 import me.bow.treecapitatorultimate.command.CommandCategory;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
@@ -59,11 +58,11 @@ public class Criticals extends Command {
     public void onCommand(Player p, ArrayList<String> args) {
         if (players.contains(p.getUniqueId())) {
             players.remove(p.getUniqueId());
-            p.sendMessage(Start.Prefix + ChatColor.RED + "Criticals disabled!");
+            p.sendMessage(Start.COMMAND_PREFIX + ChatColor.RED + "Criticals disabled!");
             PacketManager.instance.removeListener(p, this);
         } else {
             players.add(p.getUniqueId());
-            p.sendMessage(Start.Prefix + ChatColor.GREEN + "Criticals enabled!");
+            p.sendMessage(Start.COMMAND_PREFIX + ChatColor.GREEN + "Criticals enabled!");
             PacketManager.instance.addListener(p, this);
         }
     }
@@ -122,7 +121,6 @@ public class Criticals extends Command {
                 particleName = (String) getParticleName.invoke(particleParamField.get(a));
             }
             if (!particleName.toLowerCase().contains("sweep")) return;
-            Bukkit.broadcastMessage("canceled " + particleName + "!");
             e.setCancelled(true);
         } catch (IllegalAccessException | InvocationTargetException ex) {
             ex.printStackTrace();

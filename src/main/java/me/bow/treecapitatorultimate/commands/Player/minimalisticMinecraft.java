@@ -37,11 +37,11 @@ public class minimalisticMinecraft extends Command {
                 return;
             }
             if (!players.contains(anotherPlayer.getUniqueId())) {
-                p.sendMessage(Start.Prefix + ChatColor.BLUE + anotherPlayer.getName() + ChatColor.GREEN + " now has minimalistic minecraft!");
+                p.sendMessage(Start.COMMAND_PREFIX + ChatColor.BLUE + anotherPlayer.getName() + ChatColor.GREEN + " now has minimalistic minecraft!");
                 players.add(anotherPlayer.getUniqueId());
                 return;
             }
-            p.sendMessage(Start.Prefix + ChatColor.BLUE + anotherPlayer.getName() + ChatColor.RED + " now longer has minimalitic minecraft!");
+            p.sendMessage(Start.COMMAND_PREFIX + ChatColor.BLUE + anotherPlayer.getName() + ChatColor.RED + " now longer has minimalitic minecraft!");
             players.remove(anotherPlayer.getUniqueId());
             anotherPlayer.setWalkSpeed(0.2f);
         } catch (Exception e) {

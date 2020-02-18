@@ -16,9 +16,9 @@ public class GameMode extends Command {
     public void onCommand(Player p, ArrayList<String> args) {
         if (args.size() == 1) {
             if (setGamemode(p, args.get(0)))
-                p.sendMessage(Start.Prefix + ChatColor.GOLD + "Gamemode set!");
+                p.sendMessage(Start.COMMAND_PREFIX + ChatColor.GOLD + "Gamemode set!");
             else
-                p.sendMessage(Start.Prefix + ChatColor.RED + "This gamemode doesn't exist!");
+                p.sendMessage(Start.COMMAND_PREFIX + ChatColor.RED + "This gamemode doesn't exist!");
         } else if (args.size() == 2) {
             try {
                 Player anotherPlayer = Bukkit.getPlayer(args.get(0));
@@ -27,14 +27,14 @@ public class GameMode extends Command {
                     return;
                 }
                 if (setGamemode(anotherPlayer, args.get(1)))
-                    p.sendMessage(Start.Prefix + ChatColor.GOLD + "Gamemode set for player \"" + ChatColor.GREEN + anotherPlayer.getName() + ChatColor.GOLD + "\"!");
+                    p.sendMessage(Start.COMMAND_PREFIX + ChatColor.GOLD + "Gamemode set for player \"" + ChatColor.GREEN + anotherPlayer.getName() + ChatColor.GOLD + "\"!");
                 else
-                    p.sendMessage(Start.Prefix + ChatColor.RED + "This gamemode doesn't exist!");
+                    p.sendMessage(Start.COMMAND_PREFIX + ChatColor.RED + "This gamemode doesn't exist!");
             } catch (Exception e) {
                 Start.ErrorException(p, e);
             }
         } else {
-            p.sendMessage(Start.Prefix + ChatColor.RED + "Input is wrong!");
+            p.sendMessage(Start.COMMAND_PREFIX + ChatColor.RED + "Input is wrong!");
         }
     }
 

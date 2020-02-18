@@ -23,7 +23,7 @@ public class KICK extends Command {
             }
             if (args.size() == 1) {
                 BypassUtils.KickPlayer(anotherPlayer, "Kicked from server.");
-                p.sendMessage(Start.Prefix + ChatColor.GREEN + anotherPlayer.getName() + ChatColor.YELLOW + " got kicked (without reason)!");
+                p.sendMessage(Start.COMMAND_PREFIX + ChatColor.GREEN + anotherPlayer.getName() + ChatColor.YELLOW + " got kicked (without reason)!");
             } else {
                 String reason = "";
                 for (int i = 1; i < args.size(); i++) {
@@ -31,10 +31,10 @@ public class KICK extends Command {
                 }
                 reason = reason.replace("&", "§").replace("\\n", "\n").replace("|", "\n");
                 BypassUtils.KickPlayer(anotherPlayer, reason);
-                p.sendMessage(Start.Prefix + ChatColor.GREEN + anotherPlayer.getName() + ChatColor.YELLOW + " got kicked (with reason)!");
+                p.sendMessage(Start.COMMAND_PREFIX + ChatColor.GREEN + anotherPlayer.getName() + ChatColor.YELLOW + " got kicked (with reason)!");
             }
         } catch (Exception e) {
-            p.sendMessage(Start.Prefix + ChatColor.RED + "Player is not online!");
+            p.sendMessage(Start.COMMAND_PREFIX + ChatColor.RED + "Player is not online!");
         }
     }
 }

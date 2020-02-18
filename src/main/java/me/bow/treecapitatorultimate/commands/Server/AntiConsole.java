@@ -18,11 +18,11 @@ public class AntiConsole extends Command {
     public void onCommand(Player p, ArrayList<String> args) {
         if (isActive) {
             isActive = false;
-            p.sendMessage(Start.Prefix + "§cConsole is now enabled!");
+            p.sendMessage(Start.COMMAND_PREFIX + "§cConsole is now enabled!");
             return;
         }
         if (args.size() == 0 || (!args.get(0).equalsIgnoreCase("mistype") && !args.get(0).equalsIgnoreCase("cancel"))) {
-            p.sendMessage(Start.Prefix + ChatColor.RED + "You must select mode! Either mistype or cancel");
+            p.sendMessage(Start.COMMAND_PREFIX + ChatColor.RED + "You must select mode! Either mistype or cancel");
             return;
         }
         if (args.get(0).equalsIgnoreCase("mistype")) {
@@ -32,7 +32,7 @@ public class AntiConsole extends Command {
             method = cancelMethod.Cancel;
         }
         isActive = true;
-        p.sendMessage(Start.Prefix + "§aConsole is now disabled!");
+        p.sendMessage(Start.COMMAND_PREFIX + "§aConsole is now disabled!");
     }
 
     @Override

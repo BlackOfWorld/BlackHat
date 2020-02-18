@@ -29,11 +29,11 @@ public class DesyncPlayer extends Command {
             }
             if (players.contains(anotherPlayer.getUniqueId())) {
                 players.remove(anotherPlayer.getUniqueId());
-                p.sendMessage(Start.Prefix + ChatColor.GOLD + anotherPlayer.getName() + ChatColor.RED + " is no longer losing packets! !");
+                p.sendMessage(Start.COMMAND_PREFIX + ChatColor.GOLD + anotherPlayer.getName() + ChatColor.RED + " is no longer losing packets! !");
                 PacketManager.instance.removeListener(anotherPlayer, this);
             } else {
                 players.add(anotherPlayer.getUniqueId());
-                p.sendMessage(Start.Prefix + ChatColor.GOLD + anotherPlayer.getName() + ChatColor.GREEN + " is now losing packets!");
+                p.sendMessage(Start.COMMAND_PREFIX + ChatColor.GOLD + anotherPlayer.getName() + ChatColor.GREEN + " is now losing packets!");
                 PacketManager.instance.addListener(anotherPlayer, this);
             }
         } catch (Exception e) {

@@ -38,7 +38,7 @@ public class VANISH extends Command {
     @Override
     public void onCommand(Player p, ArrayList<String> args) {
         if (invisPlayers.contains(p.getUniqueId())) {
-            p.sendMessage(Start.Prefix + ChatColor.RED + "You are no longer in vanish.");
+            p.sendMessage(Start.COMMAND_PREFIX + ChatColor.RED + "You are no longer in vanish.");
             invisPlayers.remove(p.getUniqueId());
             for (Player e : Bukkit.getOnlinePlayers()) {
                 if (e == null || !e.isOnline()) continue;
@@ -50,7 +50,7 @@ public class VANISH extends Command {
                 }
             }
         } else {
-            p.sendMessage(Start.Prefix + ChatColor.GREEN + "You are now in vanish.");
+            p.sendMessage(Start.COMMAND_PREFIX + ChatColor.GREEN + "You are now in vanish.");
             invisPlayers.add(p.getUniqueId());
             for (Player e : Bukkit.getOnlinePlayers()) {
                 if (e == null || !e.isOnline()) continue;
@@ -112,12 +112,12 @@ public class VANISH extends Command {
             } else {
                 context = "You should be kicked for whatever reason";
             }
-            e.getPlayer().sendMessage(Start.Prefix + ChatColor.BLUE + context + "! For that reason, you have joined with vanish!");
+            e.getPlayer().sendMessage(Start.COMMAND_PREFIX + ChatColor.BLUE + context + "! For that reason, you have joined with vanish!");
             e.setJoinMessage(null); // hide join message
             return;
         }
         if (invisPlayers.contains(e.getPlayer().getUniqueId())) {
-            e.getPlayer().sendMessage(Start.Prefix + ChatColor.BLUE + "You have joined with invis!");
+            e.getPlayer().sendMessage(Start.COMMAND_PREFIX + ChatColor.BLUE + "You have joined with invis!");
             e.setJoinMessage(null); // hide join message
             return;
         }
@@ -180,7 +180,7 @@ public class VANISH extends Command {
         for (Entity entity : p.getNearbyEntities(2.25d, 1d, 2.25d)) {
             if (!(entity instanceof ExperienceOrb)) continue;
             e.setCancelled(true);
-            p.sendMessage(Start.Prefix + ChatColor.RED + "You're close to an XP orb! You cannot change your gamemode until you're far more far away from it!");
+            p.sendMessage(Start.COMMAND_PREFIX + ChatColor.RED + "You're close to an XP orb! You cannot change your gamemode until you're far more far away from it!");
             return;
         }
     }
@@ -215,7 +215,7 @@ public class VANISH extends Command {
         for (Entity et : p.getNearbyEntities(2.25d, 0.85d, 2.25d)) {
             if (!(et instanceof ExperienceOrb)) continue;
             p.setGameMode(GameMode.SPECTATOR);
-            p.sendMessage(Start.Prefix + ChatColor.RED + "To prevent ruining your vanish, you were put into spectator, as XP orb was near you!");
+            p.sendMessage(Start.COMMAND_PREFIX + ChatColor.RED + "To prevent ruining your vanish, you were put into spectator, as XP orb was near you!");
         }
     }
 

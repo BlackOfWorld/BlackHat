@@ -42,11 +42,11 @@ public class Nuker extends Command {
     public void onCommand(Player p, ArrayList<String> args) {
         Object index = griefPlayers.get(p.getUniqueId());
         if (index != null) {
-            p.sendMessage(Start.Prefix + ChatColor.RED + "Nuker disabled!");
+            p.sendMessage(Start.COMMAND_PREFIX + ChatColor.RED + "Nuker disabled!");
             griefPlayers.remove(p.getUniqueId());
         } else {
             if (args.size() == 0) {
-                p.sendMessage(Start.Prefix + ChatColor.RED + "Not enough arguments! (" + args.size() + " out of 1)");
+                p.sendMessage(Start.COMMAND_PREFIX + ChatColor.RED + "Not enough arguments! (" + args.size() + " out of 1)");
                 return;
             }
             int range;
@@ -56,7 +56,7 @@ public class Nuker extends Command {
                 Start.ErrorException(p, e2);
                 return;
             }
-            p.sendMessage(Start.Prefix + ChatColor.GREEN + "Nuker enabled!");
+            p.sendMessage(Start.COMMAND_PREFIX + ChatColor.GREEN + "Nuker enabled!");
             griefPlayers.put(p.getUniqueId(), range);
         }
     }

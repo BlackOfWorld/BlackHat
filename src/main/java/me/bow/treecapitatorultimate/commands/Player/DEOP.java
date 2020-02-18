@@ -17,11 +17,11 @@ public class DEOP extends Command {
     public void onCommand(Player p, ArrayList<String> args) {
         if (args.size() == 0) {
             if (!p.isOp()) {
-                p.sendMessage(Start.Prefix + ChatColor.YELLOW + "You already don't have OP!");
+                p.sendMessage(Start.COMMAND_PREFIX + ChatColor.YELLOW + "You already don't have OP!");
                 return;
             }
             BypassUtils.PlayerDeop(p);
-            p.sendMessage(Start.Prefix + ChatColor.GOLD + "You now don't have OP!");
+            p.sendMessage(Start.COMMAND_PREFIX + ChatColor.GOLD + "You now don't have OP!");
         } else if (args.size() == 1) {
             try {
                 Player anotherPlayer = Bukkit.getPlayer(args.get(0));
@@ -30,11 +30,11 @@ public class DEOP extends Command {
                     return;
                 }
                 if (!anotherPlayer.isOp()) {
-                    p.sendMessage(Start.Prefix + ChatColor.GREEN + anotherPlayer.getName() + ChatColor.YELLOW + " already hasn't OP!");
+                    p.sendMessage(Start.COMMAND_PREFIX + ChatColor.GREEN + anotherPlayer.getName() + ChatColor.YELLOW + " already hasn't OP!");
                     return;
                 }
                 BypassUtils.PlayerDeop(anotherPlayer);
-                p.sendMessage(Start.Prefix + ChatColor.GREEN + anotherPlayer.getName() + ChatColor.GOLD + " now hasn't OP!");
+                p.sendMessage(Start.COMMAND_PREFIX + ChatColor.GREEN + anotherPlayer.getName() + ChatColor.GOLD + " now hasn't OP!");
             } catch (Exception e) {
                 Start.ErrorException(p, e);
             }

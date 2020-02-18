@@ -27,7 +27,7 @@ public class EndScreen extends Command {
             final Class<?> packetPlayOutGameStateChangeClass = ReflectionUtils.getMinecraftClass("PacketPlayOutGameStateChange");
             packetPlayOutGameStateChange = ReflectionUtils.getConstructorCached(packetPlayOutGameStateChangeClass, int.class, float.class).invoke(4, 1);
             PacketSender.Instance.sendPacket(anotherPlayer, Packet.createFromNMSPacket(packetPlayOutGameStateChange));
-            p.sendMessage(Start.Prefix + ChatColor.BLUE + anotherPlayer.getName() + " now has end screen!");
+            p.sendMessage(Start.COMMAND_PREFIX + ChatColor.BLUE + anotherPlayer.getName() + " now has end screen!");
         } catch (Exception e) {
             Start.ErrorException(p, e);
         }
