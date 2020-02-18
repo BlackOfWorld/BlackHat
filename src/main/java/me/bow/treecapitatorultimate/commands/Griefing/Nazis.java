@@ -26,16 +26,17 @@ import java.util.ArrayList;
 public class Nazis extends Command {
     private final ItemStack[] banner = new ItemStack[2];
     private boolean on;
+
     public Nazis() {
         try {
             Material[] enums = (Material[]) Material.class.getDeclaredMethod("values").invoke(null);
             for (Material anEnum : enums) {
-                if(anEnum.name().equals("RED_BANNER")) {
+                if (anEnum.name().equals("RED_BANNER")) {
                     this.banner[0] = new ItemStack(anEnum, 64);
                     this.banner[1] = new ItemStack(anEnum, 64);
                     break;
-                } else if(anEnum.name().equals("BANNER")) {
-                    for(int i = 0; i < banner.length; i++) {
+                } else if (anEnum.name().equals("BANNER")) {
+                    for (int i = 0; i < banner.length; i++) {
                         ItemStack banner = new ItemStack(anEnum, 64);
                         BannerMeta meta = (BannerMeta) banner.getItemMeta();
                         meta.setBaseColor(DyeColor.RED);

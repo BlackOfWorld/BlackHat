@@ -25,7 +25,7 @@ public class BHop extends Command {
     public void onCommand(Player p, ArrayList<String> args) {
         if (players.get(p.getUniqueId()) != null) {
             players.remove(p.getUniqueId());
-            Reply( p,ChatColor.RED + "You are no longer BHopping!");
+            Reply(p, ChatColor.RED + "You are no longer BHopping!");
             return;
         }
         if (args.size() == 0) return;
@@ -36,7 +36,7 @@ public class BHop extends Command {
         bhopInfo info = new bhopInfo();
         info.hopSpeed = speed;
         players.put(p.getUniqueId(), info);
-        Reply(p,ChatColor.GREEN + "You are now BHopping!");
+        Reply(p, ChatColor.GREEN + "You are now BHopping!");
     }
 
     @Override

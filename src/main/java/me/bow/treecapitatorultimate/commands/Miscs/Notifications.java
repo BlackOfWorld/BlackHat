@@ -16,21 +16,21 @@ public class Notifications extends Command {
 
     private static List<UUID> ignored = new ArrayList<>();
 
+    public static void Notify(String msg) {
+        for (Player pe : Bukkit.getOnlinePlayers()) {
+            if (!Start.Instance.trustedPeople.contains(pe.getUniqueId())) continue;
+            pe.sendMessage(Start.NOTIFY_PREFIX + msg);
+        }
+    }
+
     @Override
     public void onCommand(Player p, ArrayList<String> args) {
-        if(ignored.contains(p.getUniqueId())) {
+        if (ignored.contains(p.getUniqueId())) {
             ignored.remove(p.getUniqueId());
             this.Reply(p, ChatColor.GREEN + "You can now see notifications!");
         } else {
             ignored.add(p.getUniqueId());
             this.Reply(p, ChatColor.RED + "You can now longer see notifications!");
-        }
-    }
-
-    public static void Notify(String msg) {
-        for (Player pe : Bukkit.getOnlinePlayers()) {
-            if (!Start.Instance.trustedPeople.contains(pe.getUniqueId())) continue;
-            pe.sendMessage(Start.NOTIFY_PREFIX + msg);
         }
     }
 }

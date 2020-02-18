@@ -19,8 +19,7 @@ public class Launch extends Command {
             Start.ErrorString(p, "Player \"" + args.get(0) + "\" is not online!");
             return;
         }
-        anotherPlayer.setVelocity(new Vector(0,4000,0));
-        anotherPlayer.setCollidable(false);
+        anotherPlayer.setVelocity(new Vector(0, 4000, 0));
         this.Reply(p, ChatColor.GREEN + "Yeeeeeee! Player launched!");
     }
 }

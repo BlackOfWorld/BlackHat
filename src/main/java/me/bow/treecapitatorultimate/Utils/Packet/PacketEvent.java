@@ -7,10 +7,10 @@ import org.bukkit.entity.Player;
  */
 public class PacketEvent {
 
-    private Packet packet;
     private final Player player;
-    private boolean cancelled;
     private final ConnectionDirection direction;
+    private Packet packet;
+    private boolean cancelled;
 
     /**
      * @param packet    The packet

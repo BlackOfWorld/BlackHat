@@ -27,8 +27,12 @@ import java.util.UUID;
 
 @Command.Info(command = "criticals", description = "Makes your attack critical!", category = CommandCategory.Player)
 public class Criticals extends Command {
+    private static final Class<?> PACKET_CLASS =
+            Objects.requireNonNull(ReflectionUtils.getClass("{nms}.PacketPlayOutWorldParticles"));
     private final ReflectionUtils.ConstructorInvoker packetPlayOutAnimation = ReflectionUtils.getConstructor("{nms}.PacketPlayOutAnimation", ReflectionUtils.getClassCached("{nms}.Entity"), int.class);
     private final List<UUID> players = new ArrayList<UUID>();
+    private Method getParticleName;
+    private Field particleParamField;
 
     public Criticals() {
         if (ReflectionUtils.versionIsNewerOrEqualAs(1, 13, 0)) {
@@ -96,11 +100,6 @@ public class Criticals extends Command {
             ex.printStackTrace();
         }
     }
-
-    private static final Class<?> PACKET_CLASS =
-            Objects.requireNonNull(ReflectionUtils.getClass("{nms}.PacketPlayOutWorldParticles"));
-    private Method getParticleName;
-    private Field particleParamField;
 
     @Override
     public void onPlayerJoin(PlayerJoinEvent e) {

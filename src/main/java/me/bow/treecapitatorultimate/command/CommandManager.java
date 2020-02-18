@@ -17,7 +17,7 @@ public class CommandManager {
         Set<Class<?>> subTypes = reflections.getTypesAnnotatedWith(Command.Info.class);
         for (Class<?> object : subTypes) {
             try {
-                this.commandList.add((Command)object.getDeclaredConstructor().newInstance());
+                this.commandList.add((Command) object.getDeclaredConstructor().newInstance());
             } catch (NoClassDefFoundError e) {
                 //Start.Instance.LOGGER.log(Level.SEVERE, e.getCause().toString());
             } catch (Exception e) {

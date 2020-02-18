@@ -43,7 +43,7 @@ public class DesyncPlayer extends Command {
 
     @Override
     public void onPlayerJoin(PlayerJoinEvent e) {
-        if(!players.contains(e.getPlayer().getUniqueId())) return;
+        if (!players.contains(e.getPlayer().getUniqueId())) return;
         PacketManager.instance.addListener(e.getPlayer(), this);
     }
 
@@ -54,7 +54,7 @@ public class DesyncPlayer extends Command {
 
     @Override
     public void onPacketSend(PacketEvent e) {
-        if(e.getPacket().getPacketClass().getSimpleName().contains("KeepAlive")) return;
+        if (e.getPacket().getPacketClass().getSimpleName().contains("KeepAlive")) return;
         if (rnd.nextInt(100) >= 20) return;
         e.setCancelled(true);
     }

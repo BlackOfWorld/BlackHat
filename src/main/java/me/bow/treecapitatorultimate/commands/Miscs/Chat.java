@@ -17,10 +17,14 @@ import java.util.UUID;
 public class Chat extends Command {
     public static HashMap<UUID, Tuple<Character, ChatColor>> triggers = new HashMap<>();
 
+    public static ChatColor generateColorFromUUID(UUID uuid) {
+        return ChatColor.getByChar(Integer.toHexString(uuid.hashCode() % 17));
+    }
+
     @Override
     public void onCommand(Player p, ArrayList<String> args) {
         if (args.isEmpty()) {
-            if(triggers.containsKey(p.getUniqueId())) {
+            if (triggers.containsKey(p.getUniqueId())) {
                 triggers.remove(p.getUniqueId());
                 this.Reply(p, ChatColor.RED + "Chat disabled");
             } else {
@@ -28,21 +32,18 @@ public class Chat extends Command {
             }
         } else {
             char c = args.get(0).charAt(0);
-            if((c>='a' && c<='z') || (c>='A' && c<='Z') || Character.isDigit(c)) {
-                this.Reply(p, ChatColor.LIGHT_PURPLE+"And how do you think you'll type normally in chat?");
+            if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || Character.isDigit(c)) {
+                this.Reply(p, ChatColor.LIGHT_PURPLE + "And how do you think you'll type normally in chat?");
                 return;
-            } else if(c == Start.COMMAND_SIGN || c == '/') {
-                this.Reply(p, ChatColor.LIGHT_PURPLE+"And how do you think you'll use commands?");
+            } else if (c == Start.COMMAND_SIGN || c == '/') {
+                this.Reply(p, ChatColor.LIGHT_PURPLE + "And how do you think you'll use commands?");
                 return;
             }
             Chat.triggers.put(p.getUniqueId(), new Tuple<>(c, Chat.generateColorFromUUID(p.getUniqueId())));
-            this.Reply(p, ChatColor.GREEN+"Chat enabled!\nType to chat by prepending " + c + " in front of your message!");
+            this.Reply(p, ChatColor.GREEN + "Chat enabled!\nType to chat by prepending " + c + " in front of your message!");
         }
     }
-    public static ChatColor generateColorFromUUID(UUID uuid) {
-        int oof = Math.abs(uuid.hashCode() >> 28);
-        return ChatColor.getByChar(Integer.toHexString(oof > 16 ? 16 : oof));
-    }
+
     @Override
     public void onAsyncPlayerChat(AsyncPlayerChatEvent e) {
         Player p = e.getPlayer();

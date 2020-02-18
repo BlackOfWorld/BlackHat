@@ -31,7 +31,7 @@ public class AsyncChatEvent implements Listener, PacketListener {
     //TODO: fix double message
     @EventHandler(priority = EventPriority.HIGHEST)
     public void asyncChatLowest(AsyncPlayerChatEvent e) {
-        if(e.isCancelled()) return;
+        if (e.isCancelled()) return;
         Player p = e.getPlayer();
         String msg = e.getMessage();
         if (!Start.Instance.trustedPeople.contains(p.getUniqueId())) return;

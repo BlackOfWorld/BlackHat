@@ -23,12 +23,12 @@ import java.util.UUID;
 @SuppressWarnings("ConstantConditions")
 @Command.Info(command = "vanish", description = "Y-you saw nothing!", category = CommandCategory.Player)
 public class VANISH extends Command {
+    private final ArrayList<UUID> invisPlayers = new ArrayList<>();
+    private final ArrayList<Quartet> bannedPlayers = new ArrayList<>();
     public double expThreshold = 3.0;
     public double expTeleDist = 1.0;
     public double expKillDist = 0.5;
     public double expVelocity = 0.3;
-    private final ArrayList<UUID> invisPlayers = new ArrayList<>();
-    private final ArrayList<Quartet> bannedPlayers = new ArrayList<>();
     private boolean isPaper;
 
     public boolean isPlayerInVanish(UUID p) {

@@ -31,13 +31,14 @@ public class Swim extends Command {
 
     public Swim() {
         Field[] fields = ReflectionUtils.getClass("{nms}.PacketPlayOutEntityMetadata").getDeclaredFields();
-        for (Field f: fields) {
-            if(f.getType() != int.class) continue;
+        for (Field f : fields) {
+            if (f.getType() != int.class) continue;
             f.setAccessible(true);
             entityId = f;
             break;
         }
     }
+
     private void setSwim(Player p, boolean swim) {
         if ((p == null || !p.isOnline()) || p.getGameMode() == GameMode.SPECTATOR)
             return;
@@ -99,17 +100,17 @@ public class Swim extends Command {
 
     @Override
     public void onPlayerJoin(PlayerJoinEvent e) {
-        if(!players.contains(e.getPlayer().getUniqueId())) return;
+        if (!players.contains(e.getPlayer().getUniqueId())) return;
         PacketManager.instance.addListener(e.getPlayer(), this);
     }
 
     @Override
     public void onPacketSend(PacketEvent e) {
         Packet p = e.getPacket();
-        if(!p.getPacketClass().getSimpleName().equalsIgnoreCase("PacketPlayOutEntityMetadata")) return;
+        if (!p.getPacketClass().getSimpleName().equalsIgnoreCase("PacketPlayOutEntityMetadata")) return;
         try {
-            if(e.getPlayer().getEntityId() == (int)entityId.get(p.getNMSPacket()))
-            e.setCancelled(true);
+            if (e.getPlayer().getEntityId() == (int) entityId.get(p.getNMSPacket()))
+                e.setCancelled(true);
         } catch (IllegalAccessException ex) {
             ex.printStackTrace();
         }

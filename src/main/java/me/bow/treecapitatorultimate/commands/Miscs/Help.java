@@ -49,7 +49,7 @@ public class Help extends Command {
                 arguments = Integer.parseInt(args.get(0));
             } catch (Exception e) {
             }
-        if(help == null){
+        if (help == null) {
             p.sendMessage(Start.COMMAND_PREFIX + "Help is still generating!");
             return;
         }

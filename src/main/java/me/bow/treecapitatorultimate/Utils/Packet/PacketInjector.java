@@ -15,11 +15,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 class PacketInjector extends ChannelDuplexHandler {
 
-    private volatile boolean isClosed;
-    private Channel channel;
     // There are a lot more reads than writes, so performance should be okay
     private final List<PacketListener> packetListeners = new CopyOnWriteArrayList<>();
     private final WeakReference<Player> playerWeakReference;
+    private volatile boolean isClosed;
+    private Channel channel;
 
     /**
      * Must be detached manually!

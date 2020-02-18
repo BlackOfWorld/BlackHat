@@ -18,8 +18,8 @@ import java.util.UUID;
 
 @Command.Info(command = "discoarmor", description = "Hey, it's disco party time!", category = CommandCategory.Player)
 public class DiscoArmor extends Command {
-    Random r = new Random();
     private final ArrayList<UUID> players = new ArrayList<>();
+    Random r = new Random();
     private int angle = 0;
 
     public DiscoArmor() {

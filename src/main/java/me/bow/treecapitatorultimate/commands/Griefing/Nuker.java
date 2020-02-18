@@ -4,9 +4,13 @@ import me.bow.treecapitatorultimate.Start;
 import me.bow.treecapitatorultimate.Utils.ReflectionUtils;
 import me.bow.treecapitatorultimate.command.Command;
 import me.bow.treecapitatorultimate.command.CommandCategory;
-import net.minecraft.server.v1_15_R1.*;
+import net.minecraft.server.v1_15_R1.BlockPosition;
+import net.minecraft.server.v1_15_R1.Blocks;
+import net.minecraft.server.v1_15_R1.IBlockData;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.v1_15_R1.CraftWorld;
 import org.bukkit.entity.Player;
@@ -18,8 +22,8 @@ import java.util.*;
 @Command.Info(command = "nuker", description = "Breaks blocks around you", category = CommandCategory.Griefing)
 public class Nuker extends Command {
     private final Map<UUID, Integer> griefPlayers = new HashMap<>();
-    private int buildLimit;
     private final Queue<Block> blockQueue = new ArrayDeque<>();
+    private int buildLimit;
 
     public Nuker() {
         try {
