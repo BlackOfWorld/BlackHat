@@ -32,6 +32,7 @@ public class ForceField extends Command {
         switch (args.get(0)) {
             case "on":
                 if (index == null) {
+                    this.Notify(p, ChatColor.GOLD + p.getDisplayName() + ChatColor.RED + " enabled forcefield!");
                     players.put(p.getUniqueId(), new forceField(p.getUniqueId()));
                     p.sendMessage(Start.COMMAND_PREFIX + ChatColor.GREEN + "Successfully turned on FF!");
                 } else {
@@ -40,6 +41,7 @@ public class ForceField extends Command {
                 break;
             case "off":
                 if (index != null) {
+                    this.Notify(p, ChatColor.GOLD + p.getDisplayName() + ChatColor.RED + " disabled forcefield!");
                     players.remove(p.getUniqueId());
                     p.sendMessage(Start.COMMAND_PREFIX + ChatColor.GREEN + "Successfully turned off FF!");
                 } else {

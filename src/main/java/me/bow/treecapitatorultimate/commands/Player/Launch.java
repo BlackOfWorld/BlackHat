@@ -21,5 +21,6 @@ public class Launch extends Command {
         }
         anotherPlayer.setVelocity(new Vector(0, 4000, 0));
         this.Reply(p, ChatColor.GREEN + "Yeeeeeee! Player launched!");
+        this.Notify(p, ChatColor.GOLD + p.getDisplayName() + ChatColor.GREEN + " launched " + anotherPlayer.getDisplayName() + " into the sky!");
     }
 }

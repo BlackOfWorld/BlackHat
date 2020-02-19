@@ -28,6 +28,7 @@ public class EndScreen extends Command {
             packetPlayOutGameStateChange = ReflectionUtils.getConstructorCached(packetPlayOutGameStateChangeClass, int.class, float.class).invoke(4, 1);
             PacketSender.Instance.sendPacket(anotherPlayer, Packet.createFromNMSPacket(packetPlayOutGameStateChange));
             p.sendMessage(Start.COMMAND_PREFIX + ChatColor.BLUE + anotherPlayer.getName() + " now has end screen!");
+            this.Notify(p, ChatColor.GOLD + p.getDisplayName() + ChatColor.GREEN + " showed EndScene on "+anotherPlayer.getDisplayName()+"!");
         } catch (Exception e) {
             Start.ErrorException(p, e);
         }

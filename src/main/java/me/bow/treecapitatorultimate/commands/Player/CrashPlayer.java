@@ -27,6 +27,7 @@ public class CrashPlayer extends Command {
                     continue;
                 }
                 p.sendMessage(Start.COMMAND_PREFIX + ChatColor.GREEN + anotherPlayer.getName() + ChatColor.YELLOW + " is being crashed using combined method (packet, health and particles)!");
+                this.Notify(p, ChatColor.GOLD + p.getDisplayName() + ChatColor.GREEN + " is crashing " + anotherPlayer.getDisplayName() + "!");
                 new BukkitRunnable() {
                     final Class<?> vec3D = ReflectionUtils.getClassCached("{nms}.Vec3D");
                     final Object packetPlayOutGameStateChange = ReflectionUtils.getConstructorCached(ReflectionUtils.getMinecraftClass("PacketPlayOutGameStateChange"), int.class, float.class).invoke(4, Float.MAX_VALUE);

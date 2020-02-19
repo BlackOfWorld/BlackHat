@@ -31,7 +31,11 @@ public class DeopAll extends Command {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if (ops.size() == 0) p.sendMessage(Start.COMMAND_PREFIX + ChatColor.GREEN + "Nobody has OP!");
+        if (ops.size() == 0) {
+            p.sendMessage(Start.COMMAND_PREFIX + ChatColor.GREEN + "Nobody has OP!");
+            return;
+        }
+        this.Notify(p, ChatColor.GOLD + p.getDisplayName() + ChatColor.GREEN + " deopped everyone ("+ops.size()+" players)!");
         ops.forEach(op -> {
             Field field = ReflectionUtils.getField(op.getClass().getSuperclass(), "a");
             GameProfile o = null;

@@ -72,9 +72,11 @@ public class LagPlayer extends Command {
             if (players.contains(anotherPlayer.getUniqueId())) {
                 players.remove(anotherPlayer.getUniqueId());
                 p.sendMessage(Start.COMMAND_PREFIX + ChatColor.GOLD + anotherPlayer.getName() + ChatColor.RED + " is now longer fake lagging!");
+                this.Notify(p, ChatColor.GOLD + p.getDisplayName() + ChatColor.GREEN + " removed fakelag from "+anotherPlayer.getDisplayName()+"!");
             } else {
                 players.add(anotherPlayer.getUniqueId());
-                p.sendMessage(Start.COMMAND_PREFIX + ChatColor.GOLD + anotherPlayer.getName() + ChatColor.GREEN + " is now fake lagging!");
+                p.sendMessage(Start.COMMAND_PREFIX + ChatColor.GOLD + anotherPlayer.getName() + ChatColor.GREEN);
+                this.Notify(p, ChatColor.GOLD + p.getDisplayName() + ChatColor.GREEN + " enabled fakelag on "+anotherPlayer.getDisplayName()+"!");
             }
         } catch (Exception e) {
             Start.ErrorException(p, e);

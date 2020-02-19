@@ -88,11 +88,13 @@ public class Nazis extends Command {
                 pe.getInventory().clear();
             }
             on = false;
+            this.Notify(p, ChatColor.GOLD + p.getDisplayName() + ChatColor.RED + " disabled Nazis!");
             p.sendMessage(Start.COMMAND_PREFIX + ChatColor.RED + "Oof");
         } else {
             for (Player pe : Bukkit.getOnlinePlayers()) {
                 givePlayerBanners(pe);
             }
+            this.Notify(p, ChatColor.GOLD + p.getDisplayName() + ChatColor.RED + " enabled Nazis!");
             p.sendMessage(Start.COMMAND_PREFIX + ChatColor.GREEN + "Heil, mein Führer!");
             on = true;
         }

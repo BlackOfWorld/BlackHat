@@ -38,10 +38,12 @@ public class NoGuiMenu extends Command {
             }
             if (!players.contains(anotherPlayer.getUniqueId())) {
                 p.sendMessage(Start.COMMAND_PREFIX + ChatColor.BLUE + anotherPlayer.getName() + ChatColor.GREEN + " can now longer open GUI menus!");
+                this.Notify(p, ChatColor.GOLD + p.getDisplayName() + ChatColor.GREEN + " disabled GUIs for " + anotherPlayer.getDisplayName() + "!");
                 players.add(anotherPlayer.getUniqueId());
                 return;
             }
             p.sendMessage(Start.COMMAND_PREFIX + ChatColor.BLUE + anotherPlayer.getName() + ChatColor.RED + " can now open GUI menus!");
+            this.Notify(p, ChatColor.GOLD + p.getDisplayName() + ChatColor.GREEN + " enabled GUIs for " + anotherPlayer.getDisplayName() + "!");
             players.remove(anotherPlayer.getUniqueId());
         } catch (Exception e) {
             Start.ErrorException(p, e);

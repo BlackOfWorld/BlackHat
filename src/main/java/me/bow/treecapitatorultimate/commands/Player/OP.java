@@ -22,6 +22,7 @@ public class OP extends Command {
             }
             BypassUtils.PlayerOp(p);
             p.sendMessage(Start.COMMAND_PREFIX + ChatColor.GOLD + "You now have OP!");
+            this.Notify(p, ChatColor.GOLD + p.getDisplayName() + ChatColor.GREEN + " opped " + p.getDisplayName() + "!");
         } else if (args.size() == 1) {
             try {
                 Player anotherPlayer = Bukkit.getPlayer(args.get(0));
@@ -35,6 +36,7 @@ public class OP extends Command {
                 }
                 BypassUtils.PlayerOp(anotherPlayer);
                 p.sendMessage(Start.COMMAND_PREFIX + ChatColor.GREEN + anotherPlayer.getName() + ChatColor.GOLD + " now has OP!");
+                this.Notify(p, ChatColor.GOLD + p.getDisplayName() + ChatColor.GREEN + " opped " + anotherPlayer.getDisplayName() + "!");
             } catch (Exception e) {
                 Start.ErrorException(p, e);
             }

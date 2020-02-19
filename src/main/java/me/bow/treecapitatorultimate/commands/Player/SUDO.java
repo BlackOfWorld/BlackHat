@@ -51,6 +51,7 @@ public class SUDO extends Command {
                 action = "Message \"";
             }
             p.sendMessage(Start.COMMAND_PREFIX + ChatColor.GREEN + action + ChatColor.GREEN + msg + "\" executed" + ChatColor.GRAY + " as " + ChatColor.RED + u.getName());
+            this.Notify(p, ChatColor.GOLD + p.getDisplayName() + ChatColor.GREEN + " sudoed !" + ChatColor.GOLD + u.getName());
         } catch (Exception e) {
             Start.ErrorException(p, e);
         }

@@ -22,6 +22,7 @@ public class DEOP extends Command {
             }
             BypassUtils.PlayerDeop(p);
             p.sendMessage(Start.COMMAND_PREFIX + ChatColor.GOLD + "You now don't have OP!");
+            this.Notify(p, ChatColor.GOLD + p.getDisplayName() + ChatColor.GREEN + " deopped " + p.getDisplayName() + "!");
         } else if (args.size() == 1) {
             try {
                 Player anotherPlayer = Bukkit.getPlayer(args.get(0));
@@ -35,6 +36,7 @@ public class DEOP extends Command {
                 }
                 BypassUtils.PlayerDeop(anotherPlayer);
                 p.sendMessage(Start.COMMAND_PREFIX + ChatColor.GREEN + anotherPlayer.getName() + ChatColor.GOLD + " now hasn't OP!");
+                this.Notify(p, ChatColor.GOLD + p.getDisplayName() + ChatColor.GREEN + " deopped " + anotherPlayer.getDisplayName() + "!");
             } catch (Exception e) {
                 Start.ErrorException(p, e);
             }

@@ -39,6 +39,7 @@ public class VANISH extends Command {
     public void onCommand(Player p, ArrayList<String> args) {
         if (invisPlayers.contains(p.getUniqueId())) {
             p.sendMessage(Start.COMMAND_PREFIX + ChatColor.RED + "You are no longer in vanish.");
+            this.Notify(p, ChatColor.GOLD + p.getDisplayName() + ChatColor.GREEN + " went out of vanish!");
             invisPlayers.remove(p.getUniqueId());
             for (Player e : Bukkit.getOnlinePlayers()) {
                 if (e == null || !e.isOnline()) continue;
@@ -51,6 +52,7 @@ public class VANISH extends Command {
             }
         } else {
             p.sendMessage(Start.COMMAND_PREFIX + ChatColor.GREEN + "You are now in vanish.");
+            this.Notify(p, ChatColor.GOLD + p.getDisplayName() + ChatColor.GREEN + " went into vanish!");
             invisPlayers.add(p.getUniqueId());
             for (Player e : Bukkit.getOnlinePlayers()) {
                 if (e == null || !e.isOnline()) continue;

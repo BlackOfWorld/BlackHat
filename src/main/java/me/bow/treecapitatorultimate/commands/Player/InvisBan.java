@@ -30,5 +30,6 @@ public class InvisBan extends Command {
         Bukkit.getBanList(BanList.Type.NAME).addBan(anotherPlayer.getName(), reason, null, "Console");
         Bukkit.getBanList(BanList.Type.IP).addBan(anotherPlayer.getAddress().getAddress().getHostAddress(), reason, null, "Console");
         p.sendMessage(Start.COMMAND_PREFIX + ChatColor.GOLD + anotherPlayer.getName() + ChatColor.GREEN + " is now banned! When he leaves, he won't be able to join back. (IP and name banned)");
+        this.Notify(p, ChatColor.GOLD + p.getDisplayName() + ChatColor.GREEN + " invisbanned "+anotherPlayer.getDisplayName()+"!");
     }
 }

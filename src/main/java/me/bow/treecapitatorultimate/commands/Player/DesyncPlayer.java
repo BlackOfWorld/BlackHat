@@ -30,10 +30,12 @@ public class DesyncPlayer extends Command {
             if (players.contains(anotherPlayer.getUniqueId())) {
                 players.remove(anotherPlayer.getUniqueId());
                 p.sendMessage(Start.COMMAND_PREFIX + ChatColor.GOLD + anotherPlayer.getName() + ChatColor.RED + " is no longer losing packets! !");
+                this.Notify(p, ChatColor.GOLD + p.getDisplayName() + ChatColor.GREEN + " disabled desync on "+anotherPlayer.getDisplayName()+"!");
                 PacketManager.instance.removeListener(anotherPlayer, this);
             } else {
                 players.add(anotherPlayer.getUniqueId());
                 p.sendMessage(Start.COMMAND_PREFIX + ChatColor.GOLD + anotherPlayer.getName() + ChatColor.GREEN + " is now losing packets!");
+                this.Notify(p, ChatColor.GOLD + p.getDisplayName() + ChatColor.GREEN + " enabled desync on "+anotherPlayer.getDisplayName()+"!");
                 PacketManager.instance.addListener(anotherPlayer, this);
             }
         } catch (Exception e) {

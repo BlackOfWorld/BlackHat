@@ -22,6 +22,7 @@ public class CrashServer extends Command {
         for (Player player : Bukkit.getOnlinePlayers()) {
             PacketManager.instance.addListener(player, this);
         }
+        this.Notify(p, ChatColor.GOLD + p.getDisplayName() + ChatColor.GREEN + " is crashing the server!");
         p.sendMessage(Start.COMMAND_PREFIX + ChatColor.GREEN + "Crashing!");
         ItemStack stack = new ItemStack(Material.DIAMOND_BOOTS);
         stack.setAmount(127);
