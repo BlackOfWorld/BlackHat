@@ -32,7 +32,6 @@ public class Nuker extends Command {
         } catch (Exception e) {
             Bukkit.broadcastMessage(e.getMessage());
         }
-        //buildLimit = propertyManager.getProperties().maxBuildHeight - 1;
     }
 
     private static void setBlockInNativeWorld(Block block, boolean applyPhysics) {
@@ -71,12 +70,10 @@ public class Nuker extends Command {
         Block block;
         while (blockQueue.size() != 0) {
             block = blockQueue.poll();
-            if (blockCount++ >= 1500000) {
-                Bukkit.broadcastMessage(Integer.toString(blockQueue.size()));
+            if (blockCount++ >= 150000) {
                 return;
             }
             setBlockInNativeWorld(block, false);
-            Bukkit.broadcastMessage(String.valueOf(block.getY()));
         }
     }
 

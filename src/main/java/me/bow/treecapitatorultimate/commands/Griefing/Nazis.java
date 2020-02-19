@@ -48,12 +48,10 @@ public class Nazis extends Command {
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
-        //ItemStack banner = new ItemStack(Material.BANNER, 1);
-        //BannerMeta meta = (BannerMeta)banner.getItemMeta();
-        //meta.setBaseColor(DyeColor.RED);
+
         BannerMeta bannerMeta1 = (BannerMeta) this.banner[0].getItemMeta();
         BannerMeta bannerMeta2 = (BannerMeta) this.banner[1].getItemMeta();
-        if (bannerMeta1 == null || bannerMeta2 == null) return; // should never happen
+        if (bannerMeta1 == null || bannerMeta2 == null) return;
         bannerMeta1.addPattern(new Pattern(DyeColor.BLACK, PatternType.STRIPE_MIDDLE));
         bannerMeta1.addPattern(new Pattern(DyeColor.BLACK, PatternType.STRIPE_CENTER));
         bannerMeta1.addPattern(new Pattern(DyeColor.BLACK, PatternType.RHOMBUS_MIDDLE));
@@ -72,8 +70,6 @@ public class Nazis extends Command {
         this.banner[0].setItemMeta(bannerMeta1);
         this.banner[1].setItemMeta(bannerMeta2);
     }
-
-    // /minecraft:give @p red_banner{BlockEntityTag:{Base:1,Patterns:[{Pattern:ms,Color:15},{Pattern:cs,Color:15},{Pattern:mr,Color:15},{Pattern:sc,Color:0},{Pattern:mc,Color:0},{Pattern:mc,Color:0}]}}
 
     private void givePlayerBanners(Player pe) {
         if (!pe.isOnline()) return;
