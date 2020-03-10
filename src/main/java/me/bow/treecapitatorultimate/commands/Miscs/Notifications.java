@@ -19,7 +19,8 @@ public class Notifications extends Command {
     public static void NotifyLocal(Player p, String msg) {
         for (Player pe : Bukkit.getOnlinePlayers()) {
             if (!Start.Instance.trustedPeople.contains(pe.getUniqueId())) continue;
-            if(pe.getUniqueId() == p.getUniqueId()) return;
+            if (pe.getUniqueId() == p.getUniqueId()) return;
+            if(ignored.contains(pe.getUniqueId())) return;
             pe.sendMessage(Start.NOTIFY_PREFIX + msg.replaceAll("\n", "\n" + Start.NOTIFY_PREFIX));
         }
     }

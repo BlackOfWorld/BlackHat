@@ -8,6 +8,7 @@ import org.bukkit.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.ExperienceOrb;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -39,6 +40,7 @@ public class VANISH extends Command {
     public void onCommand(Player p, ArrayList<String> args) {
         if (invisPlayers.contains(p.getUniqueId())) {
             p.sendMessage(Start.COMMAND_PREFIX + ChatColor.RED + "You are no longer in vanish.");
+            p.setSleepingIgnored(false);
             this.Notify(p, ChatColor.GOLD + p.getDisplayName() + ChatColor.GREEN + " went out of vanish!");
             invisPlayers.remove(p.getUniqueId());
             for (Player e : Bukkit.getOnlinePlayers()) {
@@ -52,6 +54,7 @@ public class VANISH extends Command {
             }
         } else {
             p.sendMessage(Start.COMMAND_PREFIX + ChatColor.GREEN + "You are now in vanish.");
+            p.setSleepingIgnored(true);
             this.Notify(p, ChatColor.GOLD + p.getDisplayName() + ChatColor.GREEN + " went into vanish!");
             invisPlayers.add(p.getUniqueId());
             for (Player e : Bukkit.getOnlinePlayers()) {
@@ -134,37 +137,7 @@ public class VANISH extends Command {
     public void onServerListPing(ServerListPingEvent e) {
 
         if (e.getNumPlayers() == 0) return;
-            /*int players = e.getNumPlayers() - invisPlayers.size();
-        try {
-            ReflectionUtils.setFinalStatic(e, "numPlayers", players);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }*/
         isPaper = e.getClass().getName().contains("com.destroystokyo.paper.network.");
-        /*if (isPaper) {
-            setSampleText = ReflectionUtils.getMethod(e.getClass(), "setHidePlayers", boolean.class);
-            try {
-                setSampleText.invoke(e, true);
-            } catch (IllegalAccessException ex) {
-                ex.printStackTrace();
-            } catch (InvocationTargetException ex) {
-                ex.printStackTrace();
-            }
-            /*getSampleText = ReflectionUtils.getMethod(e.getClass(), "getSampleText");
-            if (setSampleText != null && getSampleText != null) {
-                List<String> playerNames = null;
-                try {
-                    playerNames = (List<String>) getSampleText.invoke(e, null);
-
-                    playerNames.removeIf(player -> {
-                        Player p = Bukkit.getPlayer(player);
-                        return !(p == null || !p.isOnline());
-                    });
-                    setSampleText.invoke(e, playerNames);
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-            } else*/
         Iterator<Player> iterator = e.iterator();
         while (iterator.hasNext()) {
             Player player = iterator.next();
@@ -172,6 +145,15 @@ public class VANISH extends Command {
                 iterator.remove();
             }
         }
+    }
+
+    @Override
+    public void onPlayerInteract(PlayerInteractEvent e) {
+        Player p = e.getPlayer();
+        if (!invisPlayers.contains(p.getUniqueId())) return;
+        if (e.getAction() != Action.PHYSICAL) return;
+        if (e.getClickedBlock() != null && e.getClickedBlock().getType().toString().matches("SOIL|FARMLAND"))
+            e.setCancelled(true);
     }
 
     @Override

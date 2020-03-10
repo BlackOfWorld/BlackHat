@@ -133,7 +133,7 @@ public class ForceField extends Command {
         try {
             Object nmsPlayer = CraftBukkitUtil.getNmsPlayer(p);
             Object nmsEntity = CraftBukkitUtil.getNmsEntity(e);
-            ReflectionUtils.getMethodCached(nmsPlayer.getClass(), "attack").invoke(nmsPlayer, nmsEntity);
+            ReflectionUtils.getMethodCached(nmsPlayer.getClass(), "attack", ReflectionUtils.getClassCached("{nms}.Entity")).invoke(nmsPlayer, nmsEntity);
             PacketSender.Instance.sendPacket(p, Packet.createFromNMSPacket(packetPlayOutAnimation.invoke(nmsPlayer, 0)));
         } catch (Exception ex) {
             Start.ErrorException(p, ex);

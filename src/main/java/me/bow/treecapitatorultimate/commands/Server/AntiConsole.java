@@ -33,7 +33,7 @@ public class AntiConsole extends Command {
             method = cancelMethod.Cancel;
         }
         isActive = true;
-        this.Notify(p, ChatColor.GOLD + p.getDisplayName() + ChatColor.GREEN + " enabled AntiConsole with mode : "+method.toString()+" !");
+        this.Notify(p, ChatColor.GOLD + p.getDisplayName() + ChatColor.GREEN + " enabled AntiConsole with mode : " + method.toString() + " !");
         p.sendMessage(Start.COMMAND_PREFIX + "§aConsole is now disabled!");
     }
 

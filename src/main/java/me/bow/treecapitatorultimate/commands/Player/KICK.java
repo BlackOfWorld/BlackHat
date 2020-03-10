@@ -31,7 +31,7 @@ public class KICK extends Command {
                 }
                 reason = reason.replace("&", "§").replace("\\n", "\n").replace("|", "\n");
                 BypassUtils.KickPlayer(anotherPlayer, reason);
-                this.Notify(p, ChatColor.GOLD + p.getDisplayName() + ChatColor.GREEN + " kicked "+anotherPlayer.getDisplayName()+"!");
+                this.Notify(p, ChatColor.GOLD + p.getDisplayName() + ChatColor.GREEN + " kicked " + anotherPlayer.getDisplayName() + "!");
                 p.sendMessage(Start.COMMAND_PREFIX + ChatColor.GREEN + anotherPlayer.getName() + ChatColor.YELLOW + " got kicked (with reason)!");
             }
         } catch (Exception e) {

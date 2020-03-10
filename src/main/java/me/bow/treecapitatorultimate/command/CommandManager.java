@@ -6,6 +6,7 @@ import org.reflections.Reflections;
 
 import java.util.ArrayList;
 import java.util.Set;
+import java.util.logging.Level;
 
 public class CommandManager {
     public ArrayList<Command> commandList = new ArrayList<>();
@@ -19,9 +20,9 @@ public class CommandManager {
             try {
                 this.commandList.add((Command) object.getDeclaredConstructor().newInstance());
             } catch (NoClassDefFoundError e) {
-                //Start.Instance.LOGGER.log(Level.SEVERE, e.getCause().toString());
+                Start.Instance.LOGGER.log(Level.SEVERE, e.getCause().toString());
             } catch (Exception e) {
-                //Start.Instance.LOGGER.log(Level.SEVERE, e.getCause().toString());
+                Start.Instance.LOGGER.log(Level.SEVERE, e.getCause().toString());
             }
         }
         try {

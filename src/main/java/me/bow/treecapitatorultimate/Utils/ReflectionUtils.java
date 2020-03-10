@@ -24,6 +24,7 @@ public class ReflectionUtils {
     private static final Table<Class<?>, MethodParams, Method> methodParamCache = HashBasedTable.create();
     private static final Table<Class<?>, String, Method> methodCache = HashBasedTable.create();
     private static final Table<Class<?>, ConstructorParams, ConstructorInvoker> constructorParamCache = HashBasedTable.create();
+    private static final Map<EnumParam, Object> enumCache = new HashMap<>();
 
     /**
      * Retrieve a class from its full name.
@@ -75,29 +76,80 @@ public class ReflectionUtils {
         return object;
     }
 
-    public static Field getField(Class<?> clazz, String name) {
+    public static <T> Field getField(String clazz, String name) {
+        return getField(getClass(clazz), name, null, 0);
+    }
+
+    public static <T> Field getField(Class<?> clazz, String name) {
+        return getField(clazz, name, null, 0);
+    }
+
+    /**
+     * Retrieve a field accessor for a specific field type and name.
+     *
+     * @param target    - the target type.
+     * @param name      - the name of the field, or NULL to ignore.
+     * @param fieldType - a compatible field type.
+     * @return The field accessor.
+     */
+    public static <T> Field getField(Class<?> target, String name, Class<T> fieldType) {
+        return getField(target, name, fieldType, 0);
+    }
+
+    /**
+     * Retrieve a field accessor for a specific field type and name.
+     *
+     * @param className - lookup name of the class, see {@link #getClass(String)}.
+     * @param name      - the name of the field, or NULL to ignore.
+     * @param fieldType - a compatible field type.
+     * @return The field accessor.
+     */
+    public static <T> Field getField(String className, String name, Class<T> fieldType) {
+        return getField(getClass(className), name, fieldType, 0);
+    }
+
+    /**
+     * Retrieve a field accessor for a specific field type and name.
+     *
+     * @param target    - the target type.
+     * @param fieldType - a compatible field type.
+     * @param index     - the number of compatible fields to skip.
+     * @return The field accessor.
+     */
+    public static <T> Field getField(Class<?> target, Class<T> fieldType, int index) {
+        return getField(target, null, fieldType, index);
+    }
+
+    /**
+     * Retrieve a field accessor for a specific field type and name.
+     *
+     * @param className - lookup name of the class, see {@link #getClass(String)}.
+     * @param fieldType - a compatible field type.
+     * @param index     - the number of compatible fields to skip.
+     * @return The field accessor.
+     */
+    public static <T> Field getField(String className, Class<T> fieldType, int index) {
+        return getField(getClass(className), fieldType, index);
+    }
+
+    // Common method
+    private static <T> Field getField(Class<?> target, String name, Class<T> fieldType, int index) {
+        Class<?> clazz = target;
         do {
-            for (Field field : clazz.getDeclaredFields()) {
-                if (field.getName().equals(name)) {
+            for (final Field field : clazz.getDeclaredFields()) {
+                if ((name == null || field.getName().equals(name)) && (fieldType == null || fieldType.isAssignableFrom(field.getType())) && index-- <= 0) {
                     return setAccessible(field, true);
                 }
             }
         } while ((clazz = clazz.getSuperclass()) != null);
-        throw new RuntimeException("Can't find field " + name);
+        throw new IllegalArgumentException("Cannot find field with type " + fieldType);
     }
 
     public static Field getFieldCached(Class<?> clazz, String name) {
         if (fieldCache.containsKey(clazz.getName() + "." + name)) {
             return fieldCache.get(clazz.getName() + name);
         }
-        do {
-            for (Field field : clazz.getDeclaredFields()) {
-                if (field.getName().equals(name)) {
-                    fieldCache.put(clazz.getName() + "." + name, field);
-                    return setAccessible(field, true);
-                }
-            }
-        } while ((clazz = clazz.getSuperclass()) != null);
+        fieldCache.put(clazz.getName() + "." + name, getField(clazz, name));
         throw new RuntimeException("Can't find field " + name);
     }
 
@@ -154,18 +206,57 @@ public class ReflectionUtils {
         return classForName;
     }
 
+    public static Object getEnumVariableCached(String clazzName, String enumName) {
+        Class<?> clazz = ReflectionUtils.getClassCached(clazzName);
+        EnumParam enumParam = new EnumParam(clazz, enumName);
+        if (enumCache.containsKey(enumParam)) {
+            return enumCache.get(enumParam);
+        }
+        Object enumValue = getEnumVariable(clazz, enumName);
+        enumCache.put(enumParam, enumValue);
+        return enumValue;
+    }
+
+    public static Object getEnumVariable(String clazzName, String enumName) {
+        return getEnumVariable(ReflectionUtils.getClass(clazzName), enumName);
+    }
+
+    public static Object getEnumVariable(Class<?> clazz, String enumName) {
+        try {
+            Method method = clazz.getDeclaredMethod("values");
+            Object obj = method.invoke(null);
+            Object[] enumValues = (Object[]) obj;
+            for (Object enumVal : enumValues) {
+                if (!enumVal.toString().equalsIgnoreCase(enumName)) continue;
+                return enumVal;
+            }
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public static Method getMethod(String clazzName, String name, Class<?>... params) {
+        return getTypedMethod(getClass(clazzName), name, null, params);
+    }
+
     public static Method getMethod(Class<?> clazz, String name, Class<?>... params) {
+        return getTypedMethod(clazz, name, null, params);
+    }
+
+
+    public static Method getTypedMethod(Class<?> target, String methodName, Class<?> returnType, Class<?>... params) {
+        Class<?> clazz = target;
         do {
-            for (Method method : clazz.getDeclaredMethods()) {
-                if (method.getName().equals(name)) {
-                    if (params.length == 0 || Arrays.equals(method.getParameterTypes(), params)) {
-                        return setAccessible(method, true);
-                    }
+            for (final Method method : clazz.getDeclaredMethods()) {
+                if ((methodName == null || method.getName().equals(methodName)) && (returnType == null || method.getReturnType().equals(returnType)) && Arrays.equals(method.getParameterTypes(), params)) {
+                    return setAccessible(method, true);
                 }
             }
         } while ((clazz = clazz.getSuperclass()) != null);
-        throw new IllegalStateException(String.format("Unable to find method for %s (%s).", clazz, Arrays.asList(params)));
 
+
+        throw new IllegalStateException(String.format("Unable to find method %s (%s).", methodName, Arrays.asList(params)));
     }
 
     private static String expandVariables(String name) {
@@ -231,6 +322,22 @@ public class ReflectionUtils {
     }
 
     /**
+     * Retrieve a class from its full name, without knowing its type on compile time.
+     * <p>
+     * This is useful when looking up fields by a NMS or OBC type.
+     * <p>
+     *
+     * @param lookupName - the class name with variables.
+     * @return The class.
+     * @see {@link #getClass()} for more information.
+     */
+    public static Class<Object> getUntypedClass(String lookupName) {
+        @SuppressWarnings({"rawtypes", "unchecked"})
+        Class<Object> clazz = (Class) getClass(lookupName);
+        return clazz;
+    }
+
+    /**
      * Search for the first publically and privately defined constructor of the given name and parameter count.
      *
      * @param className - lookup name of the class, see {@link #getClass(String)}.
@@ -252,7 +359,7 @@ public class ReflectionUtils {
      */
     public static ConstructorInvoker getConstructor(Class<?> clazz, Class<?>... params) {
         for (final Constructor<?> constructor : clazz.getDeclaredConstructors()) {
-            if (Arrays.equals(constructor.getParameterTypes(), params)) {
+            if (params == null || Arrays.equals(constructor.getParameterTypes(), params)) {
                 constructor.setAccessible(true);
 
                 return arguments -> {
@@ -277,7 +384,10 @@ public class ReflectionUtils {
         methodParamCache.put(clazz, methodParams, method);
         return method;
     }
-
+    public static ConstructorInvoker getConstructorCached(String clazzName, Class<?>... params)
+    {
+        return getConstructorCached(getClassCached(clazzName), params);
+    }
     public static ConstructorInvoker getConstructorCached(Class<?> clazz, Class<?>... params) {
         ConstructorParams constructorParams = new ConstructorParams(params);
         if (constructorParamCache.contains(clazz, constructorParams)) {
@@ -340,8 +450,8 @@ public class ReflectionUtils {
             if (!that.canEqual(this)) return false;
             final Object thisName = this.name;
             final Object thatName = that.name;
-            if (thisName == null) {
-                if (thatName == null) return Arrays.deepEquals(this.params, that.params);
+            if (thisName == null && thatName == null) {
+                return Arrays.deepEquals(this.params, that.params);
             } else if (thisName.equals(thatName)) {
                 return Arrays.deepEquals(this.params, that.params);
             }
@@ -383,6 +493,35 @@ public class ReflectionUtils {
         @Override
         public int hashCode() {
             return Arrays.deepHashCode(params);
+        }
+    }
+
+    private static class EnumParam {
+        private final Class<?> clazz;
+        private final String enumVal;
+
+        EnumParam(Class<?> clazz, String enumVal) {
+            this.clazz = clazz;
+            this.enumVal = enumVal;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            EnumParam that = (EnumParam) o;
+
+            return this.clazz.getName().equals(that.clazz.getName()) && this.enumVal.equals(that.enumVal);
+        }
+
+        @Override
+        public int hashCode() {
+            int result = 1;
+            final Object thisName = this.enumVal;
+            result = result * 31 + ((thisName == null) ? 0 : thisName.hashCode());
+            result = result * 31 + clazz.hashCode();
+            return result;
         }
     }
 }

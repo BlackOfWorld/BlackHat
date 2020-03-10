@@ -106,6 +106,7 @@ public class PacketEvent {
     /**
      * The direction the packet was travelling
      */
+
     public enum ConnectionDirection {
         TO_CLIENT,
         TO_SERVER

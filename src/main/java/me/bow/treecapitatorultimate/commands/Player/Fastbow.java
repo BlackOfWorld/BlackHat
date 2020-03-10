@@ -7,11 +7,10 @@ import me.bow.treecapitatorultimate.command.CommandCategory;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.Sound;
-import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -32,18 +31,13 @@ public class Fastbow extends Command {
         }
     }
 
-    private void shootArrow(Player p) {
-        p.launchProjectile(Arrow.class).setCritical(true);
-        p.playSound(p.getLocation(), Sound.ENTITY_ARROW_SHOOT, 10.0f, 1.0f);
-    }
-
     private void shootArrowNMS(Player p) {
         //WorldServer world = ((CraftWorld) p.getWorld()).getHandle();
         try {
             final Object nmsPlayer = p.getClass().getMethod("getHandle").invoke(p);
             final Object nmsWorld = p.getWorld().getClass().getMethod("getHandle").invoke(p.getWorld());
-            Class<?> craftItemStack = ReflectionUtils.getClassCached("{obc}.inventory.CraftItemStack");
-            Object itemStack = ReflectionUtils.getMethodCached(craftItemStack, "asNMSCopy").invoke(craftItemStack, p.getInventory().getItemInMainHand());
+            final Class<?> craftItemStack = ReflectionUtils.getClassCached("{obc}.inventory.CraftItemStack");
+            Object itemStack = ReflectionUtils.getMethodCached(craftItemStack, "asNMSCopy", ItemStack.class).invoke(craftItemStack, p.getInventory().getItemInMainHand());
             Method d = ReflectionUtils.getMethodCached(itemStack.getClass(), "a", ReflectionUtils.getClassCached("{nms}.World"), ReflectionUtils.getClass("{nms}.EntityLiving"), int.class);
             //World world, EntityLiving entityliving, int i
             d.invoke(itemStack, nmsWorld, nmsPlayer, 0);

@@ -34,11 +34,9 @@ public class BypassUtils {
     public static void KickPlayer(Player p, String reason) {
         Class<?> component = ReflectionUtils.getClassCached("{nms}.ChatComponentText");
         Class<?> kickDisconnectPacket = ReflectionUtils.getClassCached("{nms}.PacketPlayOutKickDisconnect");
-        Object packet = null;
-        Object kickText;
         try {
-            kickText = component.getConstructor(String.class).newInstance(reason);
-            packet = kickDisconnectPacket.getConstructors()[1].newInstance(kickText);
+            Object kickText = component.getConstructor(String.class).newInstance(reason);
+            Object packet = kickDisconnectPacket.getConstructors()[1].newInstance(kickText);
             PacketSender.Instance.sendPacket(p, Packet.createFromNMSPacket(packet));
         } catch (NoSuchMethodException e) {
             e.printStackTrace();

@@ -20,7 +20,6 @@ public class DummyPermissibleBase extends PermissibleBase {
         try {
             ATTACHMENTS_FIELD = PermissibleBase.class.getDeclaredField("attachments");
             ATTACHMENTS_FIELD.setAccessible(true);
-
             PERMISSIONS_FIELD = PermissibleBase.class.getDeclaredField("permissions");
             PERMISSIONS_FIELD.setAccessible(true);
         } catch (NoSuchFieldException e) {
@@ -30,9 +29,6 @@ public class DummyPermissibleBase extends PermissibleBase {
 
     private DummyPermissibleBase() {
         super(null);
-
-        // we want the singleton dummy attachment to be stateless
-        // the behaviour of this class is to fail silently, so we can't use Collections.emptyX
         try {
             ATTACHMENTS_FIELD.set(this, new ArrayList<PermissionAttachment>() {
                 @Override

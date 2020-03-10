@@ -14,12 +14,13 @@ BleXPloit
 
 ### Roadmap
 
+- [ ] Make command manager smarter (Reflection and variable type conversion)
 - [ ] Add GUI
 - [ ] Make proper website for it
 - [ ] Finish implementing FuckServer
 - [ ] Better InventorySee
 - [ ] Better (Smarter) Nuker
-- [ ] Multi version support (Reflection?)
+- [x] Multi version support (Reflection?)
 - [ ] Make help prettier
 - [x] All perms
 - [x] Crash player
@@ -32,3 +33,14 @@ BleXPloit
 - [x] Anti deop, Anti console, Anti stop
 - [x] Force swim
 - [x] Sudo
+
+### Credits
+Special thanks to mainly my friends (test subjects):
+```
+WiPet
+Midori
+TheGamerAdmin
+Vivix/123sily
+Arisa
+```
+And Kristian for creating TinyProtocol.
