@@ -224,7 +224,7 @@ public class LocationUtils {
     }
 
     public static Location toBlockLocation(final Location loc) {
-        return new Location(loc.getWorld(), (double) loc.getBlockX(), (double) loc.getBlockY(), (double) loc.getBlockZ());
+        return new Location(loc.getWorld(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
     }
 
     public static Vector moveSmoothly(final Location from, final Location to) {

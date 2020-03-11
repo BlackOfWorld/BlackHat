@@ -384,10 +384,11 @@ public class ReflectionUtils {
         methodParamCache.put(clazz, methodParams, method);
         return method;
     }
-    public static ConstructorInvoker getConstructorCached(String clazzName, Class<?>... params)
-    {
+
+    public static ConstructorInvoker getConstructorCached(String clazzName, Class<?>... params) {
         return getConstructorCached(getClassCached(clazzName), params);
     }
+
     public static ConstructorInvoker getConstructorCached(Class<?> clazz, Class<?>... params) {
         ConstructorParams constructorParams = new ConstructorParams(params);
         if (constructorParamCache.contains(clazz, constructorParams)) {

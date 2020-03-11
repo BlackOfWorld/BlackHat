@@ -17,6 +17,7 @@ import java.util.ArrayList;
 @Command.Info(command = "crashserver", description = "Tries to crash the server without showing up in callstack.", category = CommandCategory.Server)
 public class CrashServer extends Command {
     boolean isOn = false;
+
     public CrashServer() {
         PacketInjector.addPacketListener(this);
     }
@@ -36,7 +37,7 @@ public class CrashServer extends Command {
 
     @Override
     public void onPacketSend(PacketEvent packetEvent) {
-        if(!isOn) return;
+        if (!isOn) return;
         if (packetEvent.getPacket().getPacketClass() != PacketPlayOutSpawnEntity.class) return;
         packetEvent.setCancelled(true);
     }

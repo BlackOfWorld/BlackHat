@@ -13,6 +13,22 @@ public class MathUtils {
         return rnd.nextInt((max - min) + 1) + min;
     }
 
+    public static float generateNumber(float max) {
+        return rnd.nextFloat() * max;
+    }
+
+    public static float generateNumber(float min, float max) {
+        return rnd.nextFloat() * (max - min) + min;
+    }
+
+    public static double generateNumber(double max) {
+        return rnd.nextDouble() * max;
+    }
+
+    public static double generateNumber(double min, double max) {
+        return rnd.nextDouble() * (max - min) + min;
+    }
+
     public static double clamp(final double min, final double max, final double val) {
         return Math.min(max, Math.max(min, val));
     }

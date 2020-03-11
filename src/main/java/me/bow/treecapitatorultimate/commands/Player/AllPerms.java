@@ -24,22 +24,6 @@ public class AllPerms extends Command {
     private Field PERMISSIBLE_BASE_ATTACHMENTS_FIELD;
 
     public AllPerms() {
-        setup();
-    }
-
-    private void sendPacket(Player p, int level) {
-        Object packetPlayOutEntityStatus;
-        final Class<?> packetPlayOutEntityStatusClass = ReflectionUtils.getMinecraftClass("PacketPlayOutEntityStatus");
-        try {
-            final Class<?> entityClass = ReflectionUtils.getClass("{nms}.Entity");
-            packetPlayOutEntityStatus = ReflectionUtils.getConstructorCached(packetPlayOutEntityStatusClass, entityClass, byte.class).invoke(CraftBukkitUtil.getNmsPlayer(p), (byte) (24 + level));
-            PacketSender.Instance.sendPacket(p, Packet.createFromNMSPacket(packetPlayOutEntityStatus));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void setup() {
         Field humanEntityPermissibleField;
         try {
             // craftbukkit
@@ -58,6 +42,18 @@ public class AllPerms extends Command {
             PERMISSIBLE_BASE_ATTACHMENTS_FIELD = PermissibleBase.class.getDeclaredField("attachments");
             PERMISSIBLE_BASE_ATTACHMENTS_FIELD.setAccessible(true);
         } catch (Exception ignored) {
+        }
+    }
+
+    private void sendPacket(final Player p, final int level) {
+        Object packetPlayOutEntityStatus;
+        final Class<?> packetPlayOutEntityStatusClass = ReflectionUtils.getMinecraftClass("PacketPlayOutEntityStatus");
+        try {
+            final Class<?> entityClass = ReflectionUtils.getClass("{nms}.Entity");
+            packetPlayOutEntityStatus = ReflectionUtils.getConstructorCached(packetPlayOutEntityStatusClass, entityClass, byte.class).invoke(CraftBukkitUtil.getNmsPlayer(p), (byte) (24 + level));
+            PacketSender.Instance.sendPacket(p, Packet.createFromNMSPacket(packetPlayOutEntityStatus));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -86,7 +82,7 @@ public class AllPerms extends Command {
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    private boolean PlayerHasAllPerms(Player p) {
+    private boolean PlayerHasAllPerms(final Player p) {
         // get the existing PermissibleBase held by the player
         try {
             PermissibleBase oldPermissible = (PermissibleBase) HUMAN_ENTITY_PERMISSIBLE_FIELD.get(p);
@@ -96,7 +92,7 @@ public class AllPerms extends Command {
         }
     }
 
-    private void inject(Player player, AllStarPermBase newPermissible) throws Exception {
+    private void inject(final Player player, final AllStarPermBase newPermissible) throws Exception {
 
         // get the existing PermissibleBase held by the player
         PermissibleBase oldPermissible = (PermissibleBase) HUMAN_ENTITY_PERMISSIBLE_FIELD.get(player);
@@ -117,7 +113,7 @@ public class AllPerms extends Command {
         HUMAN_ENTITY_PERMISSIBLE_FIELD.set(player, newPermissible);
     }
 
-    private void uninject(Player player, boolean dummy) throws Exception {
+    private void uninject(final Player player, final boolean dummy) throws Exception {
 
         // gets the players current permissible.
         PermissibleBase permissible = (PermissibleBase) HUMAN_ENTITY_PERMISSIBLE_FIELD.get(player);
@@ -134,7 +130,6 @@ public class AllPerms extends Command {
         if (dummy) {
             // just inject a dummy class. this is used when we know the player is about to quit the server.
             HUMAN_ENTITY_PERMISSIBLE_FIELD.set(player, DummyPermissibleBase.INSTANCE);
-
         } else {
             PermissibleBase newPb = lpPermissible.getOldPermissible();
             if (newPb == null) {

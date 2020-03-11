@@ -24,6 +24,7 @@ public class LagPlayer extends Command {
     private final ArrayList<UUID> players = new ArrayList<>();
     private final Random rnd = new Random();
 
+
     @Override
     public void onPlayerBlockBreak(BlockBreakEvent e) {
         Player p = e.getPlayer();
@@ -32,11 +33,9 @@ public class LagPlayer extends Command {
         if (p.getGameMode() == GameMode.CREATIVE && p.getInventory().getItemInMainHand().getType().toString().toLowerCase().contains("sword"))
             return;
         int randomTick = generateNumber(10, 25);
-        if (p.getGameMode() == GameMode.CREATIVE) {
+        if (p.getGameMode() == GameMode.CREATIVE)
             Bukkit.getScheduler().runTaskLater(Start.Instance, () -> e.getBlock().setType(Material.AIR), randomTick);
-        } else {
-            Bukkit.getScheduler().runTaskLater(Start.Instance, () -> e.getBlock().breakNaturally(item), randomTick);
-        }
+        else Bukkit.getScheduler().runTaskLater(Start.Instance, () -> e.getBlock().breakNaturally(item), randomTick);
         e.setCancelled(true);
     }
 

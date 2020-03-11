@@ -1,22 +1,19 @@
 package me.bow.treecapitatorultimate;
 
 import me.bow.treecapitatorultimate.Utils.AntiUnload;
+import me.bow.treecapitatorultimate.Utils.CraftBukkitUtil;
 import me.bow.treecapitatorultimate.Utils.Packet.PacketInjector;
-import me.bow.treecapitatorultimate.Utils.ReflectionUtils;
 import me.bow.treecapitatorultimate.command.CommandManager;
 import me.bow.treecapitatorultimate.listeners.AsyncChatEvent;
 import me.bow.treecapitatorultimate.listeners.TreeDestroy;
 import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Server;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.UUID;
 import java.util.logging.Logger;
@@ -52,28 +49,6 @@ public final class Start extends JavaPlugin {
         sender.sendMessage(COMMAND_PREFIX + ChatColor.BLUE + " Please message the developer if you thing this is something that shouldn't happen.");
     }
 
-    public static Object GetServer() {
-        Object o = null;
-        try {
-            Server server = Bukkit.getServer();
-            o = ReflectionUtils.getMethod(server.getClass(), "getServer", 0).invoke(server);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return o;
-    }
-
-    public static Object getDedicatedServerPropertiesInstance() throws InvocationTargetException, IllegalAccessException {
-        Object server = GetServer();
-        Field propertyManager = ReflectionUtils.getField(server.getClass(), "propertyManager");
-        Class<?> serverSettings = ReflectionUtils.getClass("{nms}.DedicatedServerSettings");
-        Object dedicatedSettingsInstance = propertyManager.get(server);
-        return ReflectionUtils.getMethod(serverSettings, "getProperties", 0).invoke(dedicatedSettingsInstance);
-    }
-
-    public static Server GetBukkitServer() {
-        return Start.Instance.getServer();
-    }
 
     private void onPostWorldLoad() {
         Bukkit.getPluginManager().registerEvents(new TreeDestroy(), this);
@@ -96,7 +71,7 @@ public final class Start extends JavaPlugin {
         // Do every hooking here
 
         try {
-            setFinalStatic(getDedicatedServerPropertiesInstance(), "enableCommandBlock", true);
+            setFinalStatic(CraftBukkitUtil.getDedicatedServerPropertiesInstance(), "enableCommandBlock", true);
             // server.propertyManager.getProperties().enableCommandBlock = false;
         } catch (Exception ignored) {
         }

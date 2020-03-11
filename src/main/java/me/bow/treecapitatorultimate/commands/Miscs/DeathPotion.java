@@ -20,7 +20,6 @@ public class DeathPotion extends Command {
         PotionMeta potionmeta = (PotionMeta) potion.getItemMeta();
         PotionEffect heal = new PotionEffect(PotionEffectType.HEAL, 2000, 125);
         PotionEffect harm = new PotionEffect(PotionEffectType.HARM, 2000, 125);
-        assert potionmeta != null;
         potionmeta.addCustomEffect(heal, true);
         potionmeta.addCustomEffect(harm, true);
         potionmeta.setDisplayName("§6Splash Potion of §4§lDEATH");

@@ -29,7 +29,7 @@ public class BlockUtil {
         for (int x = maxRadius * -1; x <= maxRadius; ++x) {
             for (int z = maxRadius * -1; z <= maxRadius; ++z) {
                 for (int y = maxRadius * -1; y <= maxRadius; ++y) {
-                    final Location l2 = l.clone().add((double) x, (double) y, (double) z);
+                    final Location l2 = l.clone().add(x, y, z);
                     if (l2.getBlock().getType() == Material.AIR && (closest == null || l2.distanceSquared(l) < closest.distanceSquared(l))) {
                         closest = l2;
                     }

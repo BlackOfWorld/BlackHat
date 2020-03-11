@@ -29,18 +29,12 @@ public class Enchant extends Command {
         try {
             if (stack.getType().equals(Material.ENCHANTED_BOOK)) {
                 EnchantmentStorageMeta meta = (EnchantmentStorageMeta) stack.getItemMeta();
-                if (level == 0) {
-                    meta.removeStoredEnchant(enchantment);
-                } else {
-                    meta.addStoredEnchant(enchantment, level, true);
-                }
+                if (level == 0) meta.removeStoredEnchant(enchantment);
+                else meta.addStoredEnchant(enchantment, level, true);
                 stack.setItemMeta(meta);
-            } else { // all other material types besides ENCHANTED_BOOK
-                if (level == 0) {
-                    stack.removeEnchantment(enchantment);
-                } else {
-                    stack.addUnsafeEnchantment(enchantment, level);
-                }
+            } else {
+                if (level == 0) stack.removeEnchantment(enchantment);
+                else stack.addUnsafeEnchantment(enchantment, level);
             }
         } catch (Exception ex) {
             Start.ErrorException(sender, ex);

@@ -27,6 +27,7 @@ public class Swim extends Command {
     private final ArrayList<UUID> players = new ArrayList<>();
     private Field entityId;
     private Object swimmingEnum = ReflectionUtils.getEnumVariable("{nms}.EntityPose", "SWIMMING");
+
     public Swim() {
         PacketInjector.addPacketListener(this);
         Field[] fields = ReflectionUtils.getClass("{nms}.PacketPlayOutEntityMetadata").getDeclaredFields();
@@ -85,7 +86,7 @@ public class Swim extends Command {
 
     @Override
     public void onEntityPoseChangeEvent(EntityPoseChangeEvent e) {
-        if (!(e.getEntity() instanceof Player) || e.getPose() != Pose.SLEEPING) return;
+        if (!(e.getEntity() instanceof Player) || e.getPose() != Pose.SWIMMING) return;
     }
 
     @Override

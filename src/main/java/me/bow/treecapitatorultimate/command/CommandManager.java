@@ -20,9 +20,9 @@ public class CommandManager {
             try {
                 this.commandList.add((Command) object.getDeclaredConstructor().newInstance());
             } catch (NoClassDefFoundError e) {
-                Start.Instance.LOGGER.log(Level.SEVERE, e.getCause().toString());
+                Start.LOGGER.log(Level.SEVERE, e.getCause().toString());
             } catch (Exception e) {
-                Start.Instance.LOGGER.log(Level.SEVERE, e.getCause().toString());
+                Start.LOGGER.log(Level.SEVERE, e.getCause().toString());
             }
         }
         try {

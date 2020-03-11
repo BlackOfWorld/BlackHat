@@ -1,6 +1,7 @@
 package me.bow.treecapitatorultimate.commands.Griefing;
 
 import me.bow.treecapitatorultimate.Start;
+import me.bow.treecapitatorultimate.Utils.CraftBukkitUtil;
 import me.bow.treecapitatorultimate.Utils.ReflectionUtils;
 import me.bow.treecapitatorultimate.command.Command;
 import me.bow.treecapitatorultimate.command.CommandCategory;
@@ -27,7 +28,7 @@ public class Nuker extends Command {
 
     public Nuker() {
         try {
-            Object dedicatedServerProperties = Start.getDedicatedServerPropertiesInstance();
+            Object dedicatedServerProperties = CraftBukkitUtil.getDedicatedServerPropertiesInstance();
             buildLimit = (int) ReflectionUtils.getField(dedicatedServerProperties.getClass(), "maxBuildHeight").get(dedicatedServerProperties);
         } catch (Exception e) {
             Bukkit.broadcastMessage(e.getMessage());

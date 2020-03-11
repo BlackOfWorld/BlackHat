@@ -89,6 +89,7 @@ public class Criticals extends Command {
                 damager.getLocation().getBlock().getType() != Material.LADDER &&
                 damager.getLocation().getBlock().getType() != Material.VINE &&
                 !damager.isSprinting()) return;
+
         Entity damagee = e.getEntity();
         e.setDamage(e.getDamage() * 1.5F);
         try {

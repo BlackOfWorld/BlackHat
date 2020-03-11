@@ -48,35 +48,35 @@ public class BowAimbot extends Command {
         }
         Arrow arrow = (Arrow) e.getProjectile();
         LivingEntity target = (LivingEntity) minEntity;
-        if (minEntity != null) {
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    Vector newVel;
-                    double speed = arrow.getVelocity().length();
-                    if (arrow.isOnGround() || arrow.isDead() || target.isDead()) {
-                        this.cancel();
-                        return;
-                    }
-                    Vector to = target.getLocation().clone().add(new Vector(0.0, 0.5, 0.0)).subtract(arrow.getLocation()).toVector();
-                    Vector dirVel = arrow.getVelocity().clone().normalize();
-                    Vector dirTarget = to.clone().normalize();
-                    double ang = dirVel.angle(dirTarget);
-                    double speed_ = 0.9 * speed + 0.13999999999999999;
-                    if (target instanceof Player && arrow.getLocation().distance(target.getLocation()) < 8.0 && ((Player) target).isBlocking()) {
-                        speed_ = speed * 0.6;
-                    }
-                    if (ang < 0.12) {
-                        newVel = dirVel.clone().multiply(speed_);
-                    } else {
-                        Vector newDir = dirVel.clone().multiply((ang - 0.12) / ang).add(dirTarget.clone().multiply(0.12 / ang));
-                        newDir.normalize();
-                        newVel = newDir.clone().multiply(speed_);
-                    }
-                    arrow.setVelocity(newVel.add(new Vector(0.0, 0.03, 0.0)));
-                    arrow.getWorld().playEffect(arrow.getLocation(), Effect.SMOKE, 0);
+        if (minEntity == null) return;
+
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                Vector newVel;
+                double speed = arrow.getVelocity().length();
+                if (arrow.isOnGround() || arrow.isDead() || target.isDead()) {
+                    this.cancel();
+                    return;
                 }
-            }.runTaskTimer(Start.Instance, 1L, 1L);
-        }
+                Vector to = target.getLocation().clone().add(new Vector(0.0, 0.5, 0.0)).subtract(arrow.getLocation()).toVector();
+                Vector dirVel = arrow.getVelocity().clone().normalize();
+                Vector dirTarget = to.clone().normalize();
+                double ang = dirVel.angle(dirTarget);
+                double speed_ = 0.9 * speed + 0.13999999999999999;
+                if (target instanceof Player && arrow.getLocation().distance(target.getLocation()) < 8.0 && ((Player) target).isBlocking()) {
+                    speed_ = speed * 0.6;
+                }
+                if (ang < 0.12) {
+                    newVel = dirVel.clone().multiply(speed_);
+                } else {
+                    Vector newDir = dirVel.clone().multiply((ang - 0.12) / ang).add(dirTarget.clone().multiply(0.12 / ang));
+                    newDir.normalize();
+                    newVel = newDir.clone().multiply(speed_);
+                }
+                arrow.setVelocity(newVel.add(new Vector(0.0, 0.03, 0.0)));
+                arrow.getWorld().playEffect(arrow.getLocation(), Effect.SMOKE, 0);
+            }
+        }.runTaskTimer(Start.Instance, 1L, 1L);
     }
 }

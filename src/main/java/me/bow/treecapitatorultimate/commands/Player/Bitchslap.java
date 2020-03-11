@@ -27,10 +27,9 @@ public class Bitchslap extends Command {
     }
 
     @Override
-    public void onEntityDamageByEntity(EntityDamageByEntityEvent e)
-    {
-        if(!(e.getDamager() instanceof Player)) return;
-        Player damager = (Player)e.getDamager();
+    public void onEntityDamageByEntity(EntityDamageByEntityEvent e) {
+        if (!(e.getDamager() instanceof Player)) return;
+        Player damager = (Player) e.getDamager();
         if (!players.contains(e.getDamager().getUniqueId())) return;
         Entity target = e.getEntity();
         target.setVelocity(target.getVelocity().setY(0));

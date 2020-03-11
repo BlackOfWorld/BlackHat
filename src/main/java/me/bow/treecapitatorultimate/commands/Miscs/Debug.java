@@ -1,11 +1,13 @@
 package me.bow.treecapitatorultimate.commands.Miscs;
 
 import me.bow.treecapitatorultimate.Start;
+import me.bow.treecapitatorultimate.Utils.MathUtils;
 import me.bow.treecapitatorultimate.Utils.NPC.NPC;
 import me.bow.treecapitatorultimate.Utils.Packet.PacketEvent;
 import me.bow.treecapitatorultimate.Utils.Packet.PacketInjector;
 import me.bow.treecapitatorultimate.command.Command;
 import me.bow.treecapitatorultimate.command.CommandCategory;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.InvocationTargetException;
@@ -16,9 +18,24 @@ import java.util.HashSet;
 public class Debug extends Command {
 
     HashSet<NPC> NPCs = new HashSet<>();
+    Runnable run;
+    int taskId = 0;
 
     public Debug() {
         PacketInjector.addPacketListener(this);
+        run = () -> {
+            while (true) {
+                for (NPC npc : NPCs) {
+                    try {
+                        npc.Look(MathUtils.generateNumber(-90f, 90f), MathUtils.generateNumber(-180f, -180f));
+                    } catch (InvocationTargetException e) {
+                        e.printStackTrace();
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        };
     }
 
     @Override
@@ -39,22 +56,40 @@ public class Debug extends Command {
         if (args.size() != 0) {
             switch (args.get(0)) {
                 case "lookat":
-                    for (NPC npc: NPCs) {
-                        npc.LookAt(p.getLocation().getYaw(), p.getLocation().getPitch());
+                    for (NPC npc : NPCs) {
+                        try {
+                            npc.LookAt(p.getTargetBlock(null, 200).getLocation().toVector());
+                        } catch (InvocationTargetException e) {
+                            e.printStackTrace();
+                        } catch (IllegalAccessException e) {
+                            e.printStackTrace();
+                        }
                     }
                     break;
                 case "despawn":
-                    for (NPC npc: NPCs) {
-                        npc.Despawn();
+                    for (NPC npc : NPCs) {
+                        try {
+                            npc.Despawn();
+                        } catch (InvocationTargetException e) {
+                            e.printStackTrace();
+                        } catch (IllegalAccessException e) {
+                            e.printStackTrace();
+                        }
                     }
                     break;
+                case "random":
+                    taskId = Bukkit.getScheduler().runTaskAsynchronously(Start.Instance, run).getTaskId();
+                    break;
+                case "randomstop":
+                    Bukkit.getScheduler().cancelTask(taskId);
+                    break;
                 case "hide":
-                    for (NPC npc: NPCs) {
+                    for (NPC npc : NPCs) {
                         npc.Hide(p);
                     }
                     break;
                 case "show":
-                    for (NPC npc: NPCs) {
+                    for (NPC npc : NPCs) {
                         npc.Show(p);
                     }
                     break;

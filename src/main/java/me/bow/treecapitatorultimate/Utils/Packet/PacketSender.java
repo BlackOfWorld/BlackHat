@@ -41,10 +41,10 @@ public class PacketSender {
      * Sends a packet to a Player
      *
      * @param packets {@link Packet}s to send
-     * @param player The Player to send it to
+     * @param player  The Player to send it to
      */
     public void sendPacket(Player player, Packet... packets) throws InvocationTargetException, IllegalAccessException {
-        for (Packet packet: packets) {
+        for (Packet packet : packets) {
             sendPacket(packet.getNMSPacket(), getConnection(player));
         }
     }
