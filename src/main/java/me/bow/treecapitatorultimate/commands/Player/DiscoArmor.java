@@ -38,7 +38,7 @@ public class DiscoArmor extends Command {
                     p.getInventory().setArmorContents(armor);
                 }
             }
-        }.runTaskTimerAsynchronously(Start.Instance, 0, 1);
+        }.runTaskTimerAsynchronously(this.plugin, 0, 1);
     }
 
     private Color ToHSV(double deg) {

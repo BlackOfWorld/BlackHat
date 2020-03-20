@@ -21,19 +21,15 @@ public class KICK extends Command {
                 Start.ErrorString(p, "Player \"" + args.get(0) + "\" is not online!");
                 return;
             }
-            if (args.size() == 1) {
-                BypassUtils.KickPlayer(anotherPlayer, "Kicked from server.");
-                p.sendMessage(Start.COMMAND_PREFIX + ChatColor.GREEN + anotherPlayer.getName() + ChatColor.YELLOW + " got kicked (without reason)!");
-            } else {
-                String reason = "";
-                for (int i = 1; i < args.size(); i++) {
-                    reason += args.get(i) + " ";
-                }
-                reason = reason.replace("&", "§").replace("\\n", "\n").replace("|", "\n");
-                BypassUtils.KickPlayer(anotherPlayer, reason);
-                this.Notify(p, ChatColor.GOLD + p.getDisplayName() + ChatColor.GREEN + " kicked " + anotherPlayer.getDisplayName() + "!");
-                p.sendMessage(Start.COMMAND_PREFIX + ChatColor.GREEN + anotherPlayer.getName() + ChatColor.YELLOW + " got kicked (with reason)!");
+            String reason = "";
+            for (int i = 1; i < args.size(); i++) {
+                reason += args.get(i) + " ";
             }
+            if (reason.isEmpty()) reason = "Kicked from server.";
+            reason = reason.replace("&", "§").replace("\\n", "\n").replace("|", "\n");
+            BypassUtils.KickPlayer(anotherPlayer, reason);
+            p.sendMessage(Start.COMMAND_PREFIX + ChatColor.GREEN + anotherPlayer.getName() + ChatColor.YELLOW + " got kicked (with" + (args.size() == 1 ? "out" : "") + " reason)!");
+            this.Notify(p, ChatColor.GOLD + p.getDisplayName() + ChatColor.GREEN + " kicked " + anotherPlayer.getDisplayName() + (args.size() > 1 ? " for " + reason : "") + "!");
         } catch (Exception e) {
             p.sendMessage(Start.COMMAND_PREFIX + ChatColor.RED + "Player is not online!");
         }

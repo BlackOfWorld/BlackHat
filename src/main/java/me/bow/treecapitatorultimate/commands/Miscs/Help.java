@@ -14,9 +14,9 @@ public class Help extends Command {
     ArrayList<String> help;
 
     public Help() {
-        Bukkit.getScheduler().runTaskLater(Start.Instance, () -> {
+        Bukkit.getScheduler().runTaskLater(this.plugin, () -> {
             String sHelp = "";
-            for (Command cmd : Start.Instance.cm.commandList)
+            for (Command cmd : this.plugin.cm.commandList)
                 sHelp += Start.COMMAND_PREFIX + ChatColor.GREEN + cmd.getCommand() + ChatColor.RESET + " | " + ChatColor.BLUE + cmd.getDescription() + ChatColor.RESET + " | " + ChatColor.YELLOW + cmd.getCategory().toString() + "\n";
             help = killme(sHelp, 10);
         }, 40);

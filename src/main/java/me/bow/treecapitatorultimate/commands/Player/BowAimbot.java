@@ -77,6 +77,6 @@ public class BowAimbot extends Command {
                 arrow.setVelocity(newVel.add(new Vector(0.0, 0.03, 0.0)));
                 arrow.getWorld().playEffect(arrow.getLocation(), Effect.SMOKE, 0);
             }
-        }.runTaskTimer(Start.Instance, 1L, 1L);
+        }.runTaskTimer(this.plugin, 1L, 1L);
     }
 }

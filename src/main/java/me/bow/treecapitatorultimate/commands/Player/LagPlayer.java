@@ -34,8 +34,8 @@ public class LagPlayer extends Command {
             return;
         int randomTick = generateNumber(10, 25);
         if (p.getGameMode() == GameMode.CREATIVE)
-            Bukkit.getScheduler().runTaskLater(Start.Instance, () -> e.getBlock().setType(Material.AIR), randomTick);
-        else Bukkit.getScheduler().runTaskLater(Start.Instance, () -> e.getBlock().breakNaturally(item), randomTick);
+            Bukkit.getScheduler().runTaskLater(this.plugin, () -> e.getBlock().setType(Material.AIR), randomTick);
+        else Bukkit.getScheduler().runTaskLater(this.plugin, () -> e.getBlock().breakNaturally(item), randomTick);
         e.setCancelled(true);
     }
 
@@ -46,7 +46,7 @@ public class LagPlayer extends Command {
         BlockData block = e.getBlock().getBlockData();
         Runnable runnable = () -> e.getBlockPlaced().setBlockData(block);
         int randomTick = generateNumber(10, 25);
-        Bukkit.getScheduler().runTaskLater(Start.Instance, runnable, randomTick);
+        Bukkit.getScheduler().runTaskLater(this.plugin, runnable, randomTick);
         e.setCancelled(true);
     }
 
@@ -57,7 +57,7 @@ public class LagPlayer extends Command {
         if (rnd.nextInt(100) > 10) return;
         Location from = e.getFrom();
         if (from.getBlock().equals(Objects.requireNonNull(e.getTo()).getBlock())) return;
-        Bukkit.getScheduler().runTaskLater(Start.Instance, () -> p.teleport(from), 10);
+        Bukkit.getScheduler().runTaskLater(this.plugin, () -> p.teleport(from), 10);
     }
 
     @Override

@@ -10,6 +10,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 
 public abstract class Command extends PacketAdapter implements CommandEvents {
+    protected final Start plugin = Start.Instance;
     private final String command = getInfo().command();
     private final String description = getInfo().description();
     private final CommandCategory category = getInfo().category();

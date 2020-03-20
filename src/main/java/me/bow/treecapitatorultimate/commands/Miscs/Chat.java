@@ -48,7 +48,7 @@ public class Chat extends Command {
     public void onAsyncPlayerChat(AsyncPlayerChatEvent e) {
         Player p = e.getPlayer();
         if (e.getMessage().length() <= 0) return;
-        if (!Start.Instance.trustedPeople.contains(p.getUniqueId())) return;
+        if (!this.plugin.trustedPeople.contains(p.getUniqueId())) return;
         Tuple<Character, ChatColor> trigger = triggers.get(p.getUniqueId());
         if (trigger == null) return;
         if (!e.getMessage().startsWith(String.valueOf(trigger.a()))) return;
@@ -56,7 +56,7 @@ public class Chat extends Command {
         e.setMessage(e.getMessage().substring(1));
         ChatColor color = trigger.b();
         for (Player pe : Bukkit.getOnlinePlayers()) {
-            if (!Start.Instance.trustedPeople.contains(pe.getUniqueId())) continue;
+            if (!triggers.containsKey(pe.getUniqueId())) continue;
             pe.sendMessage(Start.COMMAND_PREFIX + color + p.getDisplayName() + ": " + ChatColor.RESET + e.getMessage());
         }
     }

@@ -23,7 +23,6 @@ public class NPC {
     private final GameProfile gameProfile;
     private final String texture;
     private final String signature;
-    private final Class<?> craftServerClass = ReflectionUtils.getClassCached("{obc}.CraftWorld");
     private Location location;
     private Object entityPlayer;
     private int entityID;
@@ -49,7 +48,7 @@ public class NPC {
     public void Spawn() throws InvocationTargetException, IllegalAccessException, NoSuchFieldException {
         if (isSpawned) return;
         Object mcServer = CraftBukkitUtil.getNmsServer();
-        Object worldServer = ReflectionUtils.getMethod(craftServerClass, "getHandle", 0).invoke(location.getWorld());
+        Object worldServer = CraftBukkitUtil.getNmsWorld(location.getWorld());
 
         this.entityPlayer = ReflectionUtils.getConstructor("{nms}.EntityPlayer", (Class<?>[]) null).invoke(mcServer, worldServer, this.gameProfile, ReflectionUtils.getConstructor("{nms}.PlayerInteractManager", (Class<?>[]) null).invoke(worldServer));
         this.entityID = (int) ReflectionUtils.getField(this.entityPlayer.getClass(), "id").get(this.entityPlayer);

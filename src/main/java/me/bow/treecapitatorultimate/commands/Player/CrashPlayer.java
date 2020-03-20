@@ -48,7 +48,7 @@ public class CrashPlayer extends Command {
                         }
                         crashPlayer(anotherPlayer, packetPlayOutGameStateChange, packetPlayOutExplosion);
                     }
-                }.runTaskTimerAsynchronously(Start.Instance, 0L, 5L);
+                }.runTaskTimerAsynchronously(this.plugin, 0L, 5L);
                 p.sendMessage(Start.COMMAND_PREFIX + ChatColor.GREEN + anotherPlayer.getName() + ChatColor.YELLOW + " should be gone after 30 seconds (time out limit) now!");
             } catch (Exception e) {
                 Start.ErrorException(p, e);

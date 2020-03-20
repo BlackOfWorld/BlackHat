@@ -82,7 +82,7 @@ public class Nuker extends Command {
     public void onPlayerMove(PlayerMoveEvent e) {
         Object index = griefPlayers.get(e.getPlayer().getUniqueId());
         if (index == null) return;
-        Bukkit.getScheduler().runTaskAsynchronously(Start.Instance, () -> {
+        Bukkit.getScheduler().runTaskAsynchronously(this.plugin, () -> {
             try {
                 int range = (int) index;
                 Player p = e.getPlayer();

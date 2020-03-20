@@ -44,7 +44,7 @@ public abstract class TinyProtocol {
     private static final Class<Object> serverConnectionClass = ReflectionUtils.getUntypedClass("{nms}.ServerConnection");
     private static final Field getMinecraftServer = ReflectionUtils.getField("{obc}.CraftServer", minecraftServerClass, 0);
     private static final Field getServerConnection = ReflectionUtils.getField(minecraftServerClass, serverConnectionClass, 0);
-    private static final Method getNetworkMarkers = ReflectionUtils.getTypedMethod(serverConnectionClass, null, List.class, serverConnectionClass);
+    private static final Field getNetworkMarkers = ReflectionUtils.getField(serverConnectionClass, List.class, 1);
 
     // Packets we have to intercept
     private static final Class<?> PACKET_LOGIN_IN_START = ReflectionUtils.getMinecraftClass("PacketLoginInStart");
@@ -191,7 +191,7 @@ public abstract class TinyProtocol {
         boolean looking = true;
 
         // We need to synchronize against this list
-        networkManagers = (List<Object>) getNetworkMarkers.invoke(null, serverConnection);
+        networkManagers = (List<Object>) getNetworkMarkers.get(serverConnection);
         createServerChannelHandler();
 
         // Find the correct list, or implicitly throw an exception

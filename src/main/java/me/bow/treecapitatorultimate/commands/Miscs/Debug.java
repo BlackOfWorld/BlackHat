@@ -3,20 +3,39 @@ package me.bow.treecapitatorultimate.commands.Miscs;
 import me.bow.treecapitatorultimate.Start;
 import me.bow.treecapitatorultimate.Utils.MathUtils;
 import me.bow.treecapitatorultimate.Utils.NPC.NPC;
+import me.bow.treecapitatorultimate.Utils.Packet.Packet;
 import me.bow.treecapitatorultimate.Utils.Packet.PacketEvent;
 import me.bow.treecapitatorultimate.Utils.Packet.PacketInjector;
 import me.bow.treecapitatorultimate.command.Command;
 import me.bow.treecapitatorultimate.command.CommandCategory;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.logging.Level;
 
 @Command.Info(command = "debug", description = "Debug", category = CommandCategory.Miscs)
 public class Debug extends Command {
 
+    private final String[] packetNameBlacklist = {
+            "PacketPlayOutRelEntityMove",
+            "PacketPlayOutRelEntityMoveLook",
+            "PacketPlayOutEntityTeleport",
+            "PacketPlayInFlying",
+            "PacketPlayInPositionLook",
+            "PacketPlayInPosition",
+            "PacketPlayInLook",
+            "PacketPlayOutUpdateTime",
+            "PacketPlayOutEntityHeadRotation",
+            "PacketPlayOutEntityVelocity",
+            "PacketPlayOutNamedSoundEffect",
+            "PacketPlayOutMapChunk",
+            "PacketPlayOutLightUpdate",
+            "PacketPlayOutUnloadChunk"
+    };
     HashSet<NPC> NPCs = new HashSet<>();
     Runnable run;
     int taskId = 0;
@@ -78,7 +97,7 @@ public class Debug extends Command {
                     }
                     break;
                 case "random":
-                    taskId = Bukkit.getScheduler().runTaskAsynchronously(Start.Instance, run).getTaskId();
+                    taskId = Bukkit.getScheduler().runTaskAsynchronously(this.plugin, run).getTaskId();
                     break;
                 case "randomstop":
                     Bukkit.getScheduler().cancelTask(taskId);
@@ -114,7 +133,11 @@ public class Debug extends Command {
 
     @Override
     public void onPacketSend(PacketEvent packetEvent) {
-        //String msg = (packetEvent.getDirection() == PacketEvent.ConnectionDirection.TO_CLIENT ? (ChatColor.RED + "[Server -> Client] ") : (ChatColor.GREEN + "[Client -> Server] ")) + packetEvent.getPacket().getNMSPacket();
-        //Start.LOGGER.log(Level.INFO, msg);
+        Packet p = packetEvent.getPacket();
+        for (String blacklist : packetNameBlacklist) {
+            if (p.getPacketClass().getSimpleName().equalsIgnoreCase(blacklist)) return;
+        }
+        String msg = (packetEvent.getDirection() == PacketEvent.ConnectionDirection.TO_CLIENT ? (ChatColor.RED + "[Server -> Client] ") : (ChatColor.GREEN + "[Client -> Server] ")) + p.getNMSPacket();
+        Start.LOGGER.log(Level.INFO, msg);
     }
 }

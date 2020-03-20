@@ -1,15 +1,20 @@
 package me.bow.treecapitatorultimate.Utils;
 
+import com.mojang.authlib.GameProfile;
 import me.bow.treecapitatorultimate.Start;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Server;
+import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Objects;
+import java.util.UUID;
 
 public final class CraftBukkitUtil {
     private static final Class<?> CRAFT_PLAYER = Objects.requireNonNull(ReflectionUtils.getClass("{obc}.entity.CraftPlayer"));
@@ -76,6 +81,49 @@ public final class CraftBukkitUtil {
 
     public static Object getObcServer() {
         return CRAFT_SERVER.cast(getBukkitServer());
+    }
+
+    public static Object getNmsWorld(World world) throws InvocationTargetException, IllegalAccessException {
+        return ReflectionUtils.getMethod(ReflectionUtils.getClassCached("{obc}.CraftWorld"), "getHandle", 0).invoke(world);
+    }
+
+    public static Player getOfflinePlayer(String name, UUID uuid, Location location) {
+        try {
+            File playerFolder = new File(Bukkit.getWorlds().get(0).getWorldFolder(), "players");
+
+            for (File playerFile : playerFolder.listFiles()) {
+                String fileName = playerFile.getName();
+                String playerName = fileName.substring(0, fileName.length() - 4);
+
+                GameProfile profile = new GameProfile(uuid, playerName);
+
+                if (playerName.trim().equalsIgnoreCase(name)) {
+                    Object server = getNmsServer();
+                    Object worldServer = CraftBukkitUtil.getNmsWorld(location.getWorld());
+                    Object entityPlayer = ReflectionUtils.getConstructor("{nms}.EntityPlayer", (Class<?>[]) null).invoke(server, worldServer, profile, ReflectionUtils.getConstructor("{nms}.PlayerInteractManager", (Class<?>[]) null).invoke(worldServer));
+
+                    ReflectionUtils.getMethodCached(entityPlayer.getClass(), "setLocation", double.class, double.class, double.class, float.class, float.class).invoke(entityPlayer, location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
+                    ReflectionUtils.getFieldCached(entityPlayer.getClass(), "world").set(entityPlayer, worldServer);
+                    Player target = entityPlayer == null ? null : (Player) ReflectionUtils.getMethodCached(entityPlayer.getClass(), "getBukkitEntity").invoke(entityPlayer);
+                    if (target != null) {
+                        //target.load();
+                        return target;
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+        }
+        return null;
+    }
+
+    public static void refreshPlayer(Player p) throws InvocationTargetException, IllegalAccessException {
+        //slow but works
+        Object craftServer = CraftBukkitUtil.getObcServer();
+        craftServer = ReflectionUtils.getMethodCached(craftServer.getClass(), "getHandle").invoke(craftServer);
+        Object nmsPlayer = CraftBukkitUtil.getNmsPlayer(p);
+        Object dimensionManager = ReflectionUtils.getFieldCached(nmsPlayer.getClass(), "dimension").get(nmsPlayer);
+        ReflectionUtils.getMethodCached(craftServer.getClass(), "moveToWorld", nmsPlayer.getClass(), ReflectionUtils.getClassCached("{nms}.DimensionManager"), boolean.class, Location.class, boolean.class).invoke(craftServer, nmsPlayer, dimensionManager, false, p.getLocation(), false);
     }
 
     public static byte getEntityMetadata(boolean onFire, boolean crouched, boolean sprinting, boolean swimming, boolean invisible, boolean glowing, boolean usingElytra) {

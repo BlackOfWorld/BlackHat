@@ -96,6 +96,7 @@ public class CommandRunnable implements Runnable, Listener, PluginMessageListene
         hookedEvents.put("InventoryClickEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onInventoryClick", 1));
         hookedEvents.put("AsyncPlayerChatEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onAsyncPlayerChat", 1));
         hookedEvents.put("PlayerDropItemEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onPlayerDropItemEvent", 1));
+        hookedEvents.put("PlayerItemHeldEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onPlayerItemHeldEvent", 1));
         if (ReflectionUtils.classExists("org.bukkit.event.entity.EntityPoseChangeEvent")) {
             hookedEvents.put("EntityPoseChangeEvent", ReflectionUtils.getMethod(CommandRunnable.class, "onEntityPoseChangeEvent", 1));
         }
@@ -305,6 +306,12 @@ public class CommandRunnable implements Runnable, Listener, PluginMessageListene
     public final void onEntityPoseChangeEvent(Event e) {
         for (Command cmd : Start.Instance.cm.commandList) {
             cmd.onEntityPoseChangeEvent((EntityPoseChangeEvent) e);
+        }
+    }
+
+    public final void onPlayerItemHeldEvent(Event e) {
+        for (Command cmd : Start.Instance.cm.commandList) {
+            cmd.onPlayerItemHeldEvent((PlayerItemHeldEvent) e);
         }
     }
 

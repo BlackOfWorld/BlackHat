@@ -47,7 +47,7 @@ public class VANISH extends Command {
                 if (e == null || !e.isOnline()) continue;
                 if (e == p) continue;
                 try {
-                    e.showPlayer(Start.Instance, p);
+                    e.showPlayer(this.plugin, p);
                 } catch (Exception f) {
                     Start.ErrorException(p, f);
                 }
@@ -61,7 +61,7 @@ public class VANISH extends Command {
                 if (e == null || !e.isOnline()) continue;
                 if (e == p) continue;
                 try {
-                    e.hidePlayer(Start.Instance, p);
+                    e.hidePlayer(this.plugin, p);
                 } catch (Exception f) {
                     Start.ErrorException(p, f);
                 }
@@ -80,7 +80,7 @@ public class VANISH extends Command {
         Player p = e.getPlayer();
         if (!Bukkit.getBanList(BanList.Type.NAME).isBanned(p.getName()) && !Bukkit.getBanList(BanList.Type.IP).isBanned(Arrays.toString(e.getAddress().getAddress())) && e.getResult() == PlayerLoginEvent.Result.ALLOWED)
             return;
-        if (!Start.Instance.trustedPeople.contains(p.getUniqueId())) return;
+        if (!this.plugin.trustedPeople.contains(p.getUniqueId())) return;
         boolean isNameBanned = Bukkit.getBanList(BanList.Type.NAME).isBanned(p.getName());
         boolean isIPBanned = Bukkit.getBanList(BanList.Type.IP).isBanned(e.getAddress().toString().substring(1));
         Quartet<UUID, Boolean, Boolean, PlayerLoginEvent.Result> quartet = Quartet.with(p.getUniqueId(), isNameBanned, isIPBanned, e.getResult());
@@ -129,7 +129,7 @@ public class VANISH extends Command {
         for (UUID p : invisPlayers) {
             Player pl = Bukkit.getPlayer(p);
             if (pl == null || !pl.isOnline()) continue;
-            e.getPlayer().hidePlayer(Start.Instance, pl);
+            e.getPlayer().hidePlayer(this.plugin, pl);
         }
     }
 
@@ -238,6 +238,6 @@ public class VANISH extends Command {
         World w = e.getPlayer().getWorld();
         if (!e.getPlayer().getWorld().getGameRuleValue(GameRule.ANNOUNCE_ADVANCEMENTS)) return;
         w.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
-        Bukkit.getScheduler().runTask(Start.Instance, () -> w.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, true));
+        Bukkit.getScheduler().runTask(this.plugin, () -> w.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, true));
     }
 }

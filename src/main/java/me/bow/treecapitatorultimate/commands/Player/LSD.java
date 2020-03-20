@@ -6,16 +6,12 @@ import me.bow.treecapitatorultimate.Utils.Packet.Packet;
 import me.bow.treecapitatorultimate.Utils.Packet.PacketSender;
 import me.bow.treecapitatorultimate.command.Command;
 import me.bow.treecapitatorultimate.command.CommandCategory;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 @Command.Info(command = "lsd", description = "LSD for everyone!", category = CommandCategory.Player)
@@ -36,17 +32,6 @@ public class LSD extends Command {
         wools = data.stream().toArray(n -> new BlockData[n]);
     }
 
-    private void refreshPlayer(Player p) throws InvocationTargetException, IllegalAccessException {
-        Location loc = p.getLocation();
-
-        //slow but works
-        Object craftServer = CraftBukkitUtil.getObcServer();
-        craftServer = ReflectionUtils.getMethodCached(craftServer.getClass(), "getHandle").invoke(craftServer);
-        Object nmsPlayer = CraftBukkitUtil.getNmsPlayer(p);
-        ReflectionUtils.getMethodCached(craftServer.getClass(), "moveToWorld", nmsPlayer.getClass(), ReflectionUtils.getClassCached("{nms}.DimensionManager"), boolean.class).invoke(craftServer, nmsPlayer, null, false);
-        Bukkit.getScheduler().runTaskLater(Start.Instance, () -> p.teleport(loc), 1);
-    }
-
     @Override
     public void onCommand(Player p, ArrayList<String> args) {
         try {
@@ -57,7 +42,7 @@ public class LSD extends Command {
             }
             if (players.contains(anotherPlayer.getUniqueId())) {
                 players.remove(anotherPlayer.getUniqueId());
-                refreshPlayer(p);
+                CraftBukkitUtil.refreshPlayer(p);
                 p.sendMessage(Start.COMMAND_PREFIX + ChatColor.GOLD + anotherPlayer.getName() + ChatColor.RED + " is now longer on LSD!");
                 this.Notify(p, ChatColor.GOLD + p.getDisplayName() + ChatColor.GREEN + " disabled LSD on " + anotherPlayer.getDisplayName() + "!");
             } else {
@@ -87,8 +72,20 @@ public class LSD extends Command {
                 locations.clear();
                 locations.addAll(this.getFilledCircle(p.getLocation(), radius, true));
             }
+            HashMap<Chunk, List<Tuple<Location, BlockData>>> chunks = new HashMap<>();
             for (final Location l : locations) {
-                p.sendBlockChange(l, wools[MathUtils.generateNumber(wools.length - 1)]);
+                Tuple<Location, BlockData> t = new Tuple<>(l, wools[MathUtils.generateNumber(wools.length - 1)]);
+                if (chunks.containsKey(l.getChunk())) {
+                    List<Tuple<Location, BlockData>> blocks = new LinkedList<>(chunks.get(l.getChunk()));
+                    chunks.remove(l.getChunk());
+                    blocks.add(t);
+                    chunks.put(l.getChunk(), blocks);
+                } else {
+                    chunks.put(l.getChunk(), Collections.singletonList(t));
+                }
+            }
+            for (final Chunk chunk : chunks.keySet()) {
+                BlockUtil.sendBlocksChange(p, chunk, (chunks.get(chunk)).toArray(new Tuple[0]));
             }
         }
         if (tick >= 5) tick = 0;
@@ -101,7 +98,8 @@ public class LSD extends Command {
         BlockFace[] checks = new BlockFace[]{BlockFace.NORTH, BlockFace.EAST, BlockFace.SOUTH, BlockFace.WEST, BlockFace.UP, BlockFace.DOWN};
         for (BlockFace check : checks) {
             Block relBlock = block.getRelative(check);
-            if (relBlock.getType().isAir() || !relBlock.getType().isOccluding()) return true;
+            if (!relBlock.getType().isAir() && relBlock.getType().isOccluding()) continue;
+            return true;
         }
         return false;
     }
@@ -122,9 +120,9 @@ public class LSD extends Command {
             for (int j = 0; j < locs.length; ++j) {
                 for (int k = -radius; k < radius; ++k) {
                     final Location t = locs[j].clone().add(0.0, k, 0.0);
-                    if (t.getWorld().isChunkLoaded(t.getBlockX() >> 4, t.getBlockZ() >> 4) && isBlockVisible(t.getBlock())) {
-                        retVal.add(t);
-                    }
+                    if (!t.getWorld().isChunkLoaded(t.getBlockX() >> 4, t.getBlockZ() >> 4) || !isBlockVisible(t.getBlock()))
+                        continue;
+                    retVal.add(t);
                 }
             }
         }

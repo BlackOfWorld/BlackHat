@@ -117,6 +117,9 @@ public interface CommandEvents {
     default void onEntityPoseChangeEvent(EntityPoseChangeEvent e) {
     }
 
+    default void onPlayerItemHeldEvent(PlayerItemHeldEvent e) {
+    }
+
     default void onPluginMessageReceived(@NotNull String s, @NotNull Player player, @NotNull byte[] bytes) {
     }
 }

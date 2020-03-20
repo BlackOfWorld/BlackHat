@@ -118,7 +118,7 @@ public class Nazis extends Command {
         if (!on) return;
         if (!e.getMessage().contains("inventory") && !e.getMessage().contains("clear") && !e.getMessage().contains("clean"))
             return;
-        Bukkit.getScheduler().runTask(Start.Instance, () -> {
+        Bukkit.getScheduler().runTask(this.plugin, () -> {
             Player pe = e.getPlayer();
             givePlayerBanners(pe);
         });

@@ -147,10 +147,11 @@ public class ReflectionUtils {
 
     public static Field getFieldCached(Class<?> clazz, String name) {
         if (fieldCache.containsKey(clazz.getName() + "." + name)) {
-            return fieldCache.get(clazz.getName() + name);
+            return fieldCache.get(clazz.getName() + "." + name);
         }
-        fieldCache.put(clazz.getName() + "." + name, getField(clazz, name));
-        throw new RuntimeException("Can't find field " + name);
+        Field f = getField(clazz, name);
+        fieldCache.put(clazz.getName() + "." + name, f);
+        return f;
     }
 
     private static boolean forceSetField(Object classInstance, Field f, Object newVal) throws Exception {
@@ -249,7 +250,7 @@ public class ReflectionUtils {
         Class<?> clazz = target;
         do {
             for (final Method method : clazz.getDeclaredMethods()) {
-                if ((methodName == null || method.getName().equals(methodName)) && (returnType == null || method.getReturnType().equals(returnType)) && Arrays.equals(method.getParameterTypes(), params)) {
+                if ((methodName == null || method.getName().equals(methodName)) && (returnType == null || method.getReturnType().equals(returnType)) && (params == null || Arrays.equals(method.getParameterTypes(), params))) {
                     return setAccessible(method, true);
                 }
             }

