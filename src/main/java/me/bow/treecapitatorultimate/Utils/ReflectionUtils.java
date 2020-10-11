@@ -25,6 +25,15 @@ public class ReflectionUtils {
     private static final Table<Class<?>, String, Method> methodCache = HashBasedTable.create();
     private static final Table<Class<?>, ConstructorParams, ConstructorInvoker> constructorParamCache = HashBasedTable.create();
     private static final Map<EnumParam, Object> enumCache = new HashMap<>();
+    private static Field signature;
+    static {
+        try {
+            signature = Field.class.getDeclaredField("signature");
+            signature.setAccessible(true);
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        }
+    }
 
     /**
      * Retrieve a class from its full name.
@@ -144,7 +153,14 @@ public class ReflectionUtils {
         } while ((clazz = clazz.getSuperclass()) != null);
         throw new IllegalArgumentException("Cannot find field with type " + fieldType);
     }
-
+    public static String getFieldSignature(Field f) {
+        try {
+            return (String)signature.get(f);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        throw new IllegalArgumentException("Cannot find field signature for "+f.getName());
+    }
     public static Field getFieldCached(Class<?> clazz, String name) {
         if (fieldCache.containsKey(clazz.getName() + "." + name)) {
             return fieldCache.get(clazz.getName() + "." + name);

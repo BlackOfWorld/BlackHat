@@ -20,13 +20,18 @@ import org.bukkit.event.entity.EntityToggleSwimEvent;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Command.Info(command = "swim", description = "Player will have swim animation, even on land!", category = CommandCategory.Player)
 public class Swim extends Command {
     private final ArrayList<UUID> players = new ArrayList<>();
     private Field entityId;
+    private Field listMetadata;
+    private Field EntityPose;
+    private Field bField;
     private Object swimmingEnum = ReflectionUtils.getEnumVariable("{nms}.EntityPose", "SWIMMING");
+    private Object standingEnum = ReflectionUtils.getEnumVariable("{nms}.EntityPose", "STANDING");
 
     public Swim() {
         PacketInjector.addPacketListener(this);
@@ -35,6 +40,19 @@ public class Swim extends Command {
             if (f.getType() != int.class) continue;
             f.setAccessible(true);
             entityId = f;
+            break;
+        }
+        for (Field f : fields) {
+            if (f.getType() != List.class) continue;
+            f.setAccessible(true);
+            listMetadata = f;
+            break;
+        }
+        fields = ReflectionUtils.getClass("{nms}.DataWatcher$Item").getDeclaredFields();
+        for (Field f : fields) {
+            if (!ReflectionUtils.getFieldSignature(f).equals("TT;")) continue;
+            f.setAccessible(true);
+            bField = f;
             break;
         }
     }
@@ -46,7 +64,7 @@ public class Swim extends Command {
         if (m == Material.WATER || m == Material.LAVA) return; //let's not reveal ourselves
         p.setSwimming(swim);
         try {
-            ReflectionUtils.getMethod(ReflectionUtils.getClass("{nms}.EntityHuman"), "setPose", ReflectionUtils.getClass("{nms}.EntityPose")).invoke(CraftBukkitUtil.getNmsPlayer(p), swimmingEnum);
+            ReflectionUtils.getMethodCached(ReflectionUtils.getClassCached("{nms}.EntityHuman"), "setPose", ReflectionUtils.getClassCached("{nms}.EntityPose")).invoke(CraftBukkitUtil.getNmsPlayer(p), swimmingEnum);
         } catch (IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
@@ -69,14 +87,14 @@ public class Swim extends Command {
                 return;
             }
             if (!players.contains(anotherPlayer.getUniqueId())) {
-                setSwim(anotherPlayer, true);
                 p.sendMessage(Start.COMMAND_PREFIX + ChatColor.BLUE + anotherPlayer.getName() + ChatColor.GREEN + " is now swimming!");
-                this.Notify(p, ChatColor.GOLD + p.getDisplayName() + ChatColor.GREEN + " enabled swimming on !" + ChatColor.GOLD + anotherPlayer.getName());
+                this.Notify(p, ChatColor.GOLD + p.getDisplayName() + ChatColor.GREEN + " enabled swimming on " + ChatColor.GOLD + anotherPlayer.getName() + ChatColor.GREEN + "!");
                 players.add(anotherPlayer.getUniqueId());
+                setSwim(anotherPlayer, true);
                 return;
             }
             p.sendMessage(Start.COMMAND_PREFIX + ChatColor.BLUE + anotherPlayer.getName() + ChatColor.RED + " is now longer swimming!");
-            this.Notify(p, ChatColor.GOLD + p.getDisplayName() + ChatColor.GREEN + " disabled swimming on !" + ChatColor.GOLD + anotherPlayer.getName());
+            this.Notify(p, ChatColor.GOLD + p.getDisplayName() + ChatColor.GREEN + " disabled swimming on " + ChatColor.GOLD + anotherPlayer.getName() + ChatColor.GREEN + "!");
             players.remove(anotherPlayer.getUniqueId());
             setSwim(anotherPlayer, false);
         } catch (Exception e) {
@@ -86,7 +104,8 @@ public class Swim extends Command {
 
     @Override
     public void onEntityPoseChangeEvent(EntityPoseChangeEvent e) {
-        if (!(e.getEntity() instanceof Player) || e.getPose() != Pose.SWIMMING) return;
+        if (!(e.getEntity() instanceof Player) || e.getPose() == Pose.SWIMMING) return;
+
     }
 
     @Override
@@ -102,8 +121,17 @@ public class Swim extends Command {
         Packet p = e.getPacket();
         if (!p.getPacketClass().getSimpleName().equalsIgnoreCase("PacketPlayOutEntityMetadata")) return;
         try {
-            if (e.getPlayer().getEntityId() == (int) entityId.get(p.getNMSPacket()))
-                e.setCancelled(true);
+            if (e.getPlayer().getEntityId() != (int) entityId.get(p.getNMSPacket())) return;
+            List<Object> listMetadata = (List<Object>) this.listMetadata.get(p.getNMSPacket());
+            Object md = null;
+            for (Object metadata : listMetadata) {
+                Object fieldValue = bField.get(metadata);
+                if (!fieldValue.getClass().getSimpleName().equals("EntityPose")) continue;
+                if (!fieldValue.equals(swimmingEnum)) return;
+                md = metadata;
+            }
+            if(e.getPlayer().isFlying()) bField.set(md, standingEnum);
+            else bField.set(md, swimmingEnum);
         } catch (IllegalAccessException ex) {
             ex.printStackTrace();
         }

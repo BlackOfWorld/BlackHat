@@ -12,7 +12,6 @@ import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.craftbukkit.v1_15_R1.block.data.CraftBlockData;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -79,7 +78,7 @@ public class BlockUtil {
         return blocks;
     }
 
-    public static void sendBlocksChange(@NotNull Player p, @NotNull Chunk chunk, @NotNull Tuple<Location, BlockData>... blocks) {
+    public static void sendBlocksChange(Player p, Chunk chunk, Tuple<Location, BlockData>... blocks) {
         PacketPlayOutMultiBlockChange packet = new PacketPlayOutMultiBlockChange();
         Class<?> packetClass = packet.getClass();
         PacketPlayOutMultiBlockChange.MultiBlockChangeInfo[] info = new PacketPlayOutMultiBlockChange.MultiBlockChangeInfo[blocks.length];

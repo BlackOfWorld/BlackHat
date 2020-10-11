@@ -8,6 +8,7 @@ import me.bow.treecapitatorultimate.command.CommandCategory;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -15,15 +16,16 @@ import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.CrossbowMeta;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.UUID;
 
 @Command.Info(command = "fastbow", description = "ACCURATE SPEEDY ARROW SHOOTER", category = CommandCategory.Player)
 public class Fastbow extends Command {
-    private final ArrayList<UUID> players = new ArrayList<>();
     private static final int crossbowExist = (1 << 0);
     private static final int tridentExist = (1 << 1);
+    private final ArrayList<UUID> players = new ArrayList<>();
     private int isExist = 0;
 
     public Fastbow() {
@@ -81,16 +83,20 @@ public class Fastbow extends Command {
 
     @Override
     public void onPlayerItemHeldEvent(PlayerItemHeldEvent e) {
-        if((isExist & crossbowExist) != crossbowExist) return;
+        if ((isExist & crossbowExist) != crossbowExist) return;
         Player p = e.getPlayer();
         if (!players.contains(p.getUniqueId())) return;
         ItemStack crossbow = p.getInventory().getItem(e.getNewSlot());
-        if(crossbow.getType() != Material.CROSSBOW) return;
-        CrossbowMeta meta = (CrossbowMeta)crossbow.getItemMeta();
-        meta.addChargedProjectile(new ItemStack(Material.ARROW, 1));
+        if (crossbow == null || crossbow.getType() != Material.CROSSBOW) return;
+        CrossbowMeta meta = (CrossbowMeta) crossbow.getItemMeta();
+        Object NMSPlayer = CraftBukkitUtil.getNmsPlayer(p);
         try {
+            Object arrow = ReflectionUtils.getMethodCached(NMSPlayer.getClass(), "f", ReflectionUtils.getClassCached("{nms}.ItemStack")).invoke(NMSPlayer, CraftBukkitUtil.getNmsItemStack(crossbow));
+            int max = 1;
+            if (meta.hasEnchant(Enchantment.MULTISHOT)) max = 3;
+            for (int i = 0; i < max; i++) meta.addChargedProjectile(CraftBukkitUtil.getBukkitItemStack(arrow));
             ReflectionUtils.getFieldCached(meta.getClass(), "charged").set(meta, true);
-        } catch (IllegalAccessException ex) {
+        } catch (IllegalAccessException | InvocationTargetException ex) {
             ex.printStackTrace();
         }
         crossbow.setItemMeta(meta);

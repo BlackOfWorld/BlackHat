@@ -43,6 +43,7 @@ public class BHop extends Command {
     public void onPlayerSneak(PlayerToggleSneakEvent e) {
         if (!e.isSneaking()) return;
         Player p = e.getPlayer();
+        if(p.isFlying()) return;
         bhopInfo speed = players.get(p.getUniqueId());
         if (speed == null) return;
         speed.enabled = !speed.enabled;

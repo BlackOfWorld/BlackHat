@@ -22,8 +22,8 @@ public final class CraftBukkitUtil {
 
     public static Object getNmsPlayer(Player p) {
         try {
-            return p.getClass().getMethod("getHandle").invoke(p);
-        } catch (IllegalAccessException | NoSuchMethodException e) {
+            return ReflectionUtils.getMethodCached(p.getClass(), "getHandle").invoke(p);
+        } catch (IllegalAccessException e) {
             e.printStackTrace();
         } catch (InvocationTargetException e) {
             e.printStackTrace();
@@ -37,8 +37,8 @@ public final class CraftBukkitUtil {
 
     public static Object getNmsEntity(Entity e) {
         try {
-            return e.getClass().getMethod("getHandle").invoke(e);
-        } catch (IllegalAccessException | NoSuchMethodException ex) {
+            return ReflectionUtils.getMethodCached(e.getClass(), "getHandle").invoke(e);
+        } catch (IllegalAccessException ex) {
             ex.printStackTrace();
         } catch (InvocationTargetException ex) {
             ex.printStackTrace();
@@ -50,6 +50,16 @@ public final class CraftBukkitUtil {
         final Class<?> craftItemStack = ReflectionUtils.getClassCached("{obc}.inventory.CraftItemStack");
         try {
             return ReflectionUtils.getMethodCached(craftItemStack, "asNMSCopy", ItemStack.class).invoke(craftItemStack, item);
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static ItemStack getBukkitItemStack(Object nmsItem) {
+        final Class<?> craftItemStack = ReflectionUtils.getClassCached("{obc}.inventory.CraftItemStack");
+        try {
+            return ((ItemStack) ReflectionUtils.getMethodCached(craftItemStack, "asBukkitCopy", nmsItem.getClass()).invoke(craftItemStack, nmsItem));
         } catch (IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }

@@ -13,9 +13,10 @@
 
     <properties>
         <packageName>me.bow.treecapitatorultimate</packageName>
-        <java.version>1.8</java.version>
+        <java.version>1.14</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <minecraftVersion>1.15.2-R0.1-SNAPSHOT</minecraftVersion>
+        <manifold.version>LATEST</manifold.version>
     </properties>
 
     <build>
@@ -24,10 +25,22 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.7.0</version>
+                <version>3.8.1</version>
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
+                    <compilerArgs>
+                        <!-- Configure manifold plugin-->
+                        <arg>-Xplugin:Manifold</arg>
+                    </compilerArgs>
+                    <!-- Add the processor path for the plugin (required for Java 9+) -->
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>systems.manifold</groupId>
+                            <artifactId>manifold-ext</artifactId>
+                            <version>${manifold.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
                 </configuration>
             </plugin>
             <plugin>
@@ -47,7 +60,7 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
+<!--            <plugin>
                 <groupId>com.github.wvengen</groupId>
                 <artifactId>proguard-maven-plugin</artifactId>
                 <version>2.2.0</version>
@@ -73,11 +86,11 @@
                     <outjar>${project.build.finalName}-small.jar</outjar>
                     <options>
                         <option>-allowaccessmodification</option>
-                        <!-- <option>-dontoptimize</option>-->
+                        &lt;!&ndash; <option>-dontoptimize</option>&ndash;&gt;
                         <option>-dontshrink</option>
                         <option>-dontnote</option>
                         <option>-repackageclasses 'i.fuck.your.mom'</option>
-                        <option>-dontwarn</option> <!-- added option to ignore com.sun missing classes -->
+                        <option>-dontwarn</option> &lt;!&ndash; added option to ignore com.sun missing classes &ndash;&gt;
                         <option>-keepattributes
                             *Annotation*,**,Exceptions,InnerClasses,Signature,Deprecated,SourceFile,LineNumberTable,LocalVariable*Table,*Annotation*,Synthetic,EnclosingMethod,EventHandler,Override
                         </option>
@@ -94,10 +107,14 @@
                         </option>
                     </options>
                     <libs>
+                        &lt;!&ndash;comment below if you want to use Java 8&ndash;&gt;
+
                         <lib>${java.home}/jmods</lib>
+&lt;!&ndash;                        <lib>${java.home}/lib/rt.jar</lib>
+                        <lib>${java.home}/lib/jce.jar</lib>&ndash;&gt;
                     </libs>
                 </configuration>
-            </plugin>
+            </plugin>-->
         </plugins>
         <resources>
             <resource>
@@ -106,7 +123,27 @@
             </resource>
         </resources>
     </build>
-
+    <!--<profiles>
+        &lt;!&ndash; tools.jar dependency (for Java 8 only), primarily to support structural typing without static proxies.
+             Thus if you are not using structural typing, you **don't** need tools.jar &ndash;&gt;
+        <profile>
+            <id>internal.tools-jar</id>
+            <activation>
+                <file>
+                    <exists>${java.home}/../lib/tools.jar</exists>
+                </file>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>com.sun</groupId>
+                    <artifactId>tools</artifactId>
+                    <version>1.8.0</version>
+                    <scope>system</scope>
+                    <systemPath>${java.home}/../lib/tools.jar</systemPath>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>-->
     <repositories>
         <repository>
             <id>spigot-repo</id>
@@ -120,6 +157,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>systems.manifold</groupId>
+            <artifactId>manifold-ext</artifactId>
+            <version>${manifold.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
             <version>${minecraftVersion}</version>
@@ -131,12 +173,6 @@
             <groupId>org.reflections</groupId>
             <artifactId>reflections</artifactId>
             <version>0.9.11</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jetbrains</groupId>
-            <artifactId>annotations</artifactId>
-            <version>RELEASE</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.spigotmc</groupId>

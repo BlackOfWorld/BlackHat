@@ -7,7 +7,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.UUID;
@@ -31,12 +30,12 @@ public class Jesus extends Command {
     public void onPlayerMove(PlayerMoveEvent e) {
         Player p = e.getPlayer();
         if (!players.contains(p.getUniqueId())) return;
-        Block liquidBlock = p.getLocation().subtract(0, 0.00001, 0).getBlock();
+        Block liquidBlock = p.getLocation().subtract(0, 0.00201, 0).getBlock();
         Boolean blockBelowLiquid = liquidBlock.isLiquid();
         if (p.hasGravity() && !blockBelowLiquid) return;
         p.setGravity(!blockBelowLiquid);
         if (!blockBelowLiquid) return;
-        p.setVelocity(new Vector(0, 0.001, 0));
+        p.teleport(e.getTo().add(0,0.1,0));
         /*boolean blockNext = false;
         for (int x = -1; x < 2; x++) {
             Location location = e.getTo();

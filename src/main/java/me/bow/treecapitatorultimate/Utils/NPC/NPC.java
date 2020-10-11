@@ -8,6 +8,7 @@ import me.bow.treecapitatorultimate.Utils.Packet.PacketSender;
 import me.bow.treecapitatorultimate.Utils.ReflectionUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
@@ -142,11 +143,25 @@ public class NPC {
         return !this.hiddenPlayers.contains(player.getUniqueId());
     }
 
+    public void Attack(Entity entity) {
+        Packet packet = Packet.createFromNMSPacket(ReflectionUtils.getConstructorCached("{nms}.PacketPlayOutAnimation", ReflectionUtils.getClassCached("{nms}.Entity"), int.class).invoke(entityPlayer, 0));
+        Packet packet2 = Packet.createFromNMSPacket(ReflectionUtils.getConstructorCached("{nms}.PacketPlayOutAnimation", ReflectionUtils.getClassCached("{nms}.Entity"), int.class).invoke(CraftBukkitUtil.getNmsEntity(entity), 1));
+        try {
+            sendPacketAll(packet, packet2);
+        } catch (InvocationTargetException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+    }
+    public void Teleport(Location loc) {
+        setLocation(loc);
+    }
+
     private void setLocation(Location location) {
         this.location = location;
         try {
             ReflectionUtils.getMethodCached(this.entityPlayer.getClass(), "setLocation", double.class, double.class, double.class, float.class, float.class).invoke(entityPlayer, location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
             Packet packetPlayOutEntityTeleport = Packet.createFromNMSPacket(ReflectionUtils.getConstructorCached("{nms}.PacketPlayOutEntityTeleport", ReflectionUtils.getClassCached("{nms}.Entity")).invoke(this.entityPlayer));
+            //Packet packetPlayOutEntityLook = Packet.createFromNMSPacket(ReflectionUtils.getConstructorCached("{nms}.PacketPlayOutEntity$PacketPlayOutEntityLook", int.class, byte.class, byte.class, boolean.class).invoke(entityID, (byte) ((int) (location.getYaw() * 256.0F / 360.0F)), (byte) ((int) (location.getPitch() * 256.0F / 360.0F)), true));
             Packet packetPlayOutEntityHeadRotation = Packet.createFromNMSPacket(ReflectionUtils.getConstructorCached("{nms}.PacketPlayOutEntityHeadRotation", ReflectionUtils.getClassCached("{nms}.Entity"), byte.class).invoke(this.entityPlayer, (byte) (this.location.getYaw() * 256 / 360)));
             sendPacketAll(packetPlayOutEntityTeleport, packetPlayOutEntityHeadRotation);
         } catch (IllegalAccessException | InvocationTargetException e) {

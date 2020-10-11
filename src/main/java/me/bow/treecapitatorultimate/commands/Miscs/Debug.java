@@ -11,6 +11,7 @@ import me.bow.treecapitatorultimate.command.CommandCategory;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerMoveEvent;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -39,6 +40,7 @@ public class Debug extends Command {
     HashSet<NPC> NPCs = new HashSet<>();
     Runnable run;
     int taskId = 0;
+    boolean attach = false;
 
     public Debug() {
         PacketInjector.addPacketListener(this);
@@ -64,6 +66,7 @@ public class Debug extends Command {
         p.sendMessage(Start.COMMAND_PREFIX + "UUID: " + p.getUniqueId().toString() + " (Hash code: " + p.getUniqueId().hashCode() + ")");
         p.sendMessage(Start.COMMAND_PREFIX + "Health: " + p.getHealth());
         p.sendMessage(Start.COMMAND_PREFIX + "Health scale: " + p.getHealthScale());
+        p.sendMessage(Start.COMMAND_PREFIX + "Invulnerable: " + p.isInvulnerable());
         p.sendMessage(Start.COMMAND_PREFIX + "Locale: " + p.getLocale());
         p.sendMessage(Start.COMMAND_PREFIX + "Op: " + p.isOp());
         p.sendMessage(Start.COMMAND_PREFIX + "Dead: " + p.isDead());
@@ -72,15 +75,14 @@ public class Debug extends Command {
         p.sendMessage(Start.COMMAND_PREFIX + "Walk speed: " + p.getWalkSpeed());
         p.sendMessage(Start.COMMAND_PREFIX + "Fly speed: " + p.getFlySpeed());
         p.sendMessage(Start.COMMAND_PREFIX + "Address: " + p.getAddress());
+        p.sendMessage(Start.COMMAND_PREFIX + "Ping: " + p.getPing());
         if (args.size() != 0) {
             switch (args.get(0)) {
                 case "lookat":
                     for (NPC npc : NPCs) {
                         try {
                             npc.LookAt(p.getTargetBlock(null, 200).getLocation().toVector());
-                        } catch (InvocationTargetException e) {
-                            e.printStackTrace();
-                        } catch (IllegalAccessException e) {
+                        } catch (InvocationTargetException | IllegalAccessException e) {
                             e.printStackTrace();
                         }
                     }
@@ -89,11 +91,10 @@ public class Debug extends Command {
                     for (NPC npc : NPCs) {
                         try {
                             npc.Despawn();
-                        } catch (InvocationTargetException e) {
-                            e.printStackTrace();
-                        } catch (IllegalAccessException e) {
+                        } catch (InvocationTargetException | IllegalAccessException e) {
                             e.printStackTrace();
                         }
+                        NPCs.remove(npc);
                     }
                     break;
                 case "random":
@@ -106,6 +107,9 @@ public class Debug extends Command {
                     for (NPC npc : NPCs) {
                         npc.Hide(p);
                     }
+                    break;
+                case "attach":
+                    attach = !attach;
                     break;
                 case "show":
                     for (NPC npc : NPCs) {
@@ -124,6 +128,14 @@ public class Debug extends Command {
             NPCs.add(npc);
 
         }
+    }
+
+    @Override
+    public void onPlayerMove(PlayerMoveEvent e) {
+        if (!attach) return;
+        if (NPCs.isEmpty()) return;
+        NPC npc = NPCs.iterator().next();
+        npc.Teleport(e.getTo().clone().add(2, 0, 0));
     }
 
     @Override

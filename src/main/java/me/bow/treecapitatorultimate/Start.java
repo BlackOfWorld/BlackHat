@@ -12,7 +12,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.HashSet;
 import java.util.UUID;
@@ -28,7 +27,7 @@ public final class Start extends JavaPlugin {
     public static final String COMMAND_PREFIX = "§a[§3Black§4Hat§a]§r ";
     public static final String NOTIFY_PREFIX = "§3Black§4Hat§b» ";
     public static Start Instance = null;
-    public static @NotNull Logger LOGGER;
+    public static Logger LOGGER;
     private final PluginDescriptionFile pdfFile = this.getDescription();
     private final HashSet<Runnable> disableListeners = new HashSet<>();
     public CommandManager cm = new CommandManager();
@@ -46,7 +45,7 @@ public final class Start extends JavaPlugin {
         if (sender == null || error == null) return;
         sender.sendMessage(COMMAND_PREFIX + ChatColor.RED + "Exception: " + error.getMessage());
         sender.sendMessage(COMMAND_PREFIX + ChatColor.RED + "Possible cause: " + error.getCause());
-        sender.sendMessage(COMMAND_PREFIX + ChatColor.BLUE + " Please message the developer if you thing this is something that shouldn't happen.");
+        sender.sendMessage(COMMAND_PREFIX + ChatColor.BLUE + "Please message the developer if you thing this is something that shouldn't happen.");
     }
 
 

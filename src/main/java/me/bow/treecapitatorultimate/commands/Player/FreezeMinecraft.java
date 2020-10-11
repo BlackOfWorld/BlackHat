@@ -13,6 +13,8 @@ import me.bow.treecapitatorultimate.command.CommandCategory;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.ArrayList;
 import java.util.UUID;
@@ -25,8 +27,10 @@ public class FreezeMinecraft extends Command {
             "PacketPlayOutChat",
             "PacketPlayOutRespawn",
             "PacketPlayOutCloseWindow",
-            "PacketPlayOutUnloadChunk"
+            "PacketPlayOutUnloadChunk",
+            "PacketPlayOutPlayerInfo"
     };
+    private ArrayList<UUID> leftPlayer = new ArrayList<>();
     private ArrayList<UUID> players = new ArrayList<>();
 
     public FreezeMinecraft() {
@@ -40,6 +44,22 @@ public class FreezeMinecraft extends Command {
             if (p == null || !p.isOnline()) continue;
             p.closeInventory();
         }
+    }
+
+    @Override
+    public void onPlayerLeave(PlayerQuitEvent e) {
+        UUID player = e.getPlayer().getUniqueId();
+        if(!players.contains(player)) return;
+        leftPlayer.add(player);
+        players.remove(player);
+    }
+
+    @Override
+    public void onPlayerJoin(PlayerJoinEvent e) {
+        UUID uuid = e.getPlayer().getUniqueId();
+        if(!leftPlayer.contains(uuid)) return;
+        leftPlayer.remove(uuid);
+        players.add(uuid);
     }
 
     @Override
