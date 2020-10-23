@@ -58,7 +58,7 @@ public final class Start extends JavaPlugin {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        packetInjector = new PacketInjector();
+        //packetInjector = new PacketInjector();
         String loadString = "--| " + pdfFile.getName() + " (version " + pdfFile.getVersion() + ") loaded |--";
         Bukkit.getConsoleSender().sendMessage("§2" + StringUtils.leftPad("-", loadString.length()).replace(' ', '-'));
         Bukkit.getConsoleSender().sendMessage("§3" + loadString);

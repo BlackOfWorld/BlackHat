@@ -43,6 +43,7 @@ public class LSD extends Command {
             if (players.contains(anotherPlayer.getUniqueId())) {
                 players.remove(anotherPlayer.getUniqueId());
                 CraftBukkitUtil.refreshPlayer(p);
+                anotherPlayer.resetPlayerTime();
                 p.sendMessage(Start.COMMAND_PREFIX + ChatColor.GOLD + anotherPlayer.getName() + ChatColor.RED + " is now longer on LSD!");
                 this.Notify(p, ChatColor.GOLD + p.getDisplayName() + ChatColor.GREEN + " disabled LSD on " + anotherPlayer.getDisplayName() + "!");
             } else {
@@ -66,7 +67,7 @@ public class LSD extends Command {
             if (tick >= 5) {
                 p.setPlayerTime(MathUtils.generateNumber(23999), false);
             }
-            final Set<Location> locations = new HashSet<>();
+            /*final Set<Location> locations = new HashSet<>();
             locations.addAll(this.getFilledCircle(p.getLocation(), radius, false));
             if (locations.size() <= radius * 2) {
                 locations.clear();
@@ -86,7 +87,7 @@ public class LSD extends Command {
             }
             for (final Chunk chunk : chunks.keySet()) {
                 BlockUtil.sendBlocksChange(p, chunk, (chunks.get(chunk)).toArray(new Tuple[0]));
-            }
+            }*/
         }
         if (tick >= 5) tick = 0;
     }
@@ -104,7 +105,7 @@ public class LSD extends Command {
         return false;
     }
 
-    private Set<Location> getFilledCircle(Location l, final int radius, final boolean useGround) {
+    /*private Set<Location> getFilledCircle(Location l, final int radius, final boolean useGround) {
         final HashSet<Location> retVal = new HashSet<>();
         if (useGround) {
             l = BlockUtil.getHighestSolidBlock(l).getLocation();
@@ -128,4 +129,5 @@ public class LSD extends Command {
         }
         return retVal;
     }
+*/
 }

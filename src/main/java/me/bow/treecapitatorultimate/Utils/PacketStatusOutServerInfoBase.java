@@ -1,3 +1,4 @@
+/*
 package me.bow.treecapitatorultimate.Utils;
 
 import net.minecraft.server.v1_15_R1.PacketDataSerializer;
@@ -33,3 +34,4 @@ public class PacketStatusOutServerInfoBase extends PacketStatusOutServerInfo {
         base.b(var0);
     }
 }
+*/

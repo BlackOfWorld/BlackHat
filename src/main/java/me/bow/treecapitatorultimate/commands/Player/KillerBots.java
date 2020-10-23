@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Command.Info(command = "killerbots", description = "KILLER BOTS!!!1", category = CommandCategory.Player, requiredArgs = 1)
-public class KillerBot extends Command {
+public class KillerBots extends Command {
     HashMap<UUID, List<NPC>> attackList = new HashMap<>();
     int rotate[] = {0,0,0,0};
     @Override
@@ -34,7 +34,7 @@ public class KillerBot extends Command {
         }
         ArrayList<NPC> npcs = new ArrayList<>();
         for (int i = 0; i < rotate.length; i++) {
-            NPC npc = NPCManager.createNPC(p, ChatColor.RED+"KillerBOT", "ewogICJ0aW1lc3RhbXAiIDogMTU5MzYzNDIzNDg4NywKICAicHJvZmlsZUlkIiA6ICJmNzhmYTg2N2VhMGY0NjljOWQ5ODRhYTk0YzkzZjVmYiIsCiAgInByb2ZpbGVOYW1lIiA6ICJCcm9zR2FtZXJzNTIiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZjBkNjYxYTZiMGUyZTE4MWNkODg2N2IxNDUzMjczYWIxNjNlMjZiY2ZjYmZkNWJhMWViOTU1NWQ0NGFjNzBlZSIKICAgIH0KICB9Cn0=", "wPFFCyyw0cncqLCKBDorPRDd94JRwFGTt7wdt+Q7c+Yi7nAIqIOoyHnBKH6kK7waw5+l0RdwtvYA1Gm6NrGqnRgUnZsnG5rsUdpI1sYnOEEXz5rdmkitcsXOLxud6cqa/rT95xEJYlCblw0CCZM6pyZZ1G3s+hjgC5PAAn/MZ0wfRSjq3Oy9KBZg/qsvP1QApxQWlYlnNRimewkrseZcm8NZVv9RS/A0FIkd3b69HYy03Arj5Aa6co43BJMEjBfVkxMt9GUo/NQD9LF0Nc7B8P/pcfFmS+sK+oYEZdf+ZXZhpNQlQL3FSJypyfXOf8I6MiayPl1l1MK1PJV/8qYPzsvAtkXMBqhnigJ0MEgJ7iFIP9sGahRHX/b0os5LDE1io+U8/uNgw3bu6nKmwvXifI2fa9yVX/WolMvfLgfGKf/7x2CI+t9smM/UX5AJ38FWD1MT2ezgWNr2KCJJwJntckWcbN058Ox83dA/jKENBlnNVxM669vP9GyPs4bfi1N9x3FOo2a1tvIhaq4QwcvMGQoPgi5ev3L2a0LfrEqWd9B5WoOc0yIB2nSG7mx48xrS13SdWqMCbmi2UMEvbo/niH5mTfWjdwejUQ5xOuYDcYjNb+A/7fsU3GZdgSFfimVh8onQdbdaFSKLmwQxWGwoxFCWNSxmrYtTxmCO5G7HBOM=");
+            NPC npc = NPCManager.createNPC(p, ChatColor.RED+"KillerBOT", "ewogICJ0aW1lc3RhbXAiIDogMTYwMjYxNzAwMDcyMiwKICAicHJvZmlsZUlkIiA6ICI0YjYzZjU5MzQyYzY0OWJlODQyMzU0NWVlMmY3NTE2ZSIsCiAgInByb2ZpbGVOYW1lIiA6ICJ5dW5hMjAwOCIsCiAgInNpZ25hdHVyZVJlcXVpcmVkIiA6IHRydWUsCiAgInRleHR1cmVzIiA6IHsKICAgICJTS0lOIiA6IHsKICAgICAgInVybCIgOiAiaHR0cDovL3RleHR1cmVzLm1pbmVjcmFmdC5uZXQvdGV4dHVyZS83NzZiMTk1MTlhNDZlZGM0YWUzOTA2NWY4ODljMTMyMjhmMGVmOTJlNjFiNGE1N2NlOWQ0ZWZhNTdlNWY2NjAwIiwKICAgICAgIm1ldGFkYXRhIiA6IHsKICAgICAgICAibW9kZWwiIDogInNsaW0iCiAgICAgIH0KICAgIH0KICB9Cn0", "EOq8CYu4h614nlpqa/eGvF8Bp8yQTevA1z6kZS6kHtlKowpOVutPNIgJ5MBi4xvSlk0qUFwOzzkitTDCuNLt7fSHhJIRQW5EkA3UwHdE1P6g6ELzukPUu9TZcQJBb8l9YKhsqGiyxS1iaqpN4GA6fOpP+D1aOuDMuD493X/UV+2Lp7Vcc/68ryaz6nwigHFMklP7Az0zhGJ1/bC0AyPGUlJS2OInFXVauN/WAKf2L9wOFaGnTK7MTKf7/yxXBAzfz7Y27n2SR4brmT6hrh2Pirh2aDN6RUD5kWqN/lG5rk9J9HTcFoCgGsu0rj3oTvsIIKUlP/Eh5MaN4wY1fqzkgS5TMQOvD/+yzR1upSAhyQKREOEjIP0tTxA0kGK3XYznJwQLFGyEuK+mVilhGhEqbrWZ+/nvw3E9jE+Qxe6IusW+jAtJ/MlPh9FoQ48ADdOLv3nbQcIEpVrAiEos4nfyqakwtBfZtLaBN3zL0NEfAdHyuK4AQy/R5wHEw4vPh2aDR1Nzx7C6kaLbxlQocx3QcXKtnO59W7Mt2tNnK3OU3qE3tOtlr9kMckOuy9MmMarjQdsZ5G6Sl3QMeWg/YBcUAb7Uwl4ClpQsAw2XMVEentOqFyE9OIA2cGVI2ZBuiblXnGlk0z4GrlK0aaYrIguA/2jO5nuS8BbdZ9sOXXCf+Sw=");
             try {
                 npc.Spawn();
                 npc.Show(p);
