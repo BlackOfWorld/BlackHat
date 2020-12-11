@@ -27,7 +27,7 @@ public class DEOP extends Command {
             try {
                 Player anotherPlayer = Bukkit.getPlayer(args.get(0));
                 if (anotherPlayer == null) {
-                    Start.ErrorString(p, "Player \"" + args.get(0) + "\" is not online!");
+                    Start.Error(p, "Player \"" + args.get(0) + "\" is not online!");
                     return;
                 }
                 if (!anotherPlayer.isOp()) {
@@ -38,7 +38,7 @@ public class DEOP extends Command {
                 p.sendMessage(Start.COMMAND_PREFIX + ChatColor.GREEN + anotherPlayer.getName() + ChatColor.GOLD + " now hasn't OP!");
                 this.Notify(p, ChatColor.GOLD + p.getDisplayName() + ChatColor.GREEN + " deopped " + anotherPlayer.getDisplayName() + "!");
             } catch (Exception e) {
-                Start.ErrorException(p, e);
+                Start.Error(p, e);
             }
         }
     }

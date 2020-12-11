@@ -20,7 +20,7 @@ public class DemoScreen extends Command {
         try {
             Player anotherPlayer = Bukkit.getPlayer(args.get(0));
             if (anotherPlayer == null) {
-                Start.ErrorString(p, "Player \"" + args.get(0) + "\" is not online!");
+                Start.Error(p, "Player \"" + args.get(0) + "\" is not online!");
                 return;
             }
             Object packetPlayOutGameStateChange;
@@ -30,7 +30,7 @@ public class DemoScreen extends Command {
             p.sendMessage(Start.COMMAND_PREFIX + ChatColor.BLUE + anotherPlayer.getName() + " now has demo screen!");
             this.Notify(p, ChatColor.GOLD + p.getDisplayName() + ChatColor.GREEN + " showed DemoScreen on " + anotherPlayer.getDisplayName() + "!");
         } catch (Exception e) {
-            Start.ErrorException(p, e);
+            Start.Error(p, e);
         }
     }
 }

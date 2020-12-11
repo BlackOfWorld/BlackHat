@@ -33,7 +33,7 @@ public class minimalisticMinecraft extends Command {
         try {
             Player anotherPlayer = Bukkit.getPlayer(args.get(0));
             if (anotherPlayer == null) {
-                Start.ErrorString(p, "Player is not online!");
+                Start.Error(p, "Player is not online!");
                 return;
             }
             if (!players.contains(anotherPlayer.getUniqueId())) {
@@ -45,7 +45,7 @@ public class minimalisticMinecraft extends Command {
             players.remove(anotherPlayer.getUniqueId());
             anotherPlayer.setWalkSpeed(0.2f);
         } catch (Exception e) {
-            Start.ErrorException(p, e);
+            Start.Error(p, e);
         }
     }
 }

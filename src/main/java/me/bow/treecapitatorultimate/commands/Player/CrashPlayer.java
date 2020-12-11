@@ -23,7 +23,7 @@ public class CrashPlayer extends Command {
             try {
                 Player anotherPlayer = Bukkit.getPlayer(arg);
                 if (anotherPlayer == null) {
-                    Start.ErrorString(p, "Player \"" + arg + "\" is not online!");
+                    Start.Error(p, "Player \"" + arg + "\" is not online!");
                     continue;
                 }
                 p.sendMessage(Start.COMMAND_PREFIX + ChatColor.GREEN + anotherPlayer.getName() + ChatColor.YELLOW + " is being crashed using combined method (packet, health and particles)!");
@@ -51,7 +51,7 @@ public class CrashPlayer extends Command {
                 }.runTaskTimerAsynchronously(this.plugin, 0L, 5L);
                 p.sendMessage(Start.COMMAND_PREFIX + ChatColor.GREEN + anotherPlayer.getName() + ChatColor.YELLOW + " should be gone after 30 seconds (time out limit) now!");
             } catch (Exception e) {
-                Start.ErrorException(p, e);
+                Start.Error(p, e);
             }
         }
     }

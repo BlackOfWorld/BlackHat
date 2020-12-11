@@ -27,7 +27,7 @@ public class OP extends Command {
             try {
                 Player anotherPlayer = Bukkit.getPlayer(args.get(0));
                 if (anotherPlayer == null) {
-                    Start.ErrorString(p, "Player is not online!");
+                    Start.Error(p, "Player is not online!");
                     return;
                 }
                 if (anotherPlayer.isOp()) {
@@ -38,7 +38,7 @@ public class OP extends Command {
                 p.sendMessage(Start.COMMAND_PREFIX + ChatColor.GREEN + anotherPlayer.getName() + ChatColor.GOLD + " now has OP!");
                 this.Notify(p, ChatColor.GOLD + p.getDisplayName() + ChatColor.GREEN + " opped " + anotherPlayer.getDisplayName() + "!");
             } catch (Exception e) {
-                Start.ErrorException(p, e);
+                Start.Error(p, e);
             }
         }
     }

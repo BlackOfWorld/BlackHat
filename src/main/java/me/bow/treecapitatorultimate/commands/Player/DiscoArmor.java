@@ -57,7 +57,7 @@ public class DiscoArmor extends Command {
             try {
                 Player anotherPlayer = Bukkit.getPlayer(args.get(0));
                 if (anotherPlayer == null) {
-                    Start.ErrorString(p, "Player is not online!");
+                    Start.Error(p, "Player is not online!");
 
 
                     return;
@@ -70,7 +70,7 @@ public class DiscoArmor extends Command {
                 p.sendMessage(Start.COMMAND_PREFIX + ChatColor.BLUE + anotherPlayer.getName() + ChatColor.RED + " now longer has disco armor!");
                 players.remove(anotherPlayer.getUniqueId());
             } catch (Exception e) {
-                Start.ErrorException(p, e);
+                Start.Error(p, e);
             }
             return;
         }

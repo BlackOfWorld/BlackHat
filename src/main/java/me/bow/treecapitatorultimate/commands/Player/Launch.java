@@ -16,7 +16,7 @@ public class Launch extends Command {
     public void onCommand(Player p, ArrayList<String> args) {
         Player anotherPlayer = Bukkit.getPlayer(args.get(0));
         if (anotherPlayer == null) {
-            Start.ErrorString(p, "Player \"" + args.get(0) + "\" is not online!");
+            Start.Error(p, "Player \"" + args.get(0) + "\" is not online!");
             return;
         }
         anotherPlayer.setVelocity(new Vector(0, 4000, 0));

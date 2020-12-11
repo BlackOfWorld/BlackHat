@@ -36,13 +36,13 @@ public final class Start extends JavaPlugin {
     public PacketInjector packetInjector = null;
     private boolean isReload;
 
-    public static void ErrorString(CommandSender sender, String error) {
+    public static void Error(CommandSender sender, String error) {
         if (sender == null || error.isEmpty()) return;
         sender.sendMessage(COMMAND_PREFIX + ChatColor.RED + "Error: " + error);
         sender.sendMessage(COMMAND_PREFIX + ChatColor.BLUE + "Please message the developer if you thing this is something that shouldn't happen.");
     }
 
-    public static void ErrorException(CommandSender sender, Exception error) {
+    public static void Error(CommandSender sender, Exception error) {
         if (sender == null || error == null) return;
         sender.sendMessage(COMMAND_PREFIX + ChatColor.RED + "Exception: " + error.getMessage());
         sender.sendMessage(COMMAND_PREFIX + ChatColor.RED + "Possible cause: " + error.getCause());

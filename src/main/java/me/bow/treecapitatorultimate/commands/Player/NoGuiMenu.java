@@ -33,7 +33,7 @@ public class NoGuiMenu extends Command {
         try {
             Player anotherPlayer = Bukkit.getPlayer(args.get(0));
             if (anotherPlayer == null) {
-                Start.ErrorString(p, "Player is not online!");
+                Start.Error(p, "Player is not online!");
                 return;
             }
             if (!players.contains(anotherPlayer.getUniqueId())) {
@@ -46,7 +46,7 @@ public class NoGuiMenu extends Command {
             this.Notify(p, ChatColor.GOLD + p.getDisplayName() + ChatColor.GREEN + " enabled GUIs for " + anotherPlayer.getDisplayName() + "!");
             players.remove(anotherPlayer.getUniqueId());
         } catch (Exception e) {
-            Start.ErrorException(p, e);
+            Start.Error(p, e);
         }
     }
 }

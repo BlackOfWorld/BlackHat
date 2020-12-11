@@ -47,7 +47,7 @@ public class FreezeMinecraft extends Command {
         try {
             Player anotherPlayer = Bukkit.getPlayer(args.get(0));
             if (anotherPlayer == null) {
-                Start.ErrorString(p, "Player is not online!");
+                Start.Error(p, "Player is not online!");
             }
             //noinspection ConstantConditions
             if (players.contains(anotherPlayer.getUniqueId())) {
@@ -74,7 +74,7 @@ public class FreezeMinecraft extends Command {
                 this.Notify(p, ChatColor.GOLD + p.getDisplayName() + ChatColor.GREEN + " froze " + anotherPlayer.getDisplayName() + "'s minecraft!");
             }
         } catch (Exception e) {
-            Start.ErrorException(p, e);
+            Start.Error(p, e);
         }
     }
 

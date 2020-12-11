@@ -24,7 +24,7 @@ public class Enchant extends Command {
      */
     private void addEnchantment(final CommandSender sender, ItemStack stack, final Enchantment enchantment, final int level) {
         if (enchantment == null) {
-            Start.ErrorString(sender, "Enchantment cannot be null!");
+            Start.Error(sender, "Enchantment cannot be null!");
         }
         try {
             if (stack.getType().equals(Material.ENCHANTED_BOOK)) {
@@ -37,7 +37,7 @@ public class Enchant extends Command {
                 else stack.addUnsafeEnchantment(enchantment, level);
             }
         } catch (Exception ex) {
-            Start.ErrorException(sender, ex);
+            Start.Error(sender, ex);
         }
     }
 

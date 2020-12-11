@@ -18,7 +18,7 @@ public class KICK extends Command {
         try {
             Player anotherPlayer = Bukkit.getPlayer(args.get(0));
             if (anotherPlayer == null) {
-                Start.ErrorString(p, "Player \"" + args.get(0) + "\" is not online!");
+                Start.Error(p, "Player \"" + args.get(0) + "\" is not online!");
                 return;
             }
             String reason = "";

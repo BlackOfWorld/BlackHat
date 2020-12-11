@@ -99,7 +99,7 @@ public class AllPerms extends Command {
 
         // seems we have already injected into this player.
         if (oldPermissible instanceof AllStarPermBase) {
-            Start.ErrorString(player, "AllStarPerms already injected into player " + player.toString());
+            Start.Error(player, "AllStarPerms already injected into player " + player.toString());
         }
 
         // Move attachments over from the old permissible

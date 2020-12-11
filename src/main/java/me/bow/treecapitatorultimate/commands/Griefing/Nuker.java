@@ -57,7 +57,7 @@ public class Nuker extends Command {
             try {
                 range = Integer.parseInt(args.get(0));
             } catch (Exception e2) {
-                Start.ErrorException(p, e2);
+                Start.Error(p, e2);
                 return;
             }
             p.sendMessage(Start.COMMAND_PREFIX + ChatColor.GREEN + "Nuker enabled!");
@@ -100,7 +100,7 @@ public class Nuker extends Command {
                                 blockQueue.add(lc.getBlock()); // list is full
                                 //setBlockSuperFast(lc.getBlock()); // let's do it rn
                             } catch (Exception e2) {
-                                Start.ErrorException(p, e2);
+                                Start.Error(p, e2);
                                 griefPlayers.remove(e.getPlayer().getUniqueId());
                                 return;
                             }

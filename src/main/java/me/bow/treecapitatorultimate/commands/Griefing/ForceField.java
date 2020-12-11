@@ -136,7 +136,7 @@ public class ForceField extends Command {
             ReflectionUtils.getMethodCached(nmsPlayer.getClass(), "attack", ReflectionUtils.getClassCached("{nms}.Entity")).invoke(nmsPlayer, nmsEntity);
             PacketSender.Instance.sendPacket(p, Packet.createFromNMSPacket(packetPlayOutAnimation.invoke(nmsPlayer, 0)));
         } catch (Exception ex) {
-            Start.ErrorException(p, ex);
+            Start.Error(p, ex);
         }
     }
 

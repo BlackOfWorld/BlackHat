@@ -49,7 +49,7 @@ public class VANISH extends Command {
                 try {
                     e.showPlayer(this.plugin, p);
                 } catch (Exception f) {
-                    Start.ErrorException(p, f);
+                    Start.Error(p, f);
                 }
             }
         } else {
@@ -63,7 +63,7 @@ public class VANISH extends Command {
                 try {
                     e.hidePlayer(this.plugin, p);
                 } catch (Exception f) {
-                    Start.ErrorException(p, f);
+                    Start.Error(p, f);
                 }
             }
         }

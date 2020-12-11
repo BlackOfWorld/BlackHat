@@ -23,7 +23,7 @@ public class GameMode extends Command {
             try {
                 Player anotherPlayer = Bukkit.getPlayer(args.get(0));
                 if (anotherPlayer == null) {
-                    Start.ErrorString(p, "Player \"" + args.get(0) + "\" is not online!");
+                    Start.Error(p, "Player \"" + args.get(0) + "\" is not online!");
                     return;
                 }
                 if (setGamemode(anotherPlayer, args.get(1)))
@@ -31,7 +31,7 @@ public class GameMode extends Command {
                 else
                     p.sendMessage(Start.COMMAND_PREFIX + ChatColor.RED + "This gamemode doesn't exist!");
             } catch (Exception e) {
-                Start.ErrorException(p, e);
+                Start.Error(p, e);
             }
         } else {
             p.sendMessage(Start.COMMAND_PREFIX + ChatColor.RED + "Input is wrong!");

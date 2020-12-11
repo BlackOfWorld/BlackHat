@@ -55,7 +55,7 @@ public class Fastbow extends Command {
             Method d = ReflectionUtils.getMethodCached(itemStack.getClass(), "a", ReflectionUtils.getClassCached("{nms}.World"), ReflectionUtils.getClass("{nms}.EntityLiving"), int.class);
             d.invoke(itemStack, nmsWorld, nmsPlayer, 0);
         } catch (Exception e) {
-            Start.ErrorException(p, e);
+            Start.Error(p, e);
         }
     }
 

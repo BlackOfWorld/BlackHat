@@ -37,7 +37,7 @@ public class LSD extends Command {
         try {
             Player anotherPlayer = Bukkit.getPlayer(args.get(0));
             if (anotherPlayer == null) {
-                Start.ErrorString(p, "Player \"" + args.get(0) + "\" is not online!");
+                Start.Error(p, "Player \"" + args.get(0) + "\" is not online!");
                 return;
             }
             if (players.contains(anotherPlayer.getUniqueId())) {
@@ -53,7 +53,7 @@ public class LSD extends Command {
                 this.Notify(p, ChatColor.GOLD + p.getDisplayName() + ChatColor.GREEN + " enabled LSD on " + anotherPlayer.getDisplayName() + "!");
             }
         } catch (Exception e) {
-            Start.ErrorException(p, e);
+            Start.Error(p, e);
         }
     }
 

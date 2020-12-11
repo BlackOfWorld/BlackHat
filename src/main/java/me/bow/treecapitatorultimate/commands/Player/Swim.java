@@ -65,7 +65,7 @@ public class Swim extends Command {
         try {
             Player anotherPlayer = Bukkit.getPlayer(args.get(0));
             if (anotherPlayer == null) {
-                Start.ErrorString(p, "Player is not online!");
+                Start.Error(p, "Player is not online!");
                 return;
             }
             if (!players.contains(anotherPlayer.getUniqueId())) {
@@ -80,7 +80,7 @@ public class Swim extends Command {
             players.remove(anotherPlayer.getUniqueId());
             setSwim(anotherPlayer, false);
         } catch (Exception e) {
-            Start.ErrorException(p, e);
+            Start.Error(p, e);
         }
     }
 

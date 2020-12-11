@@ -65,7 +65,7 @@ public class LagPlayer extends Command {
         try {
             Player anotherPlayer = Bukkit.getPlayer(args.get(0));
             if (anotherPlayer == null) {
-                Start.ErrorString(p, "Player is not online!");
+                Start.Error(p, "Player is not online!");
             }
             //noinspection ConstantConditions
             if (players.contains(anotherPlayer.getUniqueId())) {
@@ -78,7 +78,7 @@ public class LagPlayer extends Command {
                 this.Notify(p, ChatColor.GOLD + p.getDisplayName() + ChatColor.GREEN + " enabled fakelag on " + anotherPlayer.getDisplayName() + "!");
             }
         } catch (Exception e) {
-            Start.ErrorException(p, e);
+            Start.Error(p, e);
         }
 
     }

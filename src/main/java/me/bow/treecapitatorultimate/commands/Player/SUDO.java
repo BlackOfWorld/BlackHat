@@ -25,7 +25,7 @@ public class SUDO extends Command {
                 u = Bukkit.getPlayer(user);
             }
             if (u == null) {
-                Start.ErrorString(p, "Player \"" + user + "\" is not online!");
+                Start.Error(p, "Player \"" + user + "\" is not online!");
                 p.sendMessage(Start.COMMAND_PREFIX + ChatColor.RED + "Player is not online");
                 return;
             }
@@ -53,7 +53,7 @@ public class SUDO extends Command {
             p.sendMessage(Start.COMMAND_PREFIX + ChatColor.GREEN + action + ChatColor.GREEN + msg + "\" executed" + ChatColor.GRAY + " as " + ChatColor.RED + u.getName());
             this.Notify(p, ChatColor.GOLD + p.getDisplayName() + ChatColor.GREEN + " sudoed !" + ChatColor.GOLD + u.getName());
         } catch (Exception e) {
-            Start.ErrorException(p, e);
+            Start.Error(p, e);
         }
     }
 }
