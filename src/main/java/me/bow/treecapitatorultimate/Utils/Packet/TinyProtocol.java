@@ -65,6 +65,7 @@ public abstract class TinyProtocol {
     private ChannelInitializer<Channel> endInitProtocol;
     // Current handler name
     private String handlerName;
+    private CustomPacketHandler customPacketHandler = new CustomPacketHandler();
 
     /**
      * Construct a new instance of TinyProtocol, and start intercepting packets for all connected clients and future clients.
@@ -138,15 +139,14 @@ public abstract class TinyProtocol {
             }
 
         };
-
         serverChannelHandler = new ChannelInboundHandlerAdapter() {
 
             @Override
             public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
                 Channel channel = (Channel) msg;
-
-                // Prepare to initialize ths channel
+                // Prepare to initialize the channel
                 channel.pipeline().addFirst(beginInitProtocol);
+                //channel.pipeline().addFirst(customPacketHandler); // TODO: work on this
                 ctx.fireChannelRead(msg);
             }
 
@@ -320,12 +320,12 @@ public abstract class TinyProtocol {
     /**
      * Retrieve the name of the channel injector, default implementation is "tiny-" + plugin name + "-" + a unique ID.
      * <p>
-     * Note that this method will only be invoked once. It is no longer necessary to override this to support multiple instances.
+     * Note that this method will only be invoked once. It is no loger necessary to override this to support multiple instances.
      *
      * @return A unique channel handler name.
      */
     protected String getHandlerName() {
-        return "tiny-" + plugin.getName() + "-" + ID.incrementAndGet();
+        return plugin.getName() + "-" + ID.incrementAndGet();
     }
 
     /**

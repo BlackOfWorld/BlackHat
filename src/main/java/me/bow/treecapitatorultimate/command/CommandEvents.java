@@ -9,7 +9,6 @@ import org.bukkit.event.player.*;
 import org.bukkit.event.server.ServerCommandEvent;
 import org.bukkit.event.server.ServerListPingEvent;
 import org.bukkit.event.server.TabCompleteEvent;
-import org.jetbrains.annotations.NotNull;
 
 public interface CommandEvents {
     default void onAsyncPlayerPreLogin(AsyncPlayerPreLoginEvent e) {
@@ -120,6 +119,6 @@ public interface CommandEvents {
     default void onPlayerItemHeldEvent(PlayerItemHeldEvent e) {
     }
 
-    default void onPluginMessageReceived(@NotNull String s, @NotNull Player player, @NotNull byte[] bytes) {
+    default void onPluginMessageReceived(String s, Player player, byte[] bytes) {
     }
 }

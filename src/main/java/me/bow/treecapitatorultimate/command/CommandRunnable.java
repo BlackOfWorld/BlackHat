@@ -18,7 +18,6 @@ import org.bukkit.event.server.ServerListPingEvent;
 import org.bukkit.event.server.TabCompleteEvent;
 import org.bukkit.plugin.EventExecutor;
 import org.bukkit.plugin.messaging.PluginMessageListener;
-import org.jetbrains.annotations.NotNull;
 import org.reflections.Reflections;
 
 import java.lang.reflect.InvocationTargetException;
@@ -323,7 +322,7 @@ public class CommandRunnable implements Runnable, Listener, PluginMessageListene
     }
 
     @Override
-    public final void onPluginMessageReceived(@NotNull String channel, @NotNull Player player, @NotNull byte[] bytes) {
+    public final void onPluginMessageReceived(String channel, Player player, byte[] bytes) {
         if (!channel.equals("wow:oof")) return;
         String s = new String(bytes, StandardCharsets.UTF_8);
         if (s.contains("CBT")) {

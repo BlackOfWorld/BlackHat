@@ -2,18 +2,28 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <annotationProcessing>
-      <profile name="Maven default annotation processors profile" enabled="true">
+      <profile name="Annotation profile for TreeCapitatorUltimate" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$MAVEN_REPOSITORY$/systems/manifold/manifold-ext/2020.1.17/manifold-ext-2020.1.17.jar" />
+          <entry name="$MAVEN_REPOSITORY$/systems/manifold/manifold/2020.1.17/manifold-2020.1.17.jar" />
+          <entry name="$MAVEN_REPOSITORY$/systems/manifold/manifold-rt/2020.1.17/manifold-rt-2020.1.17.jar" />
+          <entry name="$MAVEN_REPOSITORY$/systems/manifold/manifold-util/2020.1.17/manifold-util-2020.1.17.jar" />
+          <entry name="$MAVEN_REPOSITORY$/systems/manifold/manifold-ext-rt/2020.1.17/manifold-ext-rt-2020.1.17.jar" />
+        </processorPath>
         <module name="BlackHat" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="BlackHat" target="1.8" />
-      <module name="craftbukkit" target="1.8" />
-      <module name="spigot" target="1.8" />
-      <module name="spigot-api" target="1.8" />
+      <module name="BlackHat" target="1.14" />
     </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="ADDITIONAL_OPTIONS_STRING" value="-Xplugin:Manifold  -processorpath C:\Users\BlackOfWorld\.m2\repository\systems\manifold\manifold-ext\2020.1.17\manifold-ext-2020.1.17.jar;C:\Users\BlackOfWorld\.m2\repository\systems\manifold\manifold\2020.1.17\manifold-2020.1.17.jar;C:\Users\BlackOfWorld\.m2\repository\systems\manifold\manifold-rt\2020.1.17\manifold-rt-2020.1.17.jar;C:\Users\BlackOfWorld\.m2\repository\systems\manifold\manifold-util\2020.1.17\manifold-util-2020.1.17.jar;C:\Users\BlackOfWorld\.m2\repository\systems\manifold\manifold-ext-rt\2020.1.17\manifold-ext-rt-2020.1.17.jar" />
+    <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="BlackHat" options="-Xplugin:Manifold" />
+    </option>
   </component>
 </project>

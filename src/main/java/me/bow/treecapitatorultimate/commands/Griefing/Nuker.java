@@ -1,3 +1,4 @@
+/*
 package me.bow.treecapitatorultimate.commands.Griefing;
 
 import me.bow.treecapitatorultimate.Start;
@@ -112,4 +113,4 @@ public class Nuker extends Command {
         });
     }
 
-}
+}*/

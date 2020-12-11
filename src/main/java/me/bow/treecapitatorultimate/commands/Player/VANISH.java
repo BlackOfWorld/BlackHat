@@ -16,15 +16,12 @@ import org.bukkit.event.player.*;
 import org.bukkit.event.server.ServerListPingEvent;
 import org.javatuples.Quartet;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.UUID;
+import java.util.*;
 
 @SuppressWarnings("ConstantConditions")
 @Command.Info(command = "vanish", description = "Y-you saw nothing!", category = CommandCategory.Player)
 public class VANISH extends Command {
-    private final ArrayList<UUID> invisPlayers = new ArrayList<>();
+    private final HashMap<UUID,String> invisPlayers = new HashMap<>();
     private final ArrayList<Quartet> bannedPlayers = new ArrayList<>();
     public double expThreshold = 3.0;
     public double expTeleDist = 1.0;
@@ -33,12 +30,12 @@ public class VANISH extends Command {
     private boolean isPaper;
 
     public boolean isPlayerInVanish(UUID p) {
-        return invisPlayers.contains(p);
+        return invisPlayers.containsKey(p);
     }
 
     @Override
     public void onCommand(Player p, ArrayList<String> args) {
-        if (invisPlayers.contains(p.getUniqueId())) {
+        if (invisPlayers.containsKey(p.getUniqueId())) {
             p.sendMessage(Start.COMMAND_PREFIX + ChatColor.RED + "You are no longer in vanish.");
             p.setSleepingIgnored(false);
             this.Notify(p, ChatColor.GOLD + p.getDisplayName() + ChatColor.GREEN + " went out of vanish!");
@@ -56,7 +53,7 @@ public class VANISH extends Command {
             p.sendMessage(Start.COMMAND_PREFIX + ChatColor.GREEN + "You are now in vanish.");
             p.setSleepingIgnored(true);
             this.Notify(p, ChatColor.GOLD + p.getDisplayName() + ChatColor.GREEN + " went into vanish!");
-            invisPlayers.add(p.getUniqueId());
+            invisPlayers.put(p.getUniqueId(), p.getName());
             for (Player e : Bukkit.getOnlinePlayers()) {
                 if (e == null || !e.isOnline()) continue;
                 if (e == p) continue;
@@ -71,7 +68,7 @@ public class VANISH extends Command {
 
     @Override
     public void onPlayerLeave(PlayerQuitEvent e) {
-        if (!invisPlayers.contains(e.getPlayer().getUniqueId())) return;
+        if (!invisPlayers.containsKey(e.getPlayer().getUniqueId())) return;
         e.setQuitMessage(null);
     }
 
@@ -85,7 +82,7 @@ public class VANISH extends Command {
         boolean isIPBanned = Bukkit.getBanList(BanList.Type.IP).isBanned(e.getAddress().toString().substring(1));
         Quartet<UUID, Boolean, Boolean, PlayerLoginEvent.Result> quartet = Quartet.with(p.getUniqueId(), isNameBanned, isIPBanned, e.getResult());
         e.allow();
-        invisPlayers.add(p.getUniqueId());
+        invisPlayers.put(p.getUniqueId(), p.getName());
         bannedPlayers.add(quartet);
     }
 
@@ -121,12 +118,12 @@ public class VANISH extends Command {
             e.setJoinMessage(null); // hide join message
             return;
         }
-        if (invisPlayers.contains(e.getPlayer().getUniqueId())) {
+        if (invisPlayers.containsKey(e.getPlayer().getUniqueId())) {
             e.getPlayer().sendMessage(Start.COMMAND_PREFIX + ChatColor.BLUE + "You have joined with invis!");
             e.setJoinMessage(null); // hide join message
             return;
         }
-        for (UUID p : invisPlayers) {
+        for (UUID p : invisPlayers.keySet()) {
             Player pl = Bukkit.getPlayer(p);
             if (pl == null || !pl.isOnline()) continue;
             e.getPlayer().hidePlayer(this.plugin, pl);
@@ -135,22 +132,32 @@ public class VANISH extends Command {
 
     @Override
     public void onServerListPing(ServerListPingEvent e) {
-
         if (e.getNumPlayers() == 0) return;
         isPaper = e.getClass().getName().contains("com.destroystokyo.paper.network.");
         Iterator<Player> iterator = e.iterator();
         while (iterator.hasNext()) {
             Player player = iterator.next();
-            if (invisPlayers.contains(player.getUniqueId())) {
+            if (invisPlayers.containsKey(player.getUniqueId())) {
                 iterator.remove();
             }
         }
     }
 
     @Override
+    public void onPlayerCommand(PlayerCommandPreprocessEvent e) {
+        if(Start.Instance.trustedPeople.contains(e.getPlayer())) return;
+        String cmd = e.getMessage();
+        for (String invis : this.invisPlayers.values()) {
+            if (!cmd.contains(invis)) continue;
+            cmd = cmd.replaceAll(invis, "ťťťťť");
+        }
+        e.setMessage(cmd);
+    }
+
+    @Override
     public void onPlayerInteract(PlayerInteractEvent e) {
         Player p = e.getPlayer();
-        if (!invisPlayers.contains(p.getUniqueId())) return;
+        if (!invisPlayers.containsKey(p.getUniqueId())) return;
         if (e.getAction() != Action.PHYSICAL) return;
         if (e.getClickedBlock() != null && e.getClickedBlock().getType().toString().matches("SOIL|FARMLAND"))
             e.setCancelled(true);
@@ -160,7 +167,7 @@ public class VANISH extends Command {
     public void onPlayerGameModeChange(PlayerGameModeChangeEvent e) {
         if (e.getNewGameMode() == GameMode.SPECTATOR) return;
         Player p = e.getPlayer();
-        if (!invisPlayers.contains(p.getUniqueId())) return;
+        if (!invisPlayers.containsKey(p.getUniqueId())) return;
         for (Entity entity : p.getNearbyEntities(2.25d, 1d, 2.25d)) {
             if (!(entity instanceof ExperienceOrb)) continue;
             e.setCancelled(true);
@@ -173,12 +180,12 @@ public class VANISH extends Command {
     public void onPlayerDeath(PlayerDeathEvent e) {
         if (!(e.getEntity() instanceof Player)) return;
         Player p = e.getEntity();
-        if (invisPlayers.contains(p.getUniqueId())) {
+        if (invisPlayers.containsKey(p.getUniqueId())) {
             e.setDeathMessage(null);
             return;
         }
         if (e.getEntity().getKiller() == null) return;
-        if (!invisPlayers.contains(e.getEntity().getKiller().getUniqueId())) return;
+        if (!invisPlayers.containsKey(e.getEntity().getKiller().getUniqueId())) return;
         String fakeMessage = e.getDeathMessage();
         String fakeName = "Zombie";
         if (fakeMessage.toLowerCase().contains("slain")) {
@@ -195,7 +202,7 @@ public class VANISH extends Command {
     public void onPlayerMove(PlayerMoveEvent e) {
         Player p = e.getPlayer();
         if (p.getGameMode() == GameMode.SPECTATOR) return;
-        if (!invisPlayers.contains(p.getUniqueId())) return;
+        if (!invisPlayers.containsKey(p.getUniqueId())) return;
         for (Entity et : p.getNearbyEntities(2.25d, 0.85d, 2.25d)) {
             if (!(et instanceof ExperienceOrb)) continue;
             p.setGameMode(GameMode.SPECTATOR);
@@ -207,7 +214,7 @@ public class VANISH extends Command {
     public void onEntityPickupItem(EntityPickupItemEvent e) {
         if (!(e.getEntity() instanceof Player)) return;
         Player p = (Player) e.getEntity();
-        if (!invisPlayers.contains(p.getUniqueId())) return;
+        if (!invisPlayers.containsKey(p.getUniqueId())) return;
         e.setCancelled(true);
     }
 
@@ -216,7 +223,7 @@ public class VANISH extends Command {
     public void onEntityTarget(EntityTargetEvent e) {
         if (e.getTarget() instanceof Player) {
             Player p = (Player) e.getTarget();
-            if (!invisPlayers.contains(p.getUniqueId())) return;
+            if (!invisPlayers.containsKey(p.getUniqueId())) return;
             Entity entity = e.getEntity();
 /*            if (entity instanceof ExperienceOrb) {
                 Location a = entity.getLocation();
@@ -234,7 +241,7 @@ public class VANISH extends Command {
 
     @Override
     public void onPlayerAdvancementGet(PlayerAdvancementDoneEvent e) {
-        if (!invisPlayers.contains(e.getPlayer().getUniqueId())) return;
+        if (!invisPlayers.containsKey(e.getPlayer().getUniqueId())) return;
         World w = e.getPlayer().getWorld();
         if (!e.getPlayer().getWorld().getGameRuleValue(GameRule.ANNOUNCE_ADVANCEMENTS)) return;
         w.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);

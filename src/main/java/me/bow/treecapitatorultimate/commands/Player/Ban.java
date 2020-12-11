@@ -15,7 +15,7 @@ import org.bukkit.inventory.meta.BookMeta;
 
 import java.util.ArrayList;
 
-@Command.Info(command = "ban", description = "Bans player using bookban and raw ban method!", category = CommandCategory.Player)
+@Command.Info(command = "ban", description = "Bans player using bookban and raw ban method!", category = CommandCategory.Player, requiredArgs = 1)
 public class Ban extends Command {
 
     @Override
