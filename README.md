@@ -1,4 +1,9 @@
-# BlackHat
+# UNSUPPORTED
+
+I'm only making this public, cuz fuck this. Latest version is not supported because mapping changed. Fix it on your own, I can't be arsed to do it.
+
+
+## BlackHat
 
 BlackHat is a mod developed by BlackOfWorld. It started as a meshup of multiple evil server plugins, but then it evolved into 
 completely different evil plugin
